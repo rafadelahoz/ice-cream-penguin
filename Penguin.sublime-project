@@ -1,0 +1,25 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"name": "Penguin",
+			"path": "/Users/Rafa/Dev/Haxe/Penguin/Penguin"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel",
+			"path": "/usr/lib/haxelib/flixel/3,3,8/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel Addons",
+			"path": "/usr/lib/haxelib/flixel-addons/1,1,0/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Haxe",
+			"path": "/usr/lib/haxe/std"
+		}
+	]
+}
