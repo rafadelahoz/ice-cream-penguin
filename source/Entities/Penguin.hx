@@ -14,9 +14,10 @@ class Penguin extends FlxSprite
 		super(X, Y);
 
 		// makeGraphic(18, 24, 0xFF0030CC);
-		loadGraphic("assets/images/penguin.png", true, 40, 32);
+		loadGraphic("assets/images/penguin-icecream.png", true, 40, 32);
 		centerOrigin();
-		offset.set(2, 0);
+		offset.set(12, 13);
+		setSize(16, 19);
 
 		animation.add("idle", [0]);
 		animation.add("walk", [1, 2, 3, 2], 12, true);
