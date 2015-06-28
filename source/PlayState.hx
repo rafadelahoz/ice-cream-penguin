@@ -4,7 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
-
+import flixel.FlxCamera;
 import flixel.tile.FlxTilemap;
 
 /**
@@ -12,12 +12,11 @@ import flixel.tile.FlxTilemap;
  */
 class PlayState extends FlxState
 {
+	var camera : FlxCamera;
 
 	var penguin : Penguin;
 	var ground : FlxGroup;
 	var level : TiledLevel;
-
-	var doCollide : Bool;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -27,25 +26,18 @@ class PlayState extends FlxState
 		FlxG.debugger.visible = true;
 		FlxG.log.redirectTraces = true;
 
-		doCollide = false;
-
-
-
 		// Load the tiled level
-		level = new TiledLevel("assets/maps/0.tmx");
+		level = new TiledLevel("assets/maps/3.tmx");
 		// Add tilemaps
-		add(level.foregroundTiles);
-
 		add(level.backgroundTiles);
+
+		add(level.foregroundTiles);
 
 		add(penguin = new Penguin(Std.int(FlxG.width / 2), Std.int(FlxG.height / 2) - 32));
 
-		/*ground = new FlxGroup();
-		var _gnd : FlxSprite = new FlxSprite(0, FlxG.height - 54).makeGraphic(FlxG.width, 56, 0x99FFFFFF);
-		_gnd.immovable = true;
-		FlxG.watch.add(_gnd, "y");
-		ground.add(_gnd);
-		add(ground);*/
+		add(level.overlayTiles);
+
+		FlxG.camera.follow(penguin, FlxCamera.STYLE_PLATFORMER, null, 0);
 
 		super.create();
 	}
@@ -57,7 +49,6 @@ class PlayState extends FlxState
 	override public function destroy():Void
 	{
 		penguin.destroy();
-		// ground.destroy();
 
 		super.destroy();
 	}
@@ -67,14 +58,12 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
-		doCollide = !(FlxG.keys.anyPressed(["ENTER"]));
-
-		if (doCollide)
-		{
-			// FlxG.collide(penguin, ground);
-			level.collideWithLevel(penguin);
+		if (FlxG.keys.anyPressed(["ENTER"])) {
+			FlxG.camera.shake(0.02, 0.05);
 		}
 
+		level.collideWithLevel(penguin);
+		
 		super.update();
 	}	
 }

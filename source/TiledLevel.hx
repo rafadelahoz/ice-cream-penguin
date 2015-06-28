@@ -15,6 +15,7 @@ class TiledLevel extends TiledMap
 {
 	private inline static var tilesetPath = "assets/tilesets/";
 
+	public var overlayTiles    : FlxGroup;
 	public var foregroundTiles : FlxGroup;
 	public var backgroundTiles : FlxGroup;
 	private var collidableTileLayers : Array<FlxTilemap>;
@@ -23,6 +24,7 @@ class TiledLevel extends TiledMap
 	{
 		super(tiledLevel);
 
+		overlayTiles = new FlxGroup();
 		foregroundTiles = new FlxGroup();
 		backgroundTiles = new FlxGroup();
 
@@ -55,18 +57,23 @@ class TiledLevel extends TiledMap
 			tilemap.widthInTiles = width;
 			tilemap.heightInTiles = height;
 			tilemap.loadMap(tileLayer.tileArray, processedPath, tileset.tileWidth, tileset.tileHeight, 0, 1, 1, 1);
-			trace(tileLayer.tileArray);
-
-			if (tileLayer.properties.contains("nocollide")) 
+			
+			if (tileLayer.properties.contains("overlay"))
 			{
+				overlayTiles.add(tilemap);
+				trace("Found overlay");
+			}
+			else if (tileLayer.properties.contains("nocollide")) 
+			{
+				trace("Found non-collidable layer");
 				backgroundTiles.add(tilemap);
 			}
 			else
 			{
+				trace("Found collision layer");
 				if (collidableTileLayers == null)
 					collidableTileLayers = new Array<FlxTilemap>();
 
-				foregroundTiles.add(tilemap);
 				collidableTileLayers.push(tilemap);
 			}
 		}
