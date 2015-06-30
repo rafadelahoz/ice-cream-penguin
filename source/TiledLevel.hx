@@ -10,9 +10,11 @@ import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
+import flixel.FlxSprite;
 
 class TiledLevel extends TiledMap
 {
+	private inline static var spritesPath = "assets/images/";
 	private inline static var tilesetPath = "assets/tilesets/";
 
 	public var overlayTiles    : FlxGroup;
@@ -49,9 +51,7 @@ class TiledLevel extends TiledMap
 			if (tileset == null)
 				throw "Tileset " + tilesetName + " could not be found. Check the name in the layer 'tileset' property or something.";
 
-			var imagePath = new Path(tileset.imageSource);
-			var processedPath = tilesetPath + imagePath.file + "." + imagePath.ext;
-			trace(processedPath);
+			var processedPath = buildPath(tileset);
 
 			var tilemap : FlxTilemap = new FlxTilemap();
 			tilemap.widthInTiles = width;
@@ -82,12 +82,38 @@ class TiledLevel extends TiledMap
 
 	public function loadObjects(state : PlayState)
 	{
-
+		for (group in objectGroups)
+		{
+			for (o in group.objects)
+			{
+				loadObject(o, group, state);
+			}
+		}
 	}
 
 	private function loadObject(o : TiledObject, g : TiledObjectGroup, state : PlayState) : Void
 	{
+		var x : Int = o.x;
+		var y : Int = o.y;
 
+		if (o.gid != -1)
+			y -= g.map.getGidOwner(o.gid).tileHeight;
+
+		switch (o.type.toLowerCase()) 
+		{
+			case "start":
+				var penguin : Penguin = new Penguin(x, y, state);
+
+				state.addPenguin(penguin);
+				state.addIcecream(penguin.getIcecream());
+			case "fire": 
+				var tileset = g.map.getGidOwner(o.gid);
+				trace(o.gid);
+				var fire = new FlxSprite(x, y, buildPath(tileset, true));
+				state.add(fire);
+			case "ball":
+			case "rock":
+		}
 	}
 
 	public function collideWithLevel(obj : FlxObject, ?notifyCallback : FlxObject -> FlxObject -> Void, ?processCallback : FlxObject -> FlxObject -> Bool) : Bool
@@ -102,5 +128,14 @@ class TiledLevel extends TiledMap
 		}
 
 		return false;
+	}
+
+	private function buildPath(tileset : TiledTileSet, ?spritesCase : Bool  = false) : String
+	{
+		var imagePath = new Path(tileset.imageSource);
+		var processedPath = (spritesCase ? spritesPath : tilesetPath) + 
+			imagePath.file + "." + imagePath.ext;
+
+		return processedPath;
 	}
 }

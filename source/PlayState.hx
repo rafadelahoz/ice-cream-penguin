@@ -30,15 +30,11 @@ class PlayState extends FlxState
 		icecream = null;
 
 		// Load the tiled level
-		level = new TiledLevel("assets/maps/3.tmx");
+		level = new TiledLevel("assets/maps/4.tmx");
 		// Add tilemaps
 		add(level.backgroundTiles);
 
-		add(level.foregroundTiles);
-
-		add(penguin = new Penguin(Std.int(FlxG.width / 2), Std.int(FlxG.height / 2) - 32, this));
-
-		addIcecream(penguin.getIcecream());
+		level.loadObjects(this);
 
 		add(level.overlayTiles);
 
@@ -71,6 +67,16 @@ class PlayState extends FlxState
 		
 		super.update();
 	}	
+
+	public function addPenguin(p : Penguin) : Void
+	{
+		if (penguin != null)
+			penguin = null;
+
+		penguin = p;
+
+		add(penguin);
+	}
 
 	public function addIcecream(ic : FlxSprite) : Void
 	{
