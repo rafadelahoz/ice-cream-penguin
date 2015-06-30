@@ -7,11 +7,15 @@ import flixel.group.FlxGroup;
 import flixel.FlxCamera;
 import flixel.tile.FlxTilemap;
 
+import flixel.system.scaleModes.PixelPerfectScaleMode;
+
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState
 {
+	var fixedSM : PixelPerfectScaleMode;
+
 	var camera : FlxCamera;
 
 	var penguin : Penguin;
@@ -27,6 +31,9 @@ class PlayState extends FlxState
 		FlxG.debugger.visible = true;
 		FlxG.log.redirectTraces = true;
 
+		fixedSM = new PixelPerfectScaleMode();
+		FlxG.scaleMode = fixedSM;
+
 		icecream = null;
 
 		// Load the tiled level
@@ -39,6 +46,8 @@ class PlayState extends FlxState
 		add(level.overlayTiles);
 
 		FlxG.camera.follow(penguin, FlxCamera.STYLE_PLATFORMER, null, 0);
+
+		add(Penguin.virtualPad);
 
 		super.create();
 	}

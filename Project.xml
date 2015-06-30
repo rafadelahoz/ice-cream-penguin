@@ -2,7 +2,7 @@
 <project>
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
-	<app title="Penguin" file="Penguin" main="Main" version="0.0.1" company="HaxeFlixel" />
+	<app title="Penguin" file="Penguin" main="Main" version="0.0.1" company="thebadladns" package="com.thebadladns.Penguin" />
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 	<!--or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"!-->
@@ -23,7 +23,8 @@
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
 	
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" background="#111111" />
+	<android target-sdk-version="19"/>
 	
 	<!--------------------------------PATHS SETTINGS-------------------------------->
 	

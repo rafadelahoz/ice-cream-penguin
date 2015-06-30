@@ -6,10 +6,13 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.util.FlxPoint;
 import flixel.ui.FlxVirtualPad;
+import flixel.ui.FlxButton;
 
 class Penguin extends FlxSprite
 {
 	public static var virtualPad : FlxVirtualPad;
+	var previousPadState : Map<Int, Bool>;
+	var currentPadState : Map<Int, Bool>;
 
 	var world : PlayState;
 
@@ -63,21 +66,21 @@ class Penguin extends FlxSprite
 
 		carryPos = 0;
 
-		virtualPad = new FlxVirtualPad(FULL, A_B);
-		virtualPad.alpha = 0.5;
+		setupVirtualPad();
 	}
 
 	override public function update() : Void
 	{
+		handlePadState();
 
-		if (FlxG.keys.anyPressed(["LEFT"]))
+		if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
 		{
 			facing = FlxObject.LEFT;
 			flipX = true;
 			velocity.x = -hspeed;
 			animation.play("walk"); 
 		}
-		else if (FlxG.keys.anyPressed(["RIGHT"]))
+		else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
 		{
 			facing = FlxObject.RIGHT;
 			flipX = false;
@@ -90,12 +93,12 @@ class Penguin extends FlxSprite
 			animation.play("idle"); 
 		}
 
-		if (FlxG.keys.anyJustPressed(["S", "X"]))
+		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
 			carryPos = (carryPos + 1) % 2; 
 
-		if (velocity.y == 0) 
+		if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
 		{
-			if (FlxG.keys.anyPressed(["A", "Z"]))
+			if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
 			{
 				velocity.y = -jumpSpeed;
 			}
@@ -145,7 +148,7 @@ class Penguin extends FlxSprite
 		return icecream;
 	}
 
-	private function setupOffset()
+	private function setupOffset() : Void
 	{
 		icecreamOffset = new Map<Int, Map<Int, FlxPoint>>();
 		var sideOffset : Map<Int, FlxPoint> = new Map<Int, FlxPoint>();
@@ -159,4 +162,71 @@ class Penguin extends FlxSprite
 		icecreamOffset.set(1, topOffset);
 	}
 
+	private function setupVirtualPad() : Void
+	{	
+		virtualPad = new FlxVirtualPad(LEFT_RIGHT, A_B);
+		virtualPad.alpha = 0.65;
+
+		setupVPButton(virtualPad.buttonRight);
+		setupVPButton(virtualPad.buttonLeft);
+		virtualPad.buttonLeft.x += 10;
+		setupVPButton(virtualPad.buttonA);
+		setupVPButton(virtualPad.buttonB);
+		virtualPad.buttonB.x += 10;
+	}
+
+	private function setupVPButton(button : FlxSprite) : Void
+	{
+		button.scale.x = 0.5;
+		button.scale.y = 0.5;
+		button.width *= 0.5;
+		button.height *= 0.5;
+		button.updateHitbox();
+		button.y += 17;
+	}
+
+	function checkButton(button : Int) : Bool
+	{
+		return currentPadState.get(button);
+	}
+
+	function justPressed(button : Int) : Bool
+	{
+		return currentPadState.get(button) && !previousPadState.get(button);
+	}
+
+	function justReleased(button : Int) : Bool
+	{
+		return !currentPadState.get(button) && previousPadState.get(button);
+	}
+
+	private function initPadState() : Void
+	{
+		currentPadState = new Map<Int, Bool>();
+		currentPadState.set(Left, false);
+		currentPadState.set(Right, false);
+		currentPadState.set(A, false);
+		currentPadState.set(B, false);
+
+		previousPadState = new Map<Int, Bool>();
+		previousPadState.set(Left, false);
+		previousPadState.set(Right, false);
+		previousPadState.set(A, false);
+		previousPadState.set(B, false);
+	}
+
+	private function handlePadState() : Void
+	{
+		previousPadState = currentPadState;
+		currentPadState = new Map<Int, Bool>();
+		currentPadState.set(Left, virtualPad.buttonLeft.status == FlxButton.PRESSED);
+		currentPadState.set(Right, virtualPad.buttonRight.status == FlxButton.PRESSED);
+		currentPadState.set(A, virtualPad.buttonA.status == FlxButton.PRESSED);
+		currentPadState.set(B, virtualPad.buttonB.status == FlxButton.PRESSED);
+	}
+
+	private static var Left : Int = 0;
+	private static var Right : Int = 1;
+	private static var A : Int = 2;
+	private static var B : Int = 3;
 }
