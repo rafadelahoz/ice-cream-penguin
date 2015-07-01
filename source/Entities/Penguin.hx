@@ -22,6 +22,12 @@ class Penguin extends FlxSprite
 	var hspeed : Int = 90;
 	var jumpSpeed : Int = 200;
 
+	var onWater : Bool;
+	var waterBody : FlxObject;
+	var onAir : Bool;
+
+	public static var CarrySide : Int = 0;
+	public static var CarryTop : Int = 1;
 	var carryPos : Int;
 	var carryAnim = ["side", "top"];
 
@@ -30,12 +36,12 @@ class Penguin extends FlxSprite
 	public function new(X:Int, Y:Int, parent:PlayState)
 	{
 		super(X, Y);
-
+		
+		world = parent;
+		
 		setupOffset();
 
-		world = parent;
-
-		// makeGraphic(18, 24, 0xFF0030CC);
+		// Setup graphics
 		loadGraphic("assets/images/penguin.png", true, 40, 32);
 		centerOrigin();
 		offset.set(12, 13);
@@ -46,25 +52,17 @@ class Penguin extends FlxSprite
 		animation.add("jump", [4]);
 		animation.add("fall", [5]);
 
+		// Ice cream & carrying setup
+		setupIcecream();
+
+		carryPos = CarrySide;
+
+		// State variables init
+		onWater = false;
+		onAir = false;
+
 		acceleration.x = 0;
 		acceleration.y = gravity;
-
-		// icecream = new FlxSprite(x, y).makeGraphic(12, 12, 0xFFCCFFCC);
-		icecream = new FlxSprite(x, y).loadGraphic("assets/images/icecream.png", true, 40, 32);
-		// Side
-		icecream.animation.add("idle-side", [0]);
-		icecream.animation.add("walk-side", [1, 2, 3, 2]);
-		icecream.animation.add("jump-side", [4]);
-		icecream.animation.add("fall-side", [5]);
-		// Top
-		icecream.animation.add("idle-top", [6]);
-		icecream.animation.add("walk-top", [7, 8, 9, 8]);
-		icecream.animation.add("jump-top", [10]);
-		icecream.animation.add("fall-top", [11]);
-		// Size
-		icecream.setSize(12, 12);
-
-		carryPos = 0;
 
 		setupVirtualPad();
 	}
@@ -73,6 +71,14 @@ class Penguin extends FlxSprite
 	{
 		handlePadState();
 
+		// Death proof
+		if (y > FlxG.camera.bounds.bottom)
+		{
+			y = FlxG.camera.bounds.bottom;
+			velocity.y = -jumpSpeed * 2;
+		}
+
+		// Horizontal movement
 		if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
 		{
 			facing = FlxObject.LEFT;
@@ -93,9 +99,7 @@ class Penguin extends FlxSprite
 			animation.play("idle"); 
 		}
 
-		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
-			carryPos = (carryPos + 1) % 2; 
-
+		// Vertical movement
 		if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
 		{
 			if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
@@ -111,8 +115,27 @@ class Penguin extends FlxSprite
 				animation.play("fall");
 		}
 
+		if (onWater) 
+		{
+			var surfaceY = waterBody.y;
+			acceleration.y = gravity/3;
+			if (y > surfaceY + height/4)
+			{
+				velocity.y = -jumpSpeed / 1.5;
+				// acceleration.y -= (surfaceY + height/2 - y) * 600;
+			}
+		}
+		else
+			acceleration.y = gravity;
+
+		// Carried object control
+		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
+			carryPos = (carryPos + 1) % 2; 
+
+		// Actually update
 		super.update();
 
+		// Handle icecream
 		if (icecream != null)
 		{
 			var offsetMap : Map<Int, FlxPoint> = icecreamOffset.get(carryPos);
@@ -128,6 +151,9 @@ class Penguin extends FlxSprite
 			icecream.animation.play(animation.name + "-" + carryAnim[carryPos], false, animation.frameIndex);
 			
 		}
+
+		// Reset state
+		onWater = false;
 	}
 
 	override public function draw() : Void
@@ -143,9 +169,33 @@ class Penguin extends FlxSprite
 
 	}
 
+	public function onEnterWater(waterBlock : FlxObject) : Void
+	{
+		waterBody = waterBlock;
+		onWater = true;
+	}
+
 	public function getIcecream() : FlxSprite
 	{
 		return icecream;
+	}
+
+	private function setupIcecream() : Void
+	{
+		// icecream = new FlxSprite(x, y).makeGraphic(12, 12, 0xFFCCFFCC);
+		icecream = new FlxSprite(x, y).loadGraphic("assets/images/icecream.png", true, 40, 32);
+		// Side
+		icecream.animation.add("idle-side", [0]);
+		icecream.animation.add("walk-side", [1, 2, 3, 2]);
+		icecream.animation.add("jump-side", [4]);
+		icecream.animation.add("fall-side", [5]);
+		// Top
+		icecream.animation.add("idle-top", [6]);
+		icecream.animation.add("walk-top", [7, 8, 9, 8]);
+		icecream.animation.add("jump-top", [10]);
+		icecream.animation.add("fall-top", [11]);
+		// Size
+		icecream.setSize(12, 12);
 	}
 
 	private function setupOffset() : Void

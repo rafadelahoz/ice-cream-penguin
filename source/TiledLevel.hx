@@ -113,6 +113,12 @@ class TiledLevel extends TiledMap
 				state.add(fire);
 			case "ball":
 			case "rock":
+			case "water":
+				var water : FlxSprite = new FlxSprite(o.x, o.y);
+				water.makeGraphic(o.width, o.height, 0x440110CC);
+				water.setSize(o.width, o.height);
+				water.centerOrigin();
+				state.watery.add(water);
 		}
 	}
 
