@@ -24,6 +24,7 @@ class PlayState extends FlxState
 	public var ground : FlxGroup;
 	public var level : TiledLevel;
 	public var watery : FlxGroup;
+	public var oneways : FlxGroup;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -39,6 +40,7 @@ class PlayState extends FlxState
 		// Prepare state holders
 		icecream = null;
 		watery = new FlxGroup();
+		oneways = new FlxGroup();
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/4.tmx");
@@ -84,6 +86,8 @@ class PlayState extends FlxState
 		}
 
 		level.collideWithLevel(penguin);
+
+		FlxG.collide(oneways, penguin);
 
 		FlxG.overlap(watery, penguin, overlapWater);
 		

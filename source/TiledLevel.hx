@@ -119,6 +119,11 @@ class TiledLevel extends TiledMap
 				water.setSize(o.width, o.height);
 				water.centerOrigin();
 				state.watery.add(water);
+			case "oneway":
+				var oneway : FlxObject = new FlxObject(o.x, o.y, 8, 8);
+				oneway.allowCollisions = FlxObject.UP;
+				oneway.immovable = true;
+				state.oneways.add(oneway);
 		}
 	}
 

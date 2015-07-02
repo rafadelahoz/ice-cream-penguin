@@ -99,20 +99,29 @@ class Penguin extends FlxSprite
 			animation.play("idle"); 
 		}
 
-		// Vertical movement
-		if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
+		if (!onWater) 
 		{
-			jump();
-		} 
-		else
-		{
-			if (velocity.y < 0)
-				animation.play("jump");
-			else
-				animation.play("fall");
-		}
+			acceleration.y = gravity;
 
-		if (onWater) 
+			// Vertical movement
+			if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
+			{
+				jump();
+			} 
+			else
+			{
+				if (velocity.y < 0 && (!FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A)))
+				{
+					velocity.y /= 2;
+				}
+
+				if (velocity.y < 0)
+					animation.play("jump");
+				else
+					animation.play("fall");
+			}
+		}
+		else // if (onWater) 
 		{
 			var surfaceY = waterBody.y;
 
@@ -139,8 +148,6 @@ class Penguin extends FlxSprite
 
 			animation.play("jump");
 		}
-		else
-			acceleration.y = gravity;
 
 		// Carried object control
 		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
