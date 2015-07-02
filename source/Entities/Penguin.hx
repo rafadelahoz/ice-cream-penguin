@@ -102,10 +102,7 @@ class Penguin extends FlxSprite
 		// Vertical movement
 		if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
 		{
-			if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
-			{
-				velocity.y = -jumpSpeed;
-			}
+			jump();
 		} 
 		else
 		{
@@ -118,12 +115,29 @@ class Penguin extends FlxSprite
 		if (onWater) 
 		{
 			var surfaceY = waterBody.y;
-			acceleration.y = gravity/3;
-			if (y > surfaceY + height/4)
+
+			if (y + height > surfaceY + height * 2)
 			{
-				velocity.y = -jumpSpeed / 1.5;
-				// acceleration.y -= (surfaceY + height/2 - y) * 600;
+				acceleration.y = -gravity * 0.6;
+			} 
+			else 
+			{
+				if (y + height/2.5 > surfaceY) {
+					acceleration.y = -gravity * 0.15;
+				} else {
+					acceleration.y = gravity * 0.15;
+				}
+
+				var maxWaterVSpeed : Float = 20;
+				if (Math.abs(velocity.y) > maxWaterVSpeed)
+					velocity.y *= 0.75;
+
+				jump();
 			}
+
+			
+
+			animation.play("jump");
 		}
 		else
 			acceleration.y = gravity;
@@ -167,6 +181,14 @@ class Penguin extends FlxSprite
 	override public function destroy() : Void
 	{
 
+	}
+
+	public function jump(?force : Bool = false) : Void
+	{
+		if (force || FlxG.keys.anyJustPressed(["A", "Z"]) || justPressed(A))
+		{
+			velocity.y = -jumpSpeed;
+		}
 	}
 
 	public function onEnterWater(waterBlock : FlxObject) : Void
