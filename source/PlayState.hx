@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxObject;
 import flixel.group.FlxGroup;
+import flixel.group.FlxTypedGroup;
 import flixel.FlxCamera;
 import flixel.tile.FlxTilemap;
 
@@ -21,10 +22,14 @@ class PlayState extends FlxState
 
 	public var penguin : Penguin;
 	public var icecream : FlxSprite;
+
 	public var ground : FlxGroup;
 	public var level : TiledLevel;
+
 	public var watery : FlxGroup;
 	public var oneways : FlxGroup;
+
+	public var enemies : FlxTypedGroup<Enemy>;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -41,15 +46,17 @@ class PlayState extends FlxState
 		icecream = null;
 		watery = new FlxGroup();
 		oneways = new FlxGroup();
+		enemies = new FlxTypedGroup<Enemy>();
 
 		// Load the tiled level
-		level = new TiledLevel("assets/maps/4.tmx");
+		level = new TiledLevel("assets/maps/5.tmx");
 		// Add tilemaps
 		add(level.backgroundTiles);
 
 		// Load level objects
 		level.loadObjects(this);
 		add(watery);
+		add(enemies);
 
 		// Add overlay tiles
 		add(level.overlayTiles);
@@ -85,11 +92,16 @@ class PlayState extends FlxState
 			FlxG.camera.shake(0.02, 0.05);
 		}
 
+		for (enemy in enemies)
+			level.collideWithLevel(enemy);
+
 		level.collideWithLevel(penguin);
 
 		FlxG.collide(oneways, penguin);
 
 		FlxG.overlap(watery, penguin, overlapWater);
+
+		FlxG.collide(enemies, penguin);
 		
 		super.update();
 	}	

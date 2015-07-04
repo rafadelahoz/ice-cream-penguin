@@ -96,8 +96,10 @@ class TiledLevel extends TiledMap
 		var x : Int = o.x;
 		var y : Int = o.y;
 
-		if (o.gid != -1)
+		if (o.gid != -1) {
 			y -= g.map.getGidOwner(o.gid).tileHeight;
+			trace("Up with " + o.gid + " by " + g.map.getGidOwner(o.gid).tileHeight);
+		}
 
 		switch (o.type.toLowerCase()) 
 		{
@@ -114,16 +116,22 @@ class TiledLevel extends TiledMap
 			case "ball":
 			case "rock":
 			case "water":
-				var water : FlxSprite = new FlxSprite(o.x, o.y);
+				var water : FlxSprite = new FlxSprite(x, y);
 				water.makeGraphic(o.width, o.height, 0x440110CC);
 				water.setSize(o.width, o.height);
 				water.centerOrigin();
 				state.watery.add(water);
 			case "oneway":
-				var oneway : FlxObject = new FlxObject(o.x, o.y, 8, 8);
+				var oneway : FlxObject = new FlxObject(x, y, o.width, o.height);
 				oneway.allowCollisions = FlxObject.UP;
 				oneway.immovable = true;
 				state.oneways.add(oneway);
+			case "bumper":
+				var bumper : EBumper = new EBumper(x, y, state);
+				state.enemies.add(bumper);
+			case "runner":
+				var runner : EnemyRunner = new EnemyRunner(x, y, state);
+				state.enemies.add(runner);
 		}
 	}
 

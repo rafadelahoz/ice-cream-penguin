@@ -18,7 +18,7 @@ class Penguin extends FlxSprite
 
 	var icecream : FlxSprite;
 
-	var gravity : Int = 900;
+	var gravity : Int = GameConstants.Gravity;
 	var hspeed : Int = 90;
 	var jumpSpeed : Int = 200;
 
@@ -207,6 +207,11 @@ class Penguin extends FlxSprite
 	public function getIcecream() : FlxSprite
 	{
 		return icecream;
+	}
+
+	public function getPosition(?point : FlxPoint) : FlxPoint
+	{
+		return getMidpoint(point);
 	}
 
 	private function setupIcecream() : Void
