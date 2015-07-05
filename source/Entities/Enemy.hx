@@ -4,6 +4,8 @@ import flixel.FlxSprite;
 
 class Enemy extends FlxSprite
 {
+	public var type : String;
+
 	var world : PlayState;
 	var player : Penguin;
 
@@ -22,5 +24,10 @@ class Enemy extends FlxSprite
 	{
 		brain.update();
 		super.update();
+	}
+
+	public function onCollisionWithPlayer(player : Penguin)
+	{
+		// delegating...
 	}
 }

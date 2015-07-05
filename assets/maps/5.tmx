@@ -42,13 +42,13 @@
   </data>
  </layer>
  <objectgroup name="Things">
-  <object id="27" name="start" type="Start" x="56" y="88"/>
+  <object id="27" name="start" type="Start" x="200" y="96"/>
   <object id="28" name="Water" type="Water" x="552" y="120" width="128" height="40"/>
   <object id="33" name="Oneway" type="oneway" gid="3" x="808" y="104" width="24" height="8"/>
   <object id="61" name="Water" type="Water" x="312" y="120" width="72" height="40"/>
   <object id="63" name="Oneway" type="oneway" gid="3" x="808" y="80" width="24" height="8"/>
  </objectgroup>
  <objectgroup name="Enemies">
-  <object id="72" name="Cat" type="Runner" gid="542" x="192" y="72" width="16" height="16"/>
+  <object id="72" name="Cat" type="Runner" gid="542" x="40" y="104" width="16" height="16"/>
  </objectgroup>
 </map>

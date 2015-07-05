@@ -4,6 +4,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.FlxState;
+import flixel.util.FlxTimer;
 import flixel.util.FlxPoint;
 import flixel.ui.FlxVirtualPad;
 import flixel.ui.FlxButton;
@@ -16,15 +17,19 @@ class Penguin extends FlxSprite
 
 	var world : PlayState;
 
+	var timer : FlxTimer;
+
 	var icecream : FlxSprite;
 
 	var gravity : Int = GameConstants.Gravity;
 	var hspeed : Int = 90;
-	var jumpSpeed : Int = 200;
+	var jumpSpeed : Int = 250;
 
 	var onWater : Bool;
 	var waterBody : FlxObject;
 	var onAir : Bool;
+
+	var bouncing : Bool;
 
 	public static var CarrySide : Int = 0;
 	public static var CarryTop : Int = 1;
@@ -51,6 +56,7 @@ class Penguin extends FlxSprite
 		animation.add("walk", [1, 2, 3, 2], 12, true);
 		animation.add("jump", [4]);
 		animation.add("fall", [5]);
+		animation.add("hurt", [6, 7], 2, true);
 
 		// Ice cream & carrying setup
 		setupIcecream();
@@ -63,6 +69,8 @@ class Penguin extends FlxSprite
 
 		acceleration.x = 0;
 		acceleration.y = gravity;
+
+		timer = null;
 
 		setupVirtualPad();
 	}
@@ -78,51 +86,60 @@ class Penguin extends FlxSprite
 			velocity.y = -jumpSpeed * 2;
 		}
 
-		// Horizontal movement
-		if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
-		{
-			facing = FlxObject.LEFT;
-			flipX = true;
-			velocity.x = -hspeed;
-			animation.play("walk"); 
+		if (!bouncing) {
+			// Horizontal movement
+			if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+			{
+				facing = FlxObject.LEFT;
+				velocity.x = -hspeed;
+				animation.play("walk"); 
+			}
+			else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+			{
+				facing = FlxObject.RIGHT;
+				velocity.x = hspeed;
+				animation.play("walk"); 
+			}
+			else 
+			{
+				velocity.x = 0;
+				animation.play("idle"); 
+			}
 		}
-		else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
-		{
-			facing = FlxObject.RIGHT;
-			flipX = false;
-			velocity.x = hspeed;
-			animation.play("walk"); 
-		}
-		else 
-		{
-			velocity.x = 0;
-			animation.play("idle"); 
+		else {
+			animation.play("hurt");
 		}
 
 		if (!onWater) 
 		{
 			acceleration.y = gravity;
 
-			// Vertical movement
-			if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
+			if (!bouncing)
 			{
-				jump();
-			} 
-			else
-			{
-				if (velocity.y < 0 && (!FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A)))
+				// Vertical movement
+				if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
 				{
-					velocity.y /= 2;
-				}
-
-				if (velocity.y < 0)
-					animation.play("jump");
+					jump();
+				} 
 				else
-					animation.play("fall");
+				{
+					if (velocity.y < 0 && (!FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A)))
+					{
+						velocity.y /= 2;
+					}
+
+					if (velocity.y < 0)
+						animation.play("jump");
+					else
+						animation.play("fall");
+				}
 			}
 		}
 		else // if (onWater) 
 		{
+			if (bouncing)
+				bouncing = false;
+
 			var surfaceY = waterBody.y;
 
 			if (y + height > surfaceY + height * 2)
@@ -150,8 +167,14 @@ class Penguin extends FlxSprite
 		}
 
 		// Carried object control
-		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
-			carryPos = (carryPos + 1) % 2; 
+		if (!bouncing)
+		{
+			if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
+				carryPos = (carryPos + 1) % 2; 
+		}
+
+		// Control flipping
+		flipX = (facing == FlxObject.LEFT);
 
 		// Actually update
 		super.update();
@@ -190,12 +213,64 @@ class Penguin extends FlxSprite
 
 	}
 
+	public function bounce(duration : Float = 0.2, ?direction : Int = FlxObject.NONE, ?force : Bool = false)
+	{
+		if (bouncing && !force)
+			return;
+
+		if (direction == FlxObject.NONE)
+			if (facing == FlxObject.RIGHT)
+				direction = FlxObject.LEFT;
+			else
+				direction = FlxObject.RIGHT;
+
+		if (direction == FlxObject.RIGHT)
+		{
+			facing = FlxObject.LEFT;
+			velocity.x = hspeed * 0.25;
+		}
+		else
+		{
+			velocity.x = -hspeed * 0.25;
+			facing = FlxObject.RIGHT;
+		}
+
+		velocity.y = -jumpSpeed * 0.5;
+
+		bouncing = true;
+
+		timer = new FlxTimer(duration, onTimer);
+	}
+
 	public function jump(?force : Bool = false) : Void
 	{
 		if (force || FlxG.keys.anyJustPressed(["A", "Z"]) || justPressed(A))
 		{
 			velocity.y = -jumpSpeed;
 		}
+	}
+
+	public function onCollisionWithEnemy(enemy : Enemy) : Void
+	{
+		if (enemy.type == "Runner")
+		{
+			if (getMidpoint().y < enemy.y)
+				velocity.y = -jumpSpeed * 0.5;
+			else 
+			{
+				if (getMidpoint().x > enemy.getMidpoint().x)
+			 		bounce(0.2, FlxObject.RIGHT);
+			 	else
+			 		bounce(0.2, FlxObject.LEFT);
+			}
+		}
+	}
+
+	public function onTimer(theTimer : FlxTimer) : Void
+	{
+		bouncing = false;
+
+		timer = null;
 	}
 
 	public function onEnterWater(waterBlock : FlxObject) : Void
@@ -223,11 +298,13 @@ class Penguin extends FlxSprite
 		icecream.animation.add("walk-side", [1, 2, 3, 2]);
 		icecream.animation.add("jump-side", [4]);
 		icecream.animation.add("fall-side", [5]);
+		icecream.animation.add("hurt-side", [0, 0]);
 		// Top
 		icecream.animation.add("idle-top", [6]);
 		icecream.animation.add("walk-top", [7, 8, 9, 8]);
 		icecream.animation.add("jump-top", [10]);
 		icecream.animation.add("fall-top", [11]);
+		icecream.animation.add("hurt-top", [6, 6]);
 		// Size
 		icecream.setSize(12, 12);
 	}

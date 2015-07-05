@@ -101,7 +101,7 @@ class PlayState extends FlxState
 
 		FlxG.overlap(watery, penguin, overlapWater);
 
-		FlxG.collide(enemies, penguin);
+		FlxG.overlap(enemies, penguin, onEnemyCollision);
 		
 		super.update();
 	}	
@@ -117,6 +117,13 @@ class PlayState extends FlxState
 		{
 			trace("Something is trying to float: " + entity);
 		}
+	}
+
+	public function onEnemyCollision(one : Enemy, two : Penguin) : Void
+	{
+		FlxObject.separate(one, two);
+		one.onCollisionWithPlayer(two);
+		two.onCollisionWithEnemy(one);
 	}
 
 	public function addPenguin(p : Penguin) : Void
