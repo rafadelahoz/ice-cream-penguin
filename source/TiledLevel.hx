@@ -111,7 +111,7 @@ class TiledLevel extends TiledMap
 			case "fire": 
 				var tileset = g.map.getGidOwner(o.gid);
 				trace(o.gid);
-				var fire = new FlxSprite(x, y, buildPath(tileset, true));
+				var fire = new FlxSprite(x, y).makeGraphic(16, 16, 0xDDAA0101);
 				state.add(fire);
 			case "ball":
 			case "rock":

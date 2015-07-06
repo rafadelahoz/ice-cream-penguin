@@ -56,7 +56,7 @@ class Penguin extends FlxSprite
 		animation.add("walk", [1, 2, 3, 2], 12, true);
 		animation.add("jump", [4]);
 		animation.add("fall", [5]);
-		animation.add("hurt", [6, 7], 2, true);
+		animation.add("hurt", [6, 7], 6, true);
 
 		// Ice cream & carrying setup
 		setupIcecream();
@@ -259,9 +259,9 @@ class Penguin extends FlxSprite
 			else 
 			{
 				if (getMidpoint().x > enemy.getMidpoint().x)
-			 		bounce(0.2, FlxObject.RIGHT);
+			 		bounce(0.5, FlxObject.RIGHT);
 			 	else
-			 		bounce(0.2, FlxObject.LEFT);
+			 		bounce(0.5, FlxObject.LEFT);
 			}
 		}
 	}

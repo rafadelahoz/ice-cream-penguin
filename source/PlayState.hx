@@ -18,6 +18,8 @@ class PlayState extends FlxState
 {
 	var fixedSM : PixelPerfectScaleMode;
 
+	var deathManager : DeathManager;
+
 	var camera : FlxCamera;
 
 	public var penguin : Penguin;
@@ -49,7 +51,7 @@ class PlayState extends FlxState
 		enemies = new FlxTypedGroup<Enemy>();
 
 		// Load the tiled level
-		level = new TiledLevel("assets/maps/5.tmx");
+		level = new TiledLevel("assets/maps/6.tmx");
 		// Add tilemaps
 		add(level.backgroundTiles);
 
@@ -67,6 +69,9 @@ class PlayState extends FlxState
 
 		// Register the Virtual Pad
 		add(Penguin.virtualPad);
+
+		// Prepare death manager
+		deathManager = new DeathManager();
 
 		// Delegate
 		super.create();
@@ -88,23 +93,32 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
-		if (FlxG.keys.anyPressed(["ENTER"])) {
-			FlxG.camera.shake(0.02, 0.05);
+		if (deathManager.update()) 
+		{
+			if (FlxG.keys.anyPressed(["ENTER"])) {
+				FlxG.camera.shake(0.02, 0.05);
+			}
+
+			for (enemy in enemies)
+				level.collideWithLevel(enemy);
+
+			level.collideWithLevel(penguin);
+
+			FlxG.collide(oneways, penguin);
+
+			FlxG.overlap(watery, penguin, overlapWater);
+
+			FlxG.overlap(enemies, penguin, onEnemyCollision);
 		}
-
-		for (enemy in enemies)
-			level.collideWithLevel(enemy);
-
-		level.collideWithLevel(penguin);
-
-		FlxG.collide(oneways, penguin);
-
-		FlxG.overlap(watery, penguin, overlapWater);
-
-		FlxG.overlap(enemies, penguin, onEnemyCollision);
 		
 		super.update();
 	}	
+
+	override public function draw() : Void
+	{
+		deathManager.draw();
+		super.draw();
+	}
 
 	public function overlapWater(water : FlxObject, entity : FlxObject) : Void
 	{
