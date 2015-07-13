@@ -109,10 +109,12 @@ class TiledLevel extends TiledMap
 				state.addPenguin(penguin);
 				state.addIcecream(penguin.getIcecream());
 			case "fire": 
-				var tileset = g.map.getGidOwner(o.gid);
+				/*var tileset = g.map.getGidOwner(o.gid);
 				trace(o.gid);
 				var fire = new FlxSprite(x, y).makeGraphic(16, 16, 0xDDAA0101);
-				state.add(fire);
+				state.add(fire);*/
+				var fire : FireHazard = new FireHazard(x, y, state);
+				state.hazards.add(fire);
 			case "ball":
 			case "rock":
 			case "water":

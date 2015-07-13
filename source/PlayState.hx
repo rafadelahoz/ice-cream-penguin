@@ -32,6 +32,7 @@ class PlayState extends FlxState
 	public var oneways : FlxGroup;
 
 	public var enemies : FlxTypedGroup<Enemy>;
+	public var hazards : FlxTypedGroup<Hazard>;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -49,6 +50,7 @@ class PlayState extends FlxState
 		watery = new FlxGroup();
 		oneways = new FlxGroup();
 		enemies = new FlxTypedGroup<Enemy>();
+		hazards = new FlxTypedGroup<Hazard>();
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/6.tmx");
@@ -59,6 +61,7 @@ class PlayState extends FlxState
 		level.loadObjects(this);
 		add(watery);
 		add(enemies);
+		add(hazards);
 
 		// Add overlay tiles
 		add(level.overlayTiles);
@@ -103,12 +106,13 @@ class PlayState extends FlxState
 				level.collideWithLevel(enemy);
 
 			level.collideWithLevel(penguin);
-
 			FlxG.collide(oneways, penguin);
-
+			FlxG.overlap(hazards, penguin, onHazardPlayerCollision);
 			FlxG.overlap(watery, penguin, overlapWater);
-
 			FlxG.overlap(enemies, penguin, onEnemyCollision);
+
+			FlxG.overlap(hazards, icecream, onHazardIcecreamCollision);
+			FlxG.overlap(enemies, icecream);
 		}
 		
 		super.update();
@@ -138,6 +142,19 @@ class PlayState extends FlxState
 		FlxObject.separate(one, two);
 		one.onCollisionWithPlayer(two);
 		two.onCollisionWithEnemy(one);
+	}
+
+	public function onHazardPlayerCollision(a : Hazard, b : Penguin)
+	{
+		b.onCollisionWithHazard(a);
+		
+		a.onCollisionWithPlayer(b);
+	}
+
+	public function onHazardIcecreamCollision(a : Hazard, b : Icecream)
+	{
+		b.onCollisionWithHazard(a);
+		a.onCollisionWithIcecream(b);
 	}
 
 	public function addPenguin(p : Penguin) : Void

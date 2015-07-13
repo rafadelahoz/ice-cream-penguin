@@ -32,6 +32,7 @@
 	<classpath name="source" />
 	<classpath name="source/Entities" />
 	<classpath name="source/Entities/Enemies" />
+	<classpath name="source/Entities/Hazards" />
 	<assets path="assets" />
 	
 	<!--------------------------------LIBRARIES------------------------------------->
