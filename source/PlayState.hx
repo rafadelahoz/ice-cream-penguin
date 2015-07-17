@@ -9,6 +9,8 @@ import flixel.group.FlxTypedGroup;
 import flixel.FlxCamera;
 import flixel.tile.FlxTilemap;
 
+using flixel.util.FlxSpriteUtil;
+
 import flixel.system.scaleModes.PixelPerfectScaleMode;
 
 /**
@@ -17,6 +19,8 @@ import flixel.system.scaleModes.PixelPerfectScaleMode;
 class PlayState extends FlxState
 {
 	var fixedSM : PixelPerfectScaleMode;
+
+	public var mapName : String;
 
 	var deathManager : DeathManager;
 
@@ -34,6 +38,15 @@ class PlayState extends FlxState
 	public var enemies : FlxTypedGroup<Enemy>;
 	public var hazards : FlxTypedGroup<Hazard>;
 
+	public var entities : FlxTypedGroup<Entity>;
+
+	public function new(Level : String = "6")
+	{
+		super();
+
+		mapName = Level;
+	}
+
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -46,6 +59,8 @@ class PlayState extends FlxState
 		FlxG.scaleMode = fixedSM;
 
 		// Prepare state holders
+		entities = new FlxTypedGroup<Entity>();
+
 		icecream = null;
 		watery = new FlxGroup();
 		oneways = new FlxGroup();
@@ -53,7 +68,7 @@ class PlayState extends FlxState
 		hazards = new FlxTypedGroup<Hazard>();
 
 		// Load the tiled level
-		level = new TiledLevel("assets/maps/6.tmx");
+		level = new TiledLevel("assets/maps/" + mapName + ".tmx");
 		// Add tilemaps
 		add(level.backgroundTiles);
 
@@ -74,7 +89,7 @@ class PlayState extends FlxState
 		add(Penguin.virtualPad);
 
 		// Prepare death manager
-		deathManager = new DeathManager();
+		deathManager = DeathManager.get(this);
 
 		// Delegate
 		super.create();
@@ -86,7 +101,17 @@ class PlayState extends FlxState
 	 */
 	override public function destroy():Void
 	{
-		penguin.destroy();
+		if (penguin != null) {
+			penguin.destroy();
+			icecream.destroy();
+		}
+
+		level.destroy();
+		level = null;
+		watery.destroy();
+		enemies.destroy();
+		hazards.destroy();
+		oneways.destroy();
 
 		super.destroy();
 	}
@@ -96,10 +121,11 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
-		if (deathManager.update()) 
+		if (deathManager.onUpdate()) 
 		{
-			if (FlxG.keys.anyPressed(["ENTER"])) {
-				FlxG.camera.shake(0.02, 0.05);
+			if (FlxG.keys.anyPressed(["K"])) {
+				// FlxG.camera.shake(0.02, 0.05);
+				DeathManager.get().onDeath("kill");
 			}
 
 			for (enemy in enemies)
@@ -112,16 +138,16 @@ class PlayState extends FlxState
 			FlxG.overlap(enemies, penguin, onEnemyCollision);
 
 			FlxG.overlap(hazards, icecream, onHazardIcecreamCollision);
-			FlxG.overlap(enemies, icecream);
+			FlxG.overlap(enemies, icecream);	
 		}
-		
+
 		super.update();
 	}	
 
 	override public function draw() : Void
 	{
-		deathManager.draw();
 		super.draw();
+		deathManager.onDraw();
 	}
 
 	public function overlapWater(water : FlxObject, entity : FlxObject) : Void

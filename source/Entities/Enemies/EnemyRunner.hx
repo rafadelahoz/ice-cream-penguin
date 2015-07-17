@@ -56,6 +56,9 @@ class EnemyRunner extends Enemy
 
 	override public function update() : Void
 	{		
+		if (frozen)
+			return;
+
 		acceleration.y = GameConstants.Gravity;
 
 		super.update();

@@ -20,7 +20,7 @@ class TiledLevel extends TiledMap
 	public var overlayTiles    : FlxGroup;
 	public var foregroundTiles : FlxGroup;
 	public var backgroundTiles : FlxGroup;
-	private var collidableTileLayers : Array<FlxTilemap>;
+	public var collidableTileLayers : Array<FlxTilemap>;
 
 	public function new(tiledLevel : Dynamic)
 	{
@@ -89,6 +89,10 @@ class TiledLevel extends TiledMap
 				loadObject(o, group, state);
 			}
 		}
+
+		if (state.penguin == null)
+			addPenguin(64, 64, state);
+
 	}
 
 	private function loadObject(o : TiledObject, g : TiledObjectGroup, state : PlayState) : Void
@@ -104,10 +108,7 @@ class TiledLevel extends TiledMap
 		switch (o.type.toLowerCase()) 
 		{
 			case "start":
-				var penguin : Penguin = new Penguin(x, y, state);
-
-				state.addPenguin(penguin);
-				state.addIcecream(penguin.getIcecream());
+				addPenguin(x, y, state);
 			case "fire": 
 				/*var tileset = g.map.getGidOwner(o.gid);
 				trace(o.gid);
@@ -137,6 +138,14 @@ class TiledLevel extends TiledMap
 		}
 	}
 
+	public function addPenguin(x : Int, y : Int, state : PlayState) : Void
+	{
+		var penguin : Penguin = new Penguin(x, y, state);
+
+		state.addPenguin(penguin);
+		state.addIcecream(penguin.getIcecream());
+	}
+
 	public function collideWithLevel(obj : FlxObject, ?notifyCallback : FlxObject -> FlxObject -> Void, ?processCallback : FlxObject -> FlxObject -> Bool) : Bool
 	{
 		if (collidableTileLayers != null)
@@ -158,5 +167,14 @@ class TiledLevel extends TiledMap
 			imagePath.file + "." + imagePath.ext;
 
 		return processedPath;
+	}
+
+	public function destroy() 
+	{
+		backgroundTiles.destroy();
+		foregroundTiles.destroy();
+		overlayTiles.destroy();
+		for (layer in collidableTileLayers)
+			layer.destroy();
 	}
 }

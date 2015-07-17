@@ -4,15 +4,21 @@ import flixel.FlxSprite;
 
 class Icecream extends FlxSprite {
 	
+	public static var MaxIce : Float = 100.0;
+
+	public var ice : Float;
+
 	public function new(X : Float = 0, Y : Float = 0) {
 	
 		super(X, Y);
 
-		init();
+		initGraphics();
+
+		ice = MaxIce;
 
 	}
 
-	public function init() : Void
+	public function initGraphics() : Void
 	{
 		loadGraphic("assets/images/icecream.png", true, 40, 32);
 		// Side
@@ -40,5 +46,20 @@ class Icecream extends FlxSprite {
 	public function onCollisionWithHazard(hazard : Hazard) : Void
 	{
 		
+	}
+
+	public function makeColder(ammount : Float) {
+		ice += ammount;
+		if (ice > MaxIce)
+			ice = MaxIce;
+	}
+
+	public function makeHotter(ammount : Float) {
+		ice -= ammount;
+		if (ice < 0)
+		{
+			ice = 0;
+			DeathManager.get().onDeath("hot");
+		}
 	}
 }

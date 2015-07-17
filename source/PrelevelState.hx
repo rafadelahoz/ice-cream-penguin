@@ -9,9 +9,10 @@ import flixel.text.FlxText;
 /**
  * A FlxState which can be used for the game's menu.
  */
-class MenuState extends FlxState
+class PrelevelState extends FlxState
 {
 	var titleText : FlxText;
+	var level : Int;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -20,8 +21,14 @@ class MenuState extends FlxState
 	{
 		super.create();
 
+		level = 0;
+
 		titleText = new FlxText(0, 0);
-		titleText.text = "Penguin Game";
+		titleText.text = "Level 1-" + level;
+		
+		titleText.x = FlxG.width/2 - titleText.width/2;
+		titleText.y = FlxG.height/2 - titleText.height/2;
+
 		add(titleText);
 	}
 	
@@ -45,7 +52,14 @@ class MenuState extends FlxState
 
 		if (FlxG.keys.anyJustReleased(["ENTER"]))
 		{
-			FlxG.switchState(new PrelevelState());
+			FlxG.switchState(new PlayState("" + level));
 		}
+
+		if (FlxG.keys.anyJustReleased(["UP"]))
+			level++;
+		else if (FlxG.keys.anyJustReleased(["DOWN"]))
+			level--;
+
+		titleText.text = "Level 1-" + level;
 	}	
 }

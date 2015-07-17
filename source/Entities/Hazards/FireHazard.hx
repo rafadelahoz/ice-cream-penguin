@@ -18,8 +18,9 @@ class FireHazard extends Hazard
 		player.bounce();
 	}
 
-	override public function onCollisionWithIcecream(icecream : FlxObject) 
+	override public function onCollisionWithIcecream(icecream : Icecream) 
 	{
 		// Melt icecream
+		icecream.makeHotter(10);
 	}
 }

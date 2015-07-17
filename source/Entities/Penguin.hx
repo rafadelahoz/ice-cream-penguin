@@ -9,27 +9,28 @@ import flixel.util.FlxPoint;
 import flixel.ui.FlxVirtualPad;
 import flixel.ui.FlxButton;
 
-class Penguin extends FlxSprite
+class Penguin extends Entity
 {
 	public static var virtualPad : FlxVirtualPad;
 	var previousPadState : Map<Int, Bool>;
 	var currentPadState : Map<Int, Bool>;
-
-	var world : PlayState;
 
 	var timer : FlxTimer;
 
 	var icecream : Icecream;
 
 	var gravity : Int = GameConstants.Gravity;
-	var hspeed : Int = 90;
-	var jumpSpeed : Int = 250;
+	var hspeed : Int = 80;
+	var maxHspeed : Int = 90;
+	var jumpHspeed : Float = 5;
+	var jumpSpeed : Int = 235;
 
 	var onWater : Bool;
 	var waterBody : FlxObject;
 	var onAir : Bool;
 
 	var playerJumped : Bool;
+	var turnedOnAir : Bool;
 
 	var stunned : Bool;
 
@@ -40,11 +41,9 @@ class Penguin extends FlxSprite
 
 	var icecreamOffset : Map <Int, Map<Int, FlxPoint>>;
 
-	public function new(X:Int, Y:Int, parent:PlayState)
+	public function new(X : Int, Y : Int, World : PlayState)
 	{
-		super(X, Y);
-		
-		world = parent;
+		super(X, Y, World);
 		
 		setupOffset();
 
@@ -59,6 +58,7 @@ class Penguin extends FlxSprite
 		animation.add("jump", [4]);
 		animation.add("fall", [5]);
 		animation.add("hurt", [6, 7], 6, true);
+		animation.play("idle");
 
 		// Ice cream & carrying setup
 		setupIcecream();
@@ -81,6 +81,11 @@ class Penguin extends FlxSprite
 	{
 		handlePadState();
 
+		if (frozen)
+			return;
+
+		onAir = !isTouching(FlxObject.DOWN);
+
 		// Death proof
 		if (y > FlxG.camera.bounds.bottom)
 		{
@@ -88,27 +93,55 @@ class Penguin extends FlxSprite
 			velocity.y = -jumpSpeed * 2;
 		}
 
-		if (!stunned) {
-			// Horizontal movement
-			if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+		if (!stunned) 
+		{
+			if (!onAir)
 			{
-				facing = FlxObject.LEFT;
-				velocity.x = -hspeed;
-				animation.play("walk"); 
+				// Horizontal movement
+				if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+				{
+					facing = FlxObject.LEFT;
+					velocity.x = -hspeed;
+					animation.play("walk"); 
+				}
+				else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+				{
+					facing = FlxObject.RIGHT;
+					velocity.x = hspeed;
+					animation.play("walk"); 
+				}
+				else 
+				{
+					velocity.x = 0;
+					animation.play("idle"); 
+				}
 			}
-			else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+			else
 			{
-				facing = FlxObject.RIGHT;
-				velocity.x = hspeed;
-				animation.play("walk"); 
-			}
-			else 
-			{
-				velocity.x = 0;
-				animation.play("idle"); 
+				if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+				{
+					if (facing == FlxObject.RIGHT && !turnedOnAir)
+					{
+						facing = FlxObject.LEFT;
+						turnedOnAir = true;
+					}
+					velocity.x -= jumpHspeed;
+					velocity.x = Math.max(velocity.x, -maxHspeed);
+				}
+				else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+				{
+					if (facing == FlxObject.LEFT && !turnedOnAir) 
+					{
+						facing = FlxObject.RIGHT;
+						turnedOnAir = true;
+					}
+					velocity.x += jumpHspeed;
+					velocity.x = Math.min(velocity.x, maxHspeed);
+				}
 			}
 		}
-		else {
+		else 
+		{
 			animation.play("hurt");
 		}
 
@@ -119,7 +152,7 @@ class Penguin extends FlxSprite
 			if (!stunned)
 			{
 				// Vertical movement
-				if (velocity.y == 0 && isTouching(FlxObject.DOWN)) 
+				if (velocity.y == 0) 
 				{
 					jump();
 				} 
@@ -212,7 +245,7 @@ class Penguin extends FlxSprite
 
 	override public function destroy() : Void
 	{
-
+		super.destroy();
 	}
 
 	public function hit(duration : Float = 0.2, ?direction : Int = FlxObject.NONE, ?force : Bool = false) 
@@ -255,6 +288,7 @@ class Penguin extends FlxSprite
 		{
 			velocity.y = -jumpSpeed;
 			playerJumped = true;
+			turnedOnAir = false;
 		}
 	}
 

@@ -2,26 +2,27 @@ package;
 
 import flixel.FlxSprite;
 
-class Enemy extends FlxSprite
+class Enemy extends Entity
 {
 	public var type : String;
 
-	var world : PlayState;
 	var player : Penguin;
 
 	var brain : StateMachine;
 
 	public function new(X : Float = 0, Y : Float = 0, World : PlayState = null)
 	{
-		super(X, Y);
+		super(X, Y, World);
 
-		world = World;
 		player = world.penguin;
 
 	}
 
 	override public function update() : Void
 	{
+		if (frozen)
+			return;
+		
 		brain.update();
 		super.update();
 	}
