@@ -95,7 +95,7 @@ class Penguin extends Entity
 
 		if (!stunned) 
 		{
-			if (!onAir)
+			if (!onAir || onWater)
 			{
 				// Horizontal movement
 				if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))

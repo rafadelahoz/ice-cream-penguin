@@ -103,15 +103,24 @@ class PlayState extends FlxState
 	{
 		if (penguin != null) {
 			penguin.destroy();
+			penguin = null;
 			icecream.destroy();
+			icecream = null;
 		}
 
 		level.destroy();
 		level = null;
 		watery.destroy();
+		watery = null;
 		enemies.destroy();
+		enemies = null;
 		hazards.destroy();
+		hazards = null;
 		oneways.destroy();
+		oneways = null;
+
+		deathManager.destroy();
+		deathManager = null;
 
 		super.destroy();
 	}
