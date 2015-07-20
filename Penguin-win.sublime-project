@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"name": "Penguin",
+			"path": "/D/Dev/Gamedev/Haxe/Penguin/ice-cream-penguin"
+		},
+		{
+			"name": "Flixel",
+			"path": "/D/Dev/Tools/HaxeToolkit/haxe/lib/flixel/3,3,11"
+		},
+		{
+			"name": "Flixel Addons",
+			"path": "/D/Dev/Tools/HaxeToolkit/haxe/lib/flixel-addons/1,1,0"
+		},
+		{
+			"name": "Haxe",
+			"path": "/D/Dev/Tools/HaxeToolkit/haxe/std"
+		}
+	]
+}
