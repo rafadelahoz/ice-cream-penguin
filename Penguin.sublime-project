@@ -4,22 +4,22 @@
 		{
 			"follow_symlinks": true,
 			"name": "Penguin",
-			"path": "D:\\Dev\\Gamedev\\Haxe\\Penguin\\ice-cream-penguin\\"
+			"path": "/Users/Rafa/Dev/Haxe/Penguin/ice-cream-penguin/"
 		},
 		{
 			"follow_symlinks": true,
 			"name": "Flixel",
-			"path": "D:\\Dev\\Tools\\HaxeToolkit\\haxe\\lib\\flixel\\3,3,11\\"
+			"path": "/usr/lib/haxelib/flixel/3,3,8/"
 		},
 		{
 			"follow_symlinks": true,
 			"name": "Flixel Addons",
-			"path": "D:\\Dev\\Tools\\HaxeToolkit\\haxe\\lib\\flixel-addons\\1,1,0\\"
+			"path": "/usr/lib/haxelib/flixel-addons/1,1,0/"
 		},
 		{
 			"follow_symlinks": true,
 			"name": "Haxe",
-			"path": "D:\\Dev\\Tools\\HaxeToolkit\\haxe\\std\\"
+			"path": "/usr/lib/haxe/std"
 		}
 	]
 }
