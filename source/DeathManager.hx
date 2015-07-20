@@ -28,10 +28,10 @@ class DeathManager extends FlxObject
 
 	var circle : FlxSprite;
 
-	var radius : Float = 300;
-	var radiusSpeed : Float = 9;
-	var minRadius : Float = 125;
-	var waitingDuration : Float = 2;
+	var radius : Float = 256;
+	var radiusSpeed : Float = 5;
+	var minRadius : Float = 170;
+	var waitingDuration : Float = 1;
 
 	var currentPhase : Phase;
 
@@ -85,8 +85,11 @@ class DeathManager extends FlxObject
 				case Waiting:
 				case Ending:
 					radius -= radiusSpeed * 0.8;
-					if (radius <= 0)
+					if (radius <= 0) 
+					{
+						radius = 0;
 						FlxG.switchState(new PrelevelState());
+					}
 				default:
 
 			}
@@ -98,7 +101,7 @@ class DeathManager extends FlxObject
 			var oy = world.icecream.getMidpoint().y - FlxG.camera.scroll.y;
 
 			circle.drawRect(0, 0, FlxG.width, FlxG.height, 0x00000000);
-			circle.drawCircle(ox, oy, 32, 0x00000000, { color : 0xff000000, thickness: radius});
+			circle.drawCircle(ox, oy, radius, 0x00000000, { color : 0xff000000, thickness: 300});
 			
 			group.update();
 			super.update();
