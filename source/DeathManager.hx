@@ -42,6 +42,15 @@ class DeathManager extends FlxObject
 		create();
 	}
 
+	override public function destroy() : Void
+	{
+		group.destroy();
+		group = null;
+		circle = null;
+
+		instance = null;
+	}
+
 	public function create() : Void
 	{
 		paused = false;
@@ -52,7 +61,7 @@ class DeathManager extends FlxObject
 		circle.scrollFactor.set();
 		group.add(circle);
 
-		var txt : FlxText = new FlxText(0, 0, "DEAD!");
+		var txt : FlxText = new FlxText(FlxG.width/2, 16, "DEAD!");
 		txt.scrollFactor.set();
 		group.add(txt);
 
