@@ -2,10 +2,11 @@ package;
 
 import flixel.FlxObject;
 import flixel.util.FlxRandom;
+import flixel.util.FlxTimer;
 
 class EnemyWalker extends Enemy
 {
-	var hspeed : Float = 32;
+	var hspeed : Float = 24;
 
 	var bouncing : Bool;
 	var bounceJumpSpeed : Float = 80;
@@ -16,15 +17,21 @@ class EnemyWalker extends Enemy
 		
 		super(X, Y, World);
 		
-		makeGraphic(16, 16, 0xFFDD0505);
+		loadGraphic("assets/images/fire_walker.png", true, 24, 24);
+		centerOrigin();
+		offset.set(4, 8);
+		setSize(16, 16);
+
+		animation.add("walk", [0, 1, 2, 3, 4, 5, 2, 3], 12, true);
+		animation.add("fall", [12, 13, 14], 12, true);
+		animation.add("turn", [7, 8, 9, 10, 11], 20);
 	
-		// Face random direction
-		if (FlxRandom.float() < 0.5)
+		if (world.penguin.getMidpoint().x < getMidpoint().x)
 			facing = FlxObject.LEFT;
 		else
 			facing = FlxObject.RIGHT;
 	
-		brain = new StateMachine();
+		brain = new StateMachine(null, onStateChange);
 		brain.transition(walk, "walk");
 	}
 	
@@ -45,28 +52,47 @@ class EnemyWalker extends Enemy
 		if (facing == FlxObject.RIGHT)
 		{
 			velocity.x = hspeed;
-			flipX = true;
+			flipX = false;
 		}
 		else
 		{
 			velocity.x = -hspeed;
 			flipX = true;
 		}
+
+
+		if (justTouched(FlxObject.RIGHT) || justTouched(FlxObject.LEFT))
+			brain.transition(turn, "turn");
 		
-		if (isTouching(FlxObject.RIGHT))
-			facing = FlxObject.LEFT;
-		else if (isTouching(FlxObject.LEFT))
-			facing = FlxObject.RIGHT;
-		
-		if (velocity.y != 0)
+		if (velocity.y != 0) 
+		{
+			animation.play("fall");
 			velocity.x *= 0.25;
+		} else 
+		{
+			animation.play("walk");
+		}
+	}
+
+	public function turn() : Void
+	{
+		velocity.x = 0;
+
+		/*if (animation.finished)
+		{
+			doTurn();
+			brain.transition(walk, "walk");
+		} else {*/
+			animation.play("turn");
+		//}
 	}
 	
 	public function stunned() : Void
 	{
 		// animation.play("stunned");
-		alpha = 0.3;
+		animation.play("fall");
 		
+		alpha = 0.3;
 		flipX = velocity.x < 0;
 
 		if (justTouched(FlxObject.DOWN))
@@ -81,6 +107,37 @@ class EnemyWalker extends Enemy
 				
 			brain.transition(walk, "walk");
 		}		
+	}
+
+	public function onStateChange(nextState : String) : Void
+	{
+		if (nextState == "turn")
+		{
+			if (facing == FlxObject.RIGHT)
+				x--;
+			else
+				x++;
+
+			new FlxTimer(0.25, function turnTimer(timer : FlxTimer)
+				{
+					doTurn();
+					animation.play("turn");
+					if (facing == FlxObject.RIGHT)
+						x++;
+					else
+						x--;
+
+					brain.transition(walk, "walk");
+				});
+		}
+	}
+
+	public function doTurn() : Void
+	{
+		if (facing == FlxObject.LEFT)
+			facing = FlxObject.RIGHT;
+		else
+			facing = FlxObject.LEFT;
 	}
 	
 	override public function onCollisionWithPlayer(aPlayer : Penguin) : Void

@@ -225,7 +225,7 @@ class EnemyRunner extends Enemy
 		if (bouncing && !force)
 			return;
 
-		if (velocity.x > 0)
+		if (player.getMidpoint().x > getMidpoint().x)
 			velocity.x = -hspeed;
 		else
 			velocity.x = hspeed;
