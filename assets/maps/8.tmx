@@ -46,9 +46,10 @@
  </objectgroup>
  <objectgroup name="Enemies">
   <object id="77" name="Runner" type="walker" gid="541" x="176" y="104" width="16" height="16"/>
-  <object id="78" name="Fire" type="walker" gid="541" x="232" y="25" width="16" height="16"/>
+  <!--<object id="78" name="Fire" type="walker" gid="541" x="232" y="25" width="16" height="16"/>
   <object id="79" name="Fire" type="walker" gid="541" x="248" y="25" width="16" height="16"/>
-  <object id="80" name="Fire" type="walker" gid="541" x="264" y="25" width="16" height="16"/>
+  <object id="80" name="Fire" type="walker" gid="541" x="264" y="25" width="16" height="16"/>-->
   <object id="81" name="Fire" type="walker" gid="541" x="280" y="25" width="16" height="16"/>
+  <object id="82" name="Cat" type="Runner" gid="542" x="32" y="112" width="16" height="16"/>
  </objectgroup>
 </map>

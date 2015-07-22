@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxObject;
+import flixel.util.FlxRandom;
 
 class EnemyWalker extends Enemy
 {
@@ -15,10 +16,16 @@ class EnemyWalker extends Enemy
 		
 		super(X, Y, World);
 		
-		makeGraphic(16, 16, 0xDD0505);
+		makeGraphic(16, 16, 0xFFDD0505);
+	
+		// Face random direction
+		if (FlxRandom.float() < 0.5)
+			facing = FlxObject.LEFT;
+		else
+			facing = FlxObject.RIGHT;
 	
 		brain = new StateMachine();
-		brain.transition(walk);
+		brain.transition(walk, "walk");
 	}
 	
 	override public function update() : Void
@@ -33,6 +40,8 @@ class EnemyWalker extends Enemy
 	
 	public function walk() : Void
 	{
+		alpha = 1;
+		
 		if (facing == FlxObject.RIGHT)
 		{
 			velocity.x = hspeed;
@@ -43,6 +52,9 @@ class EnemyWalker extends Enemy
 			velocity.x = -hspeed;
 			flipX = true;
 		}
+		
+		if (velocity.y != 0)
+			velocity.x *= 0.25;
 	}
 	
 	public function stunned() : Void
@@ -55,7 +67,14 @@ class EnemyWalker extends Enemy
 		if (justTouched(FlxObject.DOWN))
 		{
 			bouncing = false;
-			brain.transition(walk);
+			
+			// Face random direction
+			if (FlxRandom.float() < 0.5)
+				facing = FlxObject.LEFT;
+			else
+				facing = FlxObject.RIGHT;
+				
+			brain.transition(walk, "walk");
 		}		
 	}
 	
