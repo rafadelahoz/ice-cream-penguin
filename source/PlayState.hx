@@ -40,9 +40,12 @@ class PlayState extends FlxState
 
 	public var entities : FlxTypedGroup<Entity>;
 
-	public function new(Level : String = "6")
+	public function new(?Level : String)
 	{
 		super();
+
+		if (Level == null)
+			Level = "" + GameController.GameStatus.currentLevel;
 
 		mapName = Level;
 	}

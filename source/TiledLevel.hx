@@ -135,6 +135,9 @@ class TiledLevel extends TiledMap
 			case "runner":
 				var runner : EnemyRunner = new EnemyRunner(x, y, state);
 				state.enemies.add(runner);
+			case "walker": 
+				var walker : EnemyWalker = new EnemyWalker(x, y, state);
+				state.enemies.add(walker);
 		}
 	}
 

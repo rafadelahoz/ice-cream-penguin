@@ -12,7 +12,6 @@ import flixel.text.FlxText;
 class PrelevelState extends FlxState
 {
 	var titleText : FlxText;
-	var level : Int;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -21,10 +20,8 @@ class PrelevelState extends FlxState
 	{
 		super.create();
 
-		level = 0;
-
 		titleText = new FlxText(0, 0);
-		titleText.text = "Level 1-" + level;
+		titleText.text = "Level 1-" + GameController.GameStatus.currentLevel;
 		
 		titleText.x = FlxG.width/2 - titleText.width/2;
 		titleText.y = FlxG.height/2 - titleText.height/2;
@@ -52,14 +49,15 @@ class PrelevelState extends FlxState
 
 		if (FlxG.keys.anyJustReleased(["ENTER"]))
 		{
-			FlxG.switchState(new PlayState("" + level));
+			GameController.save();
+			FlxG.switchState(new PlayState("" + GameController.GameStatus.currentLevel));
 		}
 
 		if (FlxG.keys.anyJustReleased(["UP"]))
-			level++;
+			GameController.GameStatus.currentLevel++;
 		else if (FlxG.keys.anyJustReleased(["DOWN"]))
-			level--;
+			GameController.GameStatus.currentLevel--;
 
-		titleText.text = "Level 1-" + level;
+		titleText.text = "Level 1-" + GameController.GameStatus.currentLevel;
 	}	
 }

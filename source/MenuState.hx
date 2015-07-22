@@ -23,6 +23,8 @@ class MenuState extends FlxState
 		titleText = new FlxText(0, 0);
 		titleText.text = "Penguin Game";
 		add(titleText);
+		
+		GameController.init();
 	}
 	
 	/**
@@ -45,6 +47,9 @@ class MenuState extends FlxState
 
 		if (FlxG.keys.anyJustReleased(["ENTER"]))
 		{
+			trace("Loading...");
+			GameController.load();
+			
 			FlxG.switchState(new PrelevelState());
 		}
 	}	
