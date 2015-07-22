@@ -11,6 +11,7 @@ import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import flixel.FlxSprite;
+import flixel.util.FlxPoint;
 
 class TiledLevel extends TiledMap
 {
@@ -116,6 +117,26 @@ class TiledLevel extends TiledMap
 				state.add(fire);*/
 				var fire : FireHazard = new FireHazard(x, y, state);
 				state.hazards.add(fire);
+			case "drop":
+				var hazardTypeStr : String = o.custom.get("hType");
+				var hazardType : Hazard.HazardType;
+
+				switch (hazardTypeStr)
+				{
+					case "Fire":
+						hazardType = Hazard.HazardType.Fire;
+					case "Water":
+						hazardType = Hazard.HazardType.Water;
+					case "Dirt":
+						hazardType = Hazard.HazardType.Dirt;
+					case "Collision":
+						hazardType = Hazard.HazardType.Collision;
+					default:
+						hazardType = Hazard.HazardType.Collision;
+				}
+
+				var droplet : DropHazard = new DropHazard(x, y, state, hazardType, new FlxPoint(o.width, o.height));
+				state.hazards.add(droplet);
 			case "ball":
 			case "rock":
 			case "water":
