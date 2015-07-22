@@ -148,9 +148,11 @@ class PlayState extends FlxState
 			FlxG.overlap(hazards, penguin, onHazardPlayerCollision);
 			FlxG.overlap(watery, penguin, overlapWater);
 			FlxG.overlap(enemies, penguin, onEnemyCollision);
+			
+			FlxG.collide(enemies, enemies); // Testing this one
 
 			FlxG.overlap(hazards, icecream, onHazardIcecreamCollision);
-			FlxG.overlap(enemies, icecream);	
+			FlxG.overlap(enemies, icecream, onEnemyIcecreamCollision);	
 		}
 
 		super.update();
@@ -192,6 +194,12 @@ class PlayState extends FlxState
 	public function onHazardIcecreamCollision(a : Hazard, b : Icecream)
 	{
 		b.onCollisionWithHazard(a);
+		a.onCollisionWithIcecream(b);
+	}
+	
+	public function onEnemyIcecreamCollision(a : Enemy, b : Icecream)
+	{
+		b.onCollisionWithEnemy(a);
 		a.onCollisionWithIcecream(b);
 	}
 
