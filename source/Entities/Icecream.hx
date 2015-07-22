@@ -26,13 +26,13 @@ class Icecream extends FlxSprite {
 		animation.add("walk-side", [1, 2, 3, 2]);
 		animation.add("jump-side", [4]);
 		animation.add("fall-side", [5]);
-		animation.add("hurt-side", [0, 0]);
+		animation.add("hurt-side", [-6, -6]);
 		// Top
 		animation.add("idle-top", [6]);
 		animation.add("walk-top", [7, 8, 9, 8]);
 		animation.add("jump-top", [10]);
 		animation.add("fall-top", [11]);
-		animation.add("hurt-top", [6, 6]);
+		animation.add("hurt-top", [0, 0]);
 		// Size
 		setSize(12, 12);
 	}
@@ -47,19 +47,31 @@ class Icecream extends FlxSprite {
 	{
 		
 	}
+	
+	public function onCollisionWithEnemy(enemy : Enemy) : Void
+	{
+		
+	}
 
-	public function makeColder(ammount : Float) {
+	public function makeColder(ammount : Float) 
+	{
 		ice += ammount;
 		if (ice > MaxIce)
 			ice = MaxIce;
 	}
 
-	public function makeHotter(ammount : Float) {
+	public function makeHotter(ammount : Float) 
+	{
 		ice -= ammount;
 		if (ice < 0)
 		{
 			ice = 0;
 			DeathManager.get().onDeath("hot");
 		}
+	}
+	
+	public function steal(thief : Entity) 
+	{
+		DeathManager.get().onDeath("steal");
 	}
 }

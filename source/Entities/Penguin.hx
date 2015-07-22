@@ -294,7 +294,7 @@ class Penguin extends Entity
 
 	public function onCollisionWithEnemy(enemy : Enemy) : Void
 	{
-		if (enemy.type == "Runner")
+		if (enemy.type == "Runner" || enemy.type == "Walker")
 		{
 			if (getMidpoint().y < enemy.y)
 				velocity.y = -jumpSpeed * 0.5;

@@ -210,6 +210,15 @@ class EnemyRunner extends Enemy
 	{
 		bounce();
 	}
+	
+	override public function onCollisionWithIcecream(icecream : Icecream) 
+	{
+		if (state == "jump")
+		{
+			// Melt icecream
+			icecream.steal(this);
+		}
+	}
 
 	public function bounce(duration : Float = 0.2, ?force : Bool = false)
 	{

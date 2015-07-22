@@ -31,4 +31,9 @@ class Enemy extends Entity
 	{
 		// delegating...
 	}
+	
+	public function onCollisionWithIcecream(icecream : Icecream)
+	{
+		// delegating...
+	}
 }
