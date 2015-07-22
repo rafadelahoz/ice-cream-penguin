@@ -53,6 +53,11 @@ class EnemyWalker extends Enemy
 			flipX = true;
 		}
 		
+		if (isTouching(FlxObject.RIGHT))
+			facing = FlxObject.LEFT;
+		else if (isTouching(FlxObject.LEFT))
+			facing = FlxObject.RIGHT;
+		
 		if (velocity.y != 0)
 			velocity.x *= 0.25;
 	}
