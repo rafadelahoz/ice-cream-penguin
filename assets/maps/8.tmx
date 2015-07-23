@@ -45,7 +45,12 @@
   <object id="27" name="start" type="Start" x="112" y="184"/>
  </objectgroup>
  <objectgroup name="Enemies">
-  <object id="77" name="Runner" type="walker" gid="541" x="48" y="192" width="16" height="16"/>
+  <!--<object id="77" name="Runner" type="walker" gid="541" x="48" y="192" width="16" height="16"/>-->
+  <object id="77" name="Drop" type="drop" gid="541" x="48" y="192" width="16" height="16">
+	<properties>
+		<property name="hType" value="Fire"/>
+   </properties>
+  </object>
   <object id="81" name="Fire" type="walker" gid="541" x="280" y="25" width="16" height="16"/>
   <object id="82" name="Cat" type="Runner" gid="542" x="0" y="56" width="16" height="16"/>
  </objectgroup>

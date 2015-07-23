@@ -13,10 +13,11 @@ class EnemyWalker extends Enemy
 	var turning : Bool;
 
 	public function new(X : Int, Y : Int, World : PlayState)
-	{
-		type = "Walker";
-		
+	{	
 		super(X, Y, World);
+		
+		type = "Walker";
+		hazardType = Hazard.HazardType.Fire;
 		
 		loadGraphic("assets/images/fire_walker.png", true, 24, 24);
 		centerOrigin();
@@ -187,6 +188,15 @@ class EnemyWalker extends Enemy
 	override public function onCollisionWithPlayer(aPlayer : Penguin) : Void
 	{
 		bounce();
+	}
+	
+	override public function onCollisionWithIcecream(icecream : Icecream) 
+	{
+		if (hazardType == Hazard.HazardType.Fire)
+		{
+			// Melt icecream
+			icecream.makeHotter(10);
+		}
 	}
 
 	public function bounce(duration : Float = 0.2, ?force : Bool = false)
