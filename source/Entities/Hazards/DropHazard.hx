@@ -19,6 +19,9 @@ class DropHazard extends Hazard
 
 		switch (Type)
 		{
+			case None:
+				color = 0x00000000;
+				Size = new FlxPoint(0, 0);
 			case Fire:
 				color = 0xff881010;
 			case Water:

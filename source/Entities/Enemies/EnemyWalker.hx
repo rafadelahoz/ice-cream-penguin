@@ -10,6 +10,7 @@ class EnemyWalker extends Enemy
 
 	var bouncing : Bool;
 	var bounceJumpSpeed : Float = 80;
+	var turning : Bool;
 
 	public function new(X : Int, Y : Int, World : PlayState)
 	{
@@ -22,9 +23,10 @@ class EnemyWalker extends Enemy
 		offset.set(4, 8);
 		setSize(16, 16);
 
+		animation.add("idle", [2, 3], 12, true);
 		animation.add("walk", [0, 1, 2, 3, 4, 5, 2, 3], 12, true);
 		animation.add("fall", [12, 13, 14], 12, true);
-		animation.add("turn", [7, 8, 9, 10, 11], 20);
+		animation.add("turn", [7, 8, 9, 10, 11], 20, false);
 	
 		if (world.penguin.getMidpoint().x < getMidpoint().x)
 			facing = FlxObject.LEFT;
@@ -78,34 +80,62 @@ class EnemyWalker extends Enemy
 	{
 		velocity.x = 0;
 
-		/*if (animation.finished)
+		if (facing == FlxObject.LEFT)
+			flipX = true;
+		else
+			flipX = false;
+		
+		if (turning && animation.finished)
 		{
-			doTurn();
-			brain.transition(walk, "walk");
-		} else {*/
-			animation.play("turn");
-		//}
+			endTurning();
+		}
 	}
 	
 	public function stunned() : Void
 	{
-		// animation.play("stunned");
+		if (!bouncing)
+			return;
+			
+		// Show your stunnement
 		animation.play("fall");
 		
-		alpha = 0.3;
-		flipX = velocity.x < 0;
+		// Handle the flip thing
+		flipX = velocity.x > 0;
+		
+		// Correctly face
+		if (velocity.x < 0)
+			facing = FlxObject.RIGHT;
+		else
+			facing = FlxObject.LEFT;
 
+		// Reset when hit ground
 		if (justTouched(FlxObject.DOWN))
 		{
+			// Not bouncing anymore
 			bouncing = false;
 			
-			// Face random direction
+			// So stop moving
+			velocity.x = 0;
+			velocity.y = 0;
+			
+			// Wait a little before starting to move
+			// And maybe turn
 			if (FlxRandom.float() < 0.5)
-				facing = FlxObject.LEFT;
+			{
+				brain.transition(turn, "turn");
+			}
 			else
-				facing = FlxObject.RIGHT;
-				
-			brain.transition(walk, "walk");
+			{
+				// Now wait a tad before starting to actually walk
+				doTurn();
+				animation.play("walk");
+				new FlxTimer(0.5, 
+					function postTurnTimer(timer : FlxTimer)
+					{
+						doTurn();
+						brain.transition(walk, "walk");					
+					});
+			}
 		}		
 	}
 
@@ -113,31 +143,45 @@ class EnemyWalker extends Enemy
 	{
 		if (nextState == "turn")
 		{
-			if (facing == FlxObject.RIGHT)
-				x--;
-			else
-				x++;
-
-			new FlxTimer(0.25, function turnTimer(timer : FlxTimer)
+			// If you have to start turning
+			// Wait a little before doing it
+			turning = false;
+			animation.play("walk");
+			// Actually turn after some while
+			new FlxTimer(0.5, 
+				function preTurnTimer(timer : FlxTimer)
 				{
-					doTurn();
+					// Start turning
+					turning = true;
+					// Playing the turn animation
 					animation.play("turn");
-					if (facing == FlxObject.RIGHT)
-						x++;
-					else
-						x--;
-
-					brain.transition(walk, "walk");
-				});
+				});	
 		}
 	}
 
 	public function doTurn() : Void
 	{
+		// Faces the opposite direction of the current one
 		if (facing == FlxObject.LEFT)
 			facing = FlxObject.RIGHT;
 		else
 			facing = FlxObject.LEFT;
+	}
+	
+	public function endTurning() : Void
+	{
+		// You are not turning anymore
+		turning = false;
+		// Face the correct direction
+		doTurn();
+		// Start walking on place
+		animation.play("walk", false, (facing == FlxObject.LEFT ? 2 : 0));
+		// Now wait a tad before starting to actually walk
+		new FlxTimer(0.5, 
+			function postTurnTimer(timer : FlxTimer)
+			{
+				brain.transition(walk, "walk");					
+			});
 	}
 	
 	override public function onCollisionWithPlayer(aPlayer : Penguin) : Void
@@ -150,10 +194,10 @@ class EnemyWalker extends Enemy
 		if (bouncing && !force)
 			return;
 
-		if (velocity.x > 0)
-			velocity.x = -hspeed;
-		else
+		if (player.getMidpoint().x < getMidpoint().x)
 			velocity.x = hspeed;
+		else
+			velocity.x = -hspeed;
 
 		velocity.y = -bounceJumpSpeed * 1;
 
