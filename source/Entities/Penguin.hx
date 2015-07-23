@@ -23,7 +23,7 @@ class Penguin extends Entity
 	var hspeed : Int = 80;
 	var maxHspeed : Int = 90;
 	var jumpHspeed : Float = 5;
-	var jumpSpeed : Int = 235;
+	var jumpSpeed : Int = 250;
 
 	var onWater : Bool;
 	var waterBody : FlxObject;
@@ -297,7 +297,17 @@ class Penguin extends Entity
 		if (enemy.type == "Runner" || enemy.type == "Walker")
 		{
 			if (getMidpoint().y < enemy.y)
-				velocity.y = -jumpSpeed * 0.5;
+			{
+				
+				if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
+				{
+					velocity.y = -jumpSpeed * 1.05;
+					playerJumped = true;
+					turnedOnAir = false;
+				}
+				else
+					velocity.y = -jumpSpeed * 0.5;
+			}
 			else 
 			{
 				if (getMidpoint().x > enemy.getMidpoint().x)

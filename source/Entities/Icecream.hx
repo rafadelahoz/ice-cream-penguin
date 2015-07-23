@@ -29,25 +29,25 @@ class Icecream extends FlxSprite {
 		animation.add("walk-side", [1, 2, 3, 2]);
 		animation.add("jump-side", [4]);
 		animation.add("fall-side", [5]);
-		animation.add("hurt-side", [4, 4]);
+		animation.add("hurt-side", [6, 7]);
 		// Top
-		animation.add("idle-top", [6]);
-		animation.add("walk-top", [7, 8, 9, 8]);
-		animation.add("jump-top", [10]);
-		animation.add("fall-top", [11]);
-		animation.add("hurt-top", [10, 10]);
+		animation.add("idle-top", [8]);
+		animation.add("walk-top", [9, 10, 11, 10]);
+		animation.add("jump-top", [12]);
+		animation.add("fall-top", [13]);
+		animation.add("hurt-top", [14, 15]);
 		// Size
 		setSize(12, 12);
 	}
 
 	public function render(frameIndex : Int, carryPos : Int) : Void
 	{		
-		animation.frameIndex = frameIndex + (carryPos * 6);
+		animation.frameIndex = frameIndex + (carryPos * 8);
 		animation.paused = true;
 		
 		debugLabel.setPosition(x, y);
 		
-		debugLabel.text = animation.frameIndex + " (" + frameIndex + " + " + carryPos + "*6)";
+		// debugLabel.text = animation.frameIndex + " (" + frameIndex + " + " + carryPos + "*6)";
 		
 		debugLabel.update();
 		debugLabel.draw();
