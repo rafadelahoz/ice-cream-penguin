@@ -36,4 +36,4 @@ class Hazard extends Entity
 	}
 }
 
-enum HazardType { Fire; Water; Dirt; Collision; }
+enum HazardType { None; Fire; Water; Dirt; Collision; }
