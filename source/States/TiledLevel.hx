@@ -111,32 +111,15 @@ class TiledLevel extends TiledMap
 			case "start":
 				addPenguin(x, y, state);
 			case "fire": 
-				/*var tileset = g.map.getGidOwner(o.gid);
-				trace(o.gid);
-				var fire = new FlxSprite(x, y).makeGraphic(16, 16, 0xDDAA0101);
-				state.add(fire);*/
 				var fire : FireHazard = new FireHazard(x, y, state);
 				state.hazards.add(fire);
 			case "drop":
 				var hazardTypeStr : String = o.custom.get("hType");
-				var hazardType : Hazard.HazardType;
-
-				switch (hazardTypeStr)
-				{
-					case "Fire":
-						hazardType = Hazard.HazardType.Fire;
-					case "Water":
-						hazardType = Hazard.HazardType.Water;
-					case "Dirt":
-						hazardType = Hazard.HazardType.Dirt;
-					case "Collision":
-						hazardType = Hazard.HazardType.Collision;
-					default:
-						hazardType = Hazard.HazardType.Collision;
-				}
-
-				var droplet : DropHazard = new DropHazard(x, y, state, hazardType, new FlxPoint(o.width, o.height));
-				state.hazards.add(droplet);
+				var hazardType : Hazard.HazardType = parseHazardType(hazardTypeStr);
+				/*var droplet : DropHazard = new DropHazard(x, y, state, hazardType, new FlxPoint(o.width, o.height));
+				state.hazards.add(droplet);*/
+				var dropper : DropSpawner = new DropSpawner(x, y, state, hazardType);
+				state.hazards.add(dropper);
 			case "ball":
 			case "rock":
 			case "water":
@@ -157,9 +140,33 @@ class TiledLevel extends TiledMap
 				var runner : EnemyRunner = new EnemyRunner(x, y, state);
 				state.enemies.add(runner);
 			case "walker": 
+				var hazardTypeStr : String = o.custom.get("hType");
+				var hazardType : Hazard.HazardType = parseHazardType(hazardTypeStr);
 				var walker : EnemyWalker = new EnemyWalker(x, y, state);
+				walker.hazardType = hazardType;
 				state.enemies.add(walker);
 		}
+	}
+	
+	public function parseHazardType(hazardTypeStr : String) : Hazard.HazardType
+	{
+		var hazardType : Hazard.HazardType = Hazard.HazardType.None;
+		
+		switch (hazardTypeStr)
+		{
+			case "Fire":
+				hazardType = Hazard.HazardType.Fire;
+			case "Water":
+				hazardType = Hazard.HazardType.Water;
+			case "Dirt":
+				hazardType = Hazard.HazardType.Dirt;
+			case "Collision":
+				hazardType = Hazard.HazardType.Collision;
+			default:
+				hazardType = Hazard.HazardType.None;
+		}
+		
+		return hazardType;
 	}
 
 	public function addPenguin(x : Int, y : Int, state : PlayState) : Void

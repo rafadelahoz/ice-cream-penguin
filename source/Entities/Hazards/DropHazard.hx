@@ -19,6 +19,8 @@ class DropHazard extends Hazard
 
 		switch (Type)
 		{
+			case None:
+				color = 0xffff00ff;
 			case Fire:
 				color = 0xff881010;
 			case Water:
@@ -29,11 +31,13 @@ class DropHazard extends Hazard
 				color = 0xff101010;
 		}
 
-		if (Size != null)
+		/*if (Size != null)
 			targetSize = Size;
 		else
-			targetSize = new FlxPoint(16, 16);
-
+			targetSize = new FlxPoint(16, 16);*/
+		trace("Type: " + Type);
+		makeGraphic(8, 8, color);
+			
 		brain = new StateMachine(null, onStateChange);
 		brain.transition(prepare, "prepare");
 	}
@@ -43,23 +47,27 @@ class DropHazard extends Hazard
 		if (frozen)
 			return;
 
-		brain.update();
+		brain.update();		
+		
 		super.update();
 	}
 
 	public function prepare() : Void
 	{
-		setSize(width + deltaSize, height + deltaSize);
-		if (width >= targetSize.x || height >= targetSize.y)
+		// setSize(width + deltaSize, height + deltaSize);
+		/*if (width >= targetSize.x || height >= targetSize.y)
 		{
 			setSize(targetSize.x, targetSize.y);
 			brain.transition(fall, "fall");
-		}
+		}*/
+		brain.transition(fall, "fall");
 	}
 
 	public function fall() : Void
 	{
-		velocity.y = GameConstants.Gravity;
+		alpha = 1;
+		// setSize(targetSize.x, targetSize.y);
+		acceleration.y = GameConstants.Gravity;
 		if (isTouching(FlxObject.DOWN))
 			brain.transition(splash, "splash");
 	}
@@ -83,10 +91,10 @@ class DropHazard extends Hazard
 		switch (newState)
 		{
 			case "prepare":
-				deltaSize = targetSize.x / prepareTime;
+				// deltaSize = targetSize.x / prepareTime;
 			case "fall":
 			case "splash":
-				deltaSize = 255 / fadeTime;
+				deltaSize = 1.0 / fadeTime;
 		}
 	}
 }

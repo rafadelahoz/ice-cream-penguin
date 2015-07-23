@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 class Enemy extends Entity
 {
 	public var type : String;
+	public var hazardType : Hazard.HazardType;
 
 	var player : Penguin;
 
@@ -15,7 +16,7 @@ class Enemy extends Entity
 		super(X, Y, World);
 
 		player = world.penguin;
-
+		hazardType = Hazard.HazardType.None;
 	}
 
 	override public function update() : Void
