@@ -14,7 +14,7 @@
 	<!--------------------------------WINDOW SETTINGS------------------------------->
 	
 	<!--These window settings apply to all targets-->
-	<window width="1024" height="640" fps="60" background="#000000" hardware="true" vsync="true" />
+	<window width="320" height="240" fps="60" background="#000000" hardware="true" vsync="true" />
 	
 	<!--Web-specific-->
 	<window if="web" orientation="portrait"  />
@@ -30,6 +30,8 @@
 	
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
+	<classpath name="source/Meta" />
+	<classpath name="source/States" />
 	<classpath name="source/Entities" />
 	<classpath name="source/Entities/Enemies" />
 	<classpath name="source/Entities/Hazards" />
