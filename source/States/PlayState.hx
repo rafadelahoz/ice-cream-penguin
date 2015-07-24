@@ -56,7 +56,7 @@ class PlayState extends FlxState
 	 */
 	override public function create():Void
 	{
-		FlxG.debugger.visible = true;
+		// FlxG.debugger.visible = true;
 		FlxG.log.redirectTraces = true;
 
 		fixedSM = new PixelPerfectScaleMode();
@@ -92,7 +92,7 @@ class PlayState extends FlxState
 			FlxG.camera.follow(penguin, FlxCamera.STYLE_PLATFORMER, null, 0);
 
 		// Register the Virtual Pad
-		add(Penguin.virtualPad);
+		// add(Penguin.virtualPad);
 
 		// Prepare death manager
 		deathManager = DeathManager.get(this);

@@ -31,7 +31,8 @@ class DropHazard extends Hazard
 				color = 0xff101010;
 		}
 
-		makeGraphic(8, 8, color);
+		// makeGraphic(8, 8, color);
+		loadGraphic("assets/images/droplet.png");
 			
 		brain = new StateMachine(null, onStateChange);
 		brain.transition(prepare, "prepare");

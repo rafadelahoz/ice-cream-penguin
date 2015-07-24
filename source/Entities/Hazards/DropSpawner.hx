@@ -18,7 +18,7 @@ class DropSpawner extends Hazard
 		
 		timer = new FlxTimer(waitTime, spawnDrop);
 		
-		makeGraphic(2, 2, 0xfffd01fd);
+		// makeGraphic(2, 2, 0xfffd01fd);
 	}
 	
 	public function spawnDrop(_timer : FlxTimer) : Void

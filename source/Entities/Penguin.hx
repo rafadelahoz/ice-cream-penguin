@@ -298,7 +298,6 @@ class Penguin extends Entity
 		{
 			if (getMidpoint().y < enemy.y)
 			{
-				
 				if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
 				{
 					velocity.y = -jumpSpeed * 1.05;

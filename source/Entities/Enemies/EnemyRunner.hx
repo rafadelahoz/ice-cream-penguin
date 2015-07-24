@@ -31,7 +31,7 @@ class EnemyRunner extends Enemy
 		setSize(12, 12);
 
 		animation.add("idle", [0]);
-		animation.add("run", [1, 2, 3, 0], 4, true);
+		animation.add("run", [1, 2, 3, 0], 8, true);
 		animation.add("jump", [1]);
 		animation.add("fall", [2]);
 		animation.add("stunned", [4]);
@@ -51,7 +51,7 @@ class EnemyRunner extends Enemy
 	override public function draw() : Void
 	{
 		super.draw();
-		display.draw();
+		// display.draw();
 	}
 
 	override public function update() : Void
