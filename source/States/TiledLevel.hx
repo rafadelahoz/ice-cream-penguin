@@ -110,18 +110,8 @@ class TiledLevel extends TiledMap
 		{
 			case "start":
 				addPenguin(x, y, state);
-			case "fire": 
-				var fire : FireHazard = new FireHazard(x, y, state);
-				state.hazards.add(fire);
-			case "drop":
-				var hazardTypeStr : String = o.custom.get("hType");
-				var hazardType : Hazard.HazardType = parseHazardType(hazardTypeStr);
-				/*var droplet : DropHazard = new DropHazard(x, y, state, hazardType, new FlxPoint(o.width, o.height));
-				state.hazards.add(droplet);*/
-				var dropper : DropSpawner = new DropSpawner(x, y, state, hazardType);
-				state.hazards.add(dropper);
-			case "ball":
-			case "rock":
+		
+		/** Elements **/
 			case "water":
 				var water : FlxSprite = new FlxSprite(x, y);
 				water.makeGraphic(o.width, o.height, 0x440110CC);
@@ -133,6 +123,28 @@ class TiledLevel extends TiledMap
 				oneway.allowCollisions = FlxObject.UP;
 				oneway.immovable = true;
 				state.oneways.add(oneway);
+				
+		/** Hazards **/
+			case "fire": 
+				var fire : FireHazard = new FireHazard(x, y, state);
+				state.hazards.add(fire);
+			case "drop":
+				var hazardType : Hazard.HazardType = getHType(o);
+				var dropper : DropSpawner = new DropSpawner(x, y, state, hazardType);
+				state.hazards.add(dropper);
+			case "gusher":
+				var hazardType : Hazard.HazardType = getHType(o);
+				var idleTime 	: Float = Std.parseFloat(o.custom.get("idle"));
+				var activeTime 	: Float = Std.parseFloat(o.custom.get("active"));
+				var startupTime	: Float = Std.parseFloat(o.custom.get("startup"));
+				
+				var gusher : GushingHazard = new GushingHazard(x, y, state, hazardType);
+				gusher.configure(idleTime, activeTime, startupTime);
+				state.hazards.add(gusher);
+			case "ball":
+			case "rock":
+			
+		/** Enemies **/
 			case "bumper":
 				var bumper : EBumper = new EBumper(x, y, state);
 				state.enemies.add(bumper);
@@ -140,12 +152,18 @@ class TiledLevel extends TiledMap
 				var runner : EnemyRunner = new EnemyRunner(x, y, state);
 				state.enemies.add(runner);
 			case "walker": 
-				var hazardTypeStr : String = o.custom.get("hType");
-				var hazardType : Hazard.HazardType = parseHazardType(hazardTypeStr);
+				var hazardType : Hazard.HazardType = getHType(o);
 				var walker : EnemyWalker = new EnemyWalker(x, y, state);
 				walker.hazardType = hazardType;
 				state.enemies.add(walker);
 		}
+	}
+	
+	public function getHType(o : TiledObject) : Hazard.HazardType
+	{
+		var hazardTypeStr : String = o.custom.get("hType");
+		var hazardType : Hazard.HazardType = parseHazardType(hazardTypeStr);
+		return hazardType;
 	}
 	
 	public function parseHazardType(hazardTypeStr : String) : Hazard.HazardType
