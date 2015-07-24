@@ -31,11 +31,6 @@ class DropHazard extends Hazard
 				color = 0xff101010;
 		}
 
-		/*if (Size != null)
-			targetSize = Size;
-		else
-			targetSize = new FlxPoint(16, 16);*/
-		trace("Type: " + Type);
 		makeGraphic(8, 8, color);
 			
 		brain = new StateMachine(null, onStateChange);
@@ -54,12 +49,6 @@ class DropHazard extends Hazard
 
 	public function prepare() : Void
 	{
-		// setSize(width + deltaSize, height + deltaSize);
-		/*if (width >= targetSize.x || height >= targetSize.y)
-		{
-			setSize(targetSize.x, targetSize.y);
-			brain.transition(fall, "fall");
-		}*/
 		brain.transition(fall, "fall");
 	}
 

@@ -19,7 +19,7 @@ class StateMachine
 
 	public function transition(newState : Void -> Void, ?stateName : String = null)
 	{
-		trace(" to " + stateName);
+		// trace(" to " + stateName);
 
 		activeState = newState;
 		if (onStateChange != null)

@@ -61,9 +61,9 @@ class DeathManager extends FlxObject
 		circle.scrollFactor.set();
 		group.add(circle);
 
-		var txt : FlxText = new FlxText(FlxG.width/2, 16, "DEAD!");
+		/*var txt : FlxText = new FlxText(FlxG.width/2, 16, "DEAD!");
 		txt.scrollFactor.set();
-		group.add(txt);
+		group.add(txt);*/
 
 		currentPhase = Phase.Alive;
 	}
