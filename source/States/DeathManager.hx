@@ -30,7 +30,7 @@ class DeathManager extends FlxObject
 
 	var radius : Float = 256;
 	var radiusSpeed : Float = 5;
-	var minRadius : Float = 170;
+	var minRadius : Float = 185;
 	var waitingDuration : Float = 1;
 
 	var currentPhase : Phase;

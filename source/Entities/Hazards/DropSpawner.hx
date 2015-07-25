@@ -24,6 +24,6 @@ class DropSpawner extends Hazard
 	public function spawnDrop(_timer : FlxTimer) : Void
 	{
 		world.mobileHazards.add(new DropHazard(getMidpoint().x, getMidpoint().y, world, type));
-		timer = new FlxTimer(waitTime, spawnDrop);
+		timer.reset(waitTime);
 	}
 }

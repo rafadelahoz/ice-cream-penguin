@@ -279,7 +279,16 @@ class Penguin extends Entity
 
 	public function bounce()
 	{
-		velocity.y = -jumpSpeed * 0.7;
+		// velocity.y = -jumpSpeed * 0.7;
+
+		if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
+		{
+			velocity.y = -jumpSpeed * 1.05;
+			playerJumped = true;
+			turnedOnAir = false;
+		}
+		else
+			velocity.y = -jumpSpeed * 0.5;
 	}
 
 	public function jump(?force : Bool = false) : Void
@@ -298,14 +307,7 @@ class Penguin extends Entity
 		{
 			if (getMidpoint().y < enemy.y)
 			{
-				if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
-				{
-					velocity.y = -jumpSpeed * 1.05;
-					playerJumped = true;
-					turnedOnAir = false;
-				}
-				else
-					velocity.y = -jumpSpeed * 0.5;
+				bounce();
 			}
 			else 
 			{
@@ -319,7 +321,17 @@ class Penguin extends Entity
 
 	public function onCollisionWithHazard(hazard : Hazard) : Void
 	{
-
+		if (hazard.dangerous) 
+		{
+			if (getMidpoint().y < hazard.y)
+			{
+				bounce();
+			}
+			else 
+			{
+				hit(0.4);
+			}
+		}
 	}
 
 	public function onTimer(theTimer : FlxTimer) : Void

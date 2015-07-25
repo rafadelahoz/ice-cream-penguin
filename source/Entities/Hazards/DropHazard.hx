@@ -41,7 +41,11 @@ class DropHazard extends Hazard
 	override public function update() : Void
 	{
 		if (frozen)
+		{
+			acceleration.set(0, 0);
+			velocity.set(0, 0);
 			return;
+		}
 
 		brain.update();		
 		

@@ -9,23 +9,34 @@ class EnemyRunner extends Enemy
 	public var state : String;
 	var display : FlxText;
 
-	var timer : FlxTimer;
 
-	var bouncing : Bool;
-
+	var alertedDistance : Int = 80;
 	var hspeed : Int = 50;
 	var jumpHspFactor : Float = 1.5;
-	var jumpDistance : Int = 36;
-	var jumpSpeed : Int = 100;
-	var jumped : Bool;
-	var alertedDistance : Int = 80;
+	var jumpDistance : Int = 32;
+	var jumpSpeed : Int = 125;
 
-	public function new(X : Int, Y : Int, World : PlayState)
+	var jumper : Bool;
+	var jumperJumpHspFactor : Float = 1.5;
+	var jumperJumpDistance : Int = 36;
+	var jumperJumpSpeed : Int = 250;
+
+	
+	var jumped : Bool;
+	var timer : FlxTimer;
+	var bouncing : Bool;
+	var alreadyAlerted : Bool;
+
+	public function new(X : Int, Y : Int, World : PlayState, Jumper : Bool = false)
 	{
 		type = "Runner";
+		jumper = Jumper;
 
 		super(X, Y, World);
-		loadGraphic("assets/images/enemy-cat-cream.png", true, 24, 24);
+		if (!jumper)
+			loadGraphic("assets/images/enemy-cat-cream.png", true, 24, 24);
+		else
+			loadGraphic("assets/images/enemy-cat-black.png", true, 24, 24);
 		centerOrigin();
 		offset.set(6, 12);
 		setSize(12, 12);
@@ -44,6 +55,13 @@ class EnemyRunner extends Enemy
 		display = new FlxText(getMidpoint().x, getMidpoint().y - 8);
 		display.scale.x = 0.25;	
 		display.scale.y = 0.25;
+
+		if (jumper)
+		{
+			jumpHspFactor = jumperJumpHspFactor;
+			jumpSpeed = jumperJumpSpeed;
+			jumpDistance = jumperJumpDistance;
+		}
 
 		bouncing = false;
 	}
@@ -79,16 +97,18 @@ class EnemyRunner extends Enemy
 
 	public function alert() : Void
 	{
-		animation.play("alert");
+		if (!alreadyAlerted)
+			animation.play("alert");
+		else
+			animation.play("idle");
 	}
 
 	public function onAlertTimer(timer : FlxTimer) : Void
 	{
-		trace("OnTimerAlert for State " + state);
-
 		if (state == "alert") 
 		{
 			brain.transition(chase, "chase");
+			alreadyAlerted = true;
 		}
 		else if (state == "chase")
 		{
@@ -186,7 +206,9 @@ class EnemyRunner extends Enemy
 			animation.play("jump");
 
 		if (distanceToPlayer() < alertedDistance)
-			brain.transition(alert, "alert");
+		{
+			brain.transition(alert, "alert");	
+		}
 	}
 
 	public function onStateChange(newState : String) : Void

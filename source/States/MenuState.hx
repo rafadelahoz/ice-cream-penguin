@@ -5,6 +5,7 @@ import flixel.group.FlxGroup;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
+import flixel.system.scaleModes.PixelPerfectScaleMode;
 
 /**
  * A FlxState which can be used for the game's menu.
@@ -23,6 +24,9 @@ class MenuState extends FlxState
 		titleText = new FlxText(0, 0);
 		titleText.text = "Penguin Game";
 		add(titleText);
+
+		var fixedSM : flixel.system.scaleModes.PixelPerfectScaleMode = new PixelPerfectScaleMode();
+		FlxG.scaleMode = fixedSM;
 		
 		GameController.init();
 	}

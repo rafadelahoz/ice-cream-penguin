@@ -8,18 +8,13 @@ import flixel.group.FlxGroup;
 import flixel.group.FlxTypedGroup;
 import flixel.FlxCamera;
 import flixel.tile.FlxTilemap;
-
 using flixel.util.FlxSpriteUtil;
-
-import flixel.system.scaleModes.PixelPerfectScaleMode;
 
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState
 {
-	var fixedSM : PixelPerfectScaleMode;
-
 	public var mapName : String;
 
 	var deathManager : DeathManager;
@@ -57,10 +52,7 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		// FlxG.debugger.visible = true;
-		FlxG.log.redirectTraces = true;
-
-		fixedSM = new PixelPerfectScaleMode();
-		FlxG.scaleMode = fixedSM;
+		// FlxG.log.redirectTraces = true;
 
 		// Prepare state holders
 		entities = new FlxTypedGroup<Entity>();
@@ -75,14 +67,20 @@ class PlayState extends FlxState
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + mapName + ".tmx");
+		
 		// Add tilemaps
 		add(level.backgroundTiles);
 
 		// Load level objects
 		level.loadObjects(this);
-		add(watery);
+		
 		add(enemies);
 		add(hazards);
+
+		add(penguin);
+		add(icecream);
+
+		add(watery);
 
 		// Add overlay tiles
 		add(level.overlayTiles);
@@ -120,6 +118,8 @@ class PlayState extends FlxState
 		watery = null;
 		enemies.destroy();
 		enemies = null;
+		mobileHazards.destroy();
+		mobileHazards = null;
 		hazards.destroy();
 		hazards = null;
 		oneways.destroy();
@@ -217,7 +217,7 @@ class PlayState extends FlxState
 
 		penguin = p;
 
-		add(penguin);
+		// add(penguin);
 	}
 
 	public function addIcecream(ic : FlxSprite) : Void
@@ -227,6 +227,6 @@ class PlayState extends FlxState
 		
 		icecream = ic;
 
-		add(icecream);
+		// add(icecream);
 	}
 }

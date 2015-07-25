@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 class Hazard extends Entity
 {
 	public var type : HazardType;
+	public var dangerous : Bool;
 
 	var player : Penguin;
 
@@ -13,6 +14,7 @@ class Hazard extends Entity
 		super(X, Y, World);
 
 		type = Type;
+		dangerous = true;
 	}
 
 	public function setPlayer(thePlayer : Penguin) 

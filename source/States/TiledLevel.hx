@@ -49,6 +49,8 @@ class TiledLevel extends TiledMap
 				}
 			}
 
+			trace(tilesetName);
+
 			if (tileset == null)
 				throw "Tileset " + tilesetName + " could not be found. Check the name in the layer 'tileset' property or something.";
 
@@ -81,7 +83,7 @@ class TiledLevel extends TiledMap
 
 	}
 
-	public function loadObjects(state : PlayState)
+	public function loadObjects(state : PlayState) : Void
 	{
 		for (group in objectGroups)
 		{
@@ -101,9 +103,12 @@ class TiledLevel extends TiledMap
 		var x : Int = o.x;
 		var y : Int = o.y;
 
+		// The Y position of objects created from tiles must be corrected by the object height
 		if (o.gid != -1) {
-			y -= g.map.getGidOwner(o.gid).tileHeight;
-			trace("Up with " + o.gid + " by " + g.map.getGidOwner(o.gid).tileHeight);
+			// y -= g.map.getGidOwner(o.gid).tileHeight;
+			// trace("Up with " + o.gid + " by " + g.map.getGidOwner(o.gid).tileHeight);
+			y -= o.height;
+			trace("Up with " + o.gid + " by " + o.height);
 		}
 
 		switch (o.type.toLowerCase()) 
@@ -134,12 +139,13 @@ class TiledLevel extends TiledMap
 				state.hazards.add(dropper);
 			case "gusher":
 				var hazardType : Hazard.HazardType = getHType(o);
+				var inverse		: Bool = o.custom.contains("inverse");
 				var idleTime 	: Float = Std.parseFloat(o.custom.get("idle"));
 				var activeTime 	: Float = Std.parseFloat(o.custom.get("active"));
 				var startupTime	: Float = Std.parseFloat(o.custom.get("startup"));
 				
-				var gusher : GushingHazard = new GushingHazard(x, y, state, hazardType);
-				gusher.configure(idleTime, activeTime, startupTime);
+				var gusher : GushingHazard = new GushingHazard(x, y + o.height, state, hazardType);
+				gusher.configure(idleTime, activeTime, startupTime, inverse);
 				state.hazards.add(gusher);
 			case "ball":
 			case "rock":
@@ -149,7 +155,8 @@ class TiledLevel extends TiledMap
 				var bumper : EBumper = new EBumper(x, y, state);
 				state.enemies.add(bumper);
 			case "runner":
-				var runner : EnemyRunner = new EnemyRunner(x, y, state);
+				var jumper : Bool = o.custom.contains("jumper");
+				var runner : EnemyRunner = new EnemyRunner(x, y, state, jumper);
 				state.enemies.add(runner);
 			case "walker": 
 				var hazardType : Hazard.HazardType = getHType(o);

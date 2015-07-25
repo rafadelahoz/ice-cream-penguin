@@ -59,6 +59,5 @@ class PrelevelState extends FlxState
 			GameController.GameStatus.currentLevel--;
 
 		titleText.text = "Level 1-" + GameController.GameStatus.currentLevel;
-		titleText.text = "";
 	}	
 }

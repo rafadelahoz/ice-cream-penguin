@@ -79,6 +79,21 @@ class Icecream extends FlxSprite {
 			DeathManager.get().onDeath("hot");
 		}
 	}
+
+	public function water(ammount : Float)
+	{
+		ice -= ammount;
+		if (ice < 0)
+		{
+			ice = 0;
+			DeathManager.get().onDeath("water");
+		}
+	}
+
+	public function mud(ammount : Float)
+	{
+		DeathManager.get().onDeath("dirty");
+	}
 	
 	public function steal(thief : Entity) 
 	{
