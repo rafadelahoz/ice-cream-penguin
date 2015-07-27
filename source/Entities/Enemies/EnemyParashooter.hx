@@ -13,9 +13,7 @@ class EnemyParashooter extends Enemy
 	var shoots : Int = 1;
 		
 	var timer : FlxTimer;
-	var bullets : FlxTypedGroup<BulletHazard>;
-	
-	var canvas : FlxSprite;
+	var shooter : ShooterComponent;
 
 	public function new(X : Int, Y : Int, World: PlayState)
 	{
@@ -28,14 +26,8 @@ class EnemyParashooter extends Enemy
 		
 		timer = new FlxTimer();
 		
-		bullets = new FlxTypedGroup<BulletHazard>(shoots * 5);
-		for (i in 0...shoots * 5)
-		{
-			var bullet : BulletHazard = new BulletHazard(x, y, world, Hazard.HazardType.Fire);
-			bullet.kill();
-			bullets.add(bullet);
-		}
-		world.mobileHazards.add(bullets);
+		shooter = new ShooterComponent();
+		shooter.init(world, Hazard.HazardType.Fire, 5);
 		
 		brain = new StateMachine(null, onStateChange);
 		brain.transition(idle, "idle");
@@ -47,10 +39,7 @@ class EnemyParashooter extends Enemy
 	{
 		timer.destroy();
 		
-		// Shall the bullets group be removed?
-		world.mobileHazards.remove(bullets);
-		bullets.destroy();
-		bullets = null;
+		shooter.destroy();
 	}
 	
 	override public function update()
@@ -99,34 +88,9 @@ class EnemyParashooter extends Enemy
 	public function shootBullet() : Void
 	{
 		// Shoot
-		var bullet : BulletHazard = bullets.recycle(BulletHazard);
-		var shootSpeed : FlxPoint = calculateShootVelocity(player.getMidpoint());
-		bullet.init(Std.int(getMidpoint().x), Std.int(getMidpoint().y - 16), shootSpeed.x, shootSpeed.y);
-	}
-	
-	function calculateShootVelocity(target : FlxPoint) : FlxPoint
-	{
-		var from : FlxPoint = getMidpoint();
+		var origin : FlxPoint = getMidpoint();
+		origin.y -= 16;
 		
-		var g : Float = GameConstants.Gravity; // gravity
-		
-		var v : Float = getMidpoint().distanceTo(target) / 0.25;// velocity
-		
-		var x : Float = Math.abs(target.x - from.x); // target x
-		var y : Float = target.y - from.y;
-		
-		var s : Float = (v * v * v * v) - g * (g * (x * x) + 2 * y * (v * v)); //substitution
-		if (s < 0) s = -s;
-		var sqrtS : Float = Math.sqrt(s);		
-		var angle = Math.atan(((v * v) + sqrtS) / (g * x)); // launch angle
-		
-		var speed = new FlxPoint();
-		speed.x = Math.cos(angle) * v;
-		speed.y = -Math.sin(angle) * v;
-		
-		if (from.x > target.x)
-			speed.x *= -1;
-		
-		return speed;
+		shooter.shoot(origin, player.getMidpoint());
 	}
 }

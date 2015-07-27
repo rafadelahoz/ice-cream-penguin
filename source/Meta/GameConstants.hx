@@ -2,6 +2,6 @@ package;
 
 class GameConstants {
 
-	public static var Gravity : Int = 900;
+	public static var Gravity : Int = 650;
 
 }

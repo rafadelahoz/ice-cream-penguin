@@ -78,9 +78,13 @@
     <property name="hType" value="Fire"/>
    </properties>
   </object>
-  <object id="118" name="Cat" type="Runner" gid="542" x="1488" y="184" width="16" height="16"/>
+  <object id="118" name="Cat" type="Runner" gid="542" x="1488" y="184" width="16" height="16">
+	<properties>
+    <property name="jumper" value="You bet!"/>
+   </properties>
+  </object>
   <!--<object id="125" name="Cat" type="Runner" gid="542" x="16" y="216" width="16" height="16"/>-->
   <object id="125" name="Arnold" type="Parashooter" gid="542" x="176" y="176" width="16" height="16"/>
-  <object id="125" name="Arnold" type="Parashooter" gid="542" x="1340" y="176" width="16" height="16"/>
+  <!--<object id="125" name="Arnold" type="Parashooter" gid="542" x="1340" y="176" width="16" height="16"/>-->
  </objectgroup>
 </map>

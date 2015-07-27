@@ -21,7 +21,8 @@ class EnemyRunner extends Enemy
 	var jumper : Bool;
 	var jumperJumpHspFactor : Float = 1.5;
 	var jumperJumpDistance : Int = 36;
-	var jumperJumpSpeed : Int = 250;
+	var jumperJumpSpeed : Int = 200;	// For gravity = 650
+	// var jumperJumpSpeed : Int = 250; // For gravity = 900
 
 	var jumped : Bool;
 	var timer : FlxTimer;
@@ -55,8 +56,8 @@ class EnemyRunner extends Enemy
 		brain.transition(sleep, "sleep");
 
 		display = new FlxText(getMidpoint().x, getMidpoint().y - 8);
-		display.scale.x = 0.25;	
-		display.scale.y = 0.25;
+		/*display.scale.x = 0.25;	
+		display.scale.y = 0.25;*/
 
 		if (jumper)
 		{
@@ -73,7 +74,7 @@ class EnemyRunner extends Enemy
 	override public function draw() : Void
 	{
 		super.draw();
-		// display.draw();
+		display.draw();
 	}
 
 	override public function update() : Void
@@ -249,8 +250,9 @@ class EnemyRunner extends Enemy
 			case "alert":
 				timer.start(alertStateTime, onAlertTimer);
 			case "chase":
-				timer.cancel;
+				timer.cancel();
 				velocity.y = -100;
+				preparingJump = false;
 			case "jump":
 				jumped = false;
 		}

@@ -21,10 +21,10 @@ class Penguin extends Entity
 
 	var gravity : Int = GameConstants.Gravity;
 	
-	var hspeed : Int = 80;
-	var maxHspeed : Int = 90;
-	var jumpHspeed : Float = 5;
-	var jumpSpeed : Int = 250;
+	var hspeed : Int = 70;
+	var maxHspeed : Int = 85;
+	var jumpHspeed : Float = 3;
+	var jumpSpeed : Int = 195;
 	
 	var bounceJumpFactor : Float = 1.05;
 	var bounceFactor : Float = 0.5;

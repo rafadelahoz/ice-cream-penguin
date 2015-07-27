@@ -40,7 +40,7 @@ class BulletHazard extends Hazard
 			return;
 		}
 	
-		if (!inWorldBounds()/* || justTouched(FlxObject.ANY)*/)
+		if (!inWorldBounds() || justTouched(FlxObject.ANY))
 			kill();
 		
 		super.update();
