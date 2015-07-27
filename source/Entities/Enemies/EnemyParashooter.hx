@@ -51,7 +51,7 @@ class EnemyParashooter extends Enemy
 	{
 		// Shoot
 		var bullet : BulletHazard = bullets.recycle(BulletHazard);
-		bullet.init(Std.int(getMidpoint().x), Std.int(getMidpoint().y), 200, -200);
+		bullet.init(Std.int(getMidpoint().x), Std.int(getMidpoint().y - 16), 200, -200);
 		// And idle
 		brain.transition(idle, "idle");
 	}

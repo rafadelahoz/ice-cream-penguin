@@ -1,5 +1,7 @@
 package;
 
+import flixel.FlxObject;
+
 enum Behaviour { None; Parabolic; Straight; }
 
 class BulletHazard extends Hazard
@@ -27,7 +29,7 @@ class BulletHazard extends Hazard
 	
 	override public function update()
 	{
-		if (!isOnScreen())
+		if (!isOnScreen() || justTouched(FlxObject.ANY))
 			kill();
 		
 		super.update();

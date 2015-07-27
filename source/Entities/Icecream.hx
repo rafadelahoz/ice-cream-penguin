@@ -73,7 +73,7 @@ class Icecream extends FlxSprite {
 	public function makeHotter(ammount : Float) 
 	{
 		ice -= ammount;
-		if (ice < 0)
+		if (ice <= 0)
 		{
 			ice = 0;
 			DeathManager.get().onDeath("hot");
@@ -83,7 +83,7 @@ class Icecream extends FlxSprite {
 	public function water(ammount : Float)
 	{
 		ice -= ammount;
-		if (ice < 0)
+		if (ice <= 0)
 		{
 			ice = 0;
 			DeathManager.get().onDeath("water");

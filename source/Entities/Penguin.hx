@@ -323,14 +323,14 @@ class Penguin extends Entity
 	{
 		if (hazard.dangerous) 
 		{
-			if (getMidpoint().y < hazard.y)
+			/*if (getMidpoint().y < hazard.y)
 			{
 				bounce();
 			}
 			else 
-			{
+			{*/
 				hit(0.4);
-			}
+			/*}*/
 		}
 	}
 

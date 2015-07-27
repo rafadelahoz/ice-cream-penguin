@@ -37,6 +37,13 @@ class DropHazard extends Hazard
 		brain = new StateMachine(null, onStateChange);
 		brain.transition(prepare, "prepare");
 	}
+	
+	override public function destroy() : Void
+	{
+		velocity.set(0, 0);
+		acceleration.set(0, 0);
+		kill();
+	}
 
 	override public function update() : Void
 	{
@@ -75,7 +82,7 @@ class DropHazard extends Hazard
 			if (alpha <= 0)
 			{
 				alpha = 0;
-				kill();
+				destroy();
 			}
 		}
 	}
@@ -89,6 +96,33 @@ class DropHazard extends Hazard
 			case "fall":
 			case "splash":
 				deltaSize = 1.0 / fadeTime;
+		}
+	}
+	
+	override public function onCollisionWithPlayer(player : Penguin)
+	{
+		if (velocity.y != 0)
+		{
+			brain.transition(splash, "splash");
+		}
+	}
+	
+	override public function onCollisionWithIcecream(icecream : Icecream)
+	{
+		if (velocity.y != 0)
+		{
+			switch (type)
+			{
+				case Hazard.HazardType.Fire:
+					icecream.makeHotter(100);
+				case Hazard.HazardType.Water:
+					icecream.water(100);
+				case Hazard.HazardType.Dirt:
+					icecream.mud(100);
+				default:
+			}
+			
+			brain.transition(splash, "splash");
 		}
 	}
 }
