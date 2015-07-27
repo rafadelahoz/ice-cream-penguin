@@ -78,7 +78,7 @@ class EnemyRunner extends Enemy
 
 	override public function update() : Void
 	{		
-		if (!isOnScreen())
+		if (!inWorldBounds())
 		{
 			destroy();
 		}

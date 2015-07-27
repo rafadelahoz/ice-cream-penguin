@@ -14,11 +14,14 @@ class DropSpawner extends Hazard
 		
 		super(X, Y, Type, World);
 		
+		makeGraphic(3, 3, 0xffdd0242);
+		centerOffsets();
+		centerOrigin();
+		updateHitbox();
+		
 		waitTime = WaitTime;
 		
 		timer = new FlxTimer(waitTime, spawnDrop);
-		
-		// makeGraphic(2, 2, 0xfffd01fd);
 	}
 	
 	public function spawnDrop(_timer : FlxTimer) : Void

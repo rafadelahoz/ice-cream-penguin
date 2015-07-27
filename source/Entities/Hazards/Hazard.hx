@@ -13,6 +13,9 @@ class Hazard extends Entity
 	{
 		super(X, Y, World);
 
+		if (Type == null)
+			Type = HazardType.None;
+		
 		type = Type;
 		dangerous = true;
 	}

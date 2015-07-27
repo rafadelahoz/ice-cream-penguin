@@ -49,7 +49,7 @@ class TiledLevel extends TiledMap
 				}
 			}
 
-			trace(tilesetName);
+			// trace(tilesetName);
 
 			if (tileset == null)
 				throw "Tileset " + tilesetName + " could not be found. Check the name in the layer 'tileset' property or something.";
@@ -64,16 +64,16 @@ class TiledLevel extends TiledMap
 			if (tileLayer.properties.contains("overlay"))
 			{
 				overlayTiles.add(tilemap);
-				trace("Found overlay");
+				// trace("Found overlay");
 			}
 			else if (tileLayer.properties.contains("nocollide")) 
 			{
-				trace("Found non-collidable layer");
+				// trace("Found non-collidable layer");
 				backgroundTiles.add(tilemap);
 			}
 			else
 			{
-				trace("Found collision layer");
+				// trace("Found collision layer");
 				if (collidableTileLayers == null)
 					collidableTileLayers = new Array<FlxTilemap>();
 
@@ -108,7 +108,7 @@ class TiledLevel extends TiledMap
 			// y -= g.map.getGidOwner(o.gid).tileHeight;
 			// trace("Up with " + o.gid + " by " + g.map.getGidOwner(o.gid).tileHeight);
 			y -= o.height;
-			trace("Up with " + o.gid + " by " + o.height);
+			// trace("Up with " + o.gid + " by " + o.height);
 		}
 
 		switch (o.type.toLowerCase()) 
