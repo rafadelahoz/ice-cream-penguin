@@ -32,7 +32,7 @@ class PlayState extends FlxState
 
 	public var enemies : FlxTypedGroup<Enemy>;
 	public var hazards : FlxGroup;
-		public var mobileHazards : FlxTypedGroup<Hazard>;
+		public var mobileHazards : FlxGroup;
 
 	public var entities : FlxTypedGroup<Entity>;
 
@@ -62,7 +62,7 @@ class PlayState extends FlxState
 		oneways = new FlxGroup();
 		enemies = new FlxTypedGroup<Enemy>();
 		hazards = new FlxGroup();
-			mobileHazards = new FlxTypedGroup<Hazard>();
+			mobileHazards = new FlxGroup();
 			hazards.add(mobileHazards);
 
 		// Load the tiled level
@@ -149,14 +149,14 @@ class PlayState extends FlxState
 			level.collideWithLevel(penguin);
 			
 			for (hazard in mobileHazards)
-				level.collideWithLevel(hazard);
+				level.collideWithLevel(cast hazard);
 			
 			FlxG.collide(oneways, penguin);
 			FlxG.overlap(hazards, penguin, onHazardPlayerCollision);
 			FlxG.overlap(watery, penguin, overlapWater);
 			FlxG.overlap(enemies, penguin, onEnemyCollision);
 			
-			FlxG.collide(enemies, enemies); // Testing this one
+			FlxG.collide(enemies/*, enemies*/); // Testing this one
 
 			FlxG.overlap(hazards, icecream, onHazardIcecreamCollision);
 			FlxG.overlap(enemies, icecream, onEnemyIcecreamCollision);	

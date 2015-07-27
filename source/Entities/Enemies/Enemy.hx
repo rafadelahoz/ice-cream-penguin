@@ -7,7 +7,19 @@ class Enemy extends Entity
 	public var type : String;
 	public var hazardType : Hazard.HazardType;
 
-	var player : Penguin;
+	var player (get, null) : Penguin;
+	var _player : Penguin;
+	function get_player() : Penguin
+	{		
+		if (_player == null) 
+		{
+			_player = world.penguin;
+		}
+		
+		if (_player == null)
+			trace("null player!");
+		return _player;
+	}
 
 	var brain : StateMachine;
 

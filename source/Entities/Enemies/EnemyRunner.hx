@@ -9,7 +9,9 @@ class EnemyRunner extends Enemy
 	public var state : String;
 	var display : FlxText;
 
-
+	var alertStateTime : Float = 0.5;
+	var jumpDelayTime : Float = 0.68;
+	
 	var alertedDistance : Int = 80;
 	var hspeed : Int = 50;
 	var jumpHspFactor : Float = 1.5;
@@ -21,11 +23,11 @@ class EnemyRunner extends Enemy
 	var jumperJumpDistance : Int = 36;
 	var jumperJumpSpeed : Int = 250;
 
-	
 	var jumped : Bool;
 	var timer : FlxTimer;
 	var bouncing : Bool;
 	var alreadyAlerted : Bool;
+	var preparingJump : Bool;
 
 	public function new(X : Int, Y : Int, World : PlayState, Jumper : Bool = false)
 	{
@@ -62,6 +64,8 @@ class EnemyRunner extends Enemy
 			jumpSpeed = jumperJumpSpeed;
 			jumpDistance = jumperJumpDistance;
 		}
+		
+		timer = new FlxTimer();
 
 		bouncing = false;
 	}
@@ -74,10 +78,27 @@ class EnemyRunner extends Enemy
 
 	override public function update() : Void
 	{		
+		if (!isOnScreen())
+		{
+			destroy();
+		}
+	
 		if (frozen)
 			return;
-
-		acceleration.y = GameConstants.Gravity;
+			
+		if (overlaps(world.watery))
+		{
+			if (state != "drown")
+			{
+				acceleration.y = GameConstants.Gravity * 0.1;
+				velocity.x /= 3;
+				brain.transition(drown, "drown");
+			}
+		}
+		else
+		{
+			acceleration.y = GameConstants.Gravity;
+		}
 
 		super.update();
 
@@ -112,15 +133,17 @@ class EnemyRunner extends Enemy
 		}
 		else if (state == "chase")
 		{
-			timer = null;
+			timer.cancel();
 			brain.transition(jump, "jump");
+			preparingJump = false;
 		}
 	}
 
 	public function chase() : Void
 	{
-		if (timer != null) 
+		if (preparingJump)
 		{
+			// Waiting to start chase!
 			velocity.x = 0;
 			animation.play("idle");
 			return;
@@ -139,7 +162,8 @@ class EnemyRunner extends Enemy
 
 		if (distanceToPlayer() < jumpDistance && velocity.y == 0)
 		{
-			timer = new FlxTimer(0.2, onAlertTimer);
+			timer.start(jumpDelayTime, onAlertTimer);
+			preparingJump = true;
 			return;
 		}
 
@@ -210,6 +234,12 @@ class EnemyRunner extends Enemy
 			brain.transition(alert, "alert");	
 		}
 	}
+	
+	public function drown() : Void
+	{
+		animation.play("stunned");
+		timer.start(0.3, function(tmr : FlxTimer):Void { flipX = !flipX; }, 0);
+	}
 
 	public function onStateChange(newState : String) : Void
 	{
@@ -217,9 +247,9 @@ class EnemyRunner extends Enemy
 		{
 			case "idle":
 			case "alert":
-				timer = new FlxTimer(0.4, onAlertTimer);
+				timer.start(alertStateTime, onAlertTimer);
 			case "chase":
-				timer = null;
+				timer.cancel;
 				velocity.y = -100;
 			case "jump":
 				jumped = false;
