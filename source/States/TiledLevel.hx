@@ -135,7 +135,10 @@ class TiledLevel extends TiledMap
 				state.hazards.add(fire);
 			case "drop":
 				var hazardType : Hazard.HazardType = getHType(o);
-				var dropper : DropSpawner = new DropSpawner(x, y, state, hazardType);
+				var waitTime   : Float = null;
+				if (o.custom.contains("wait"))
+					waitTime = Std.parseFloat(o.custom.get("wait"));
+				var dropper : DropSpawner = new DropSpawner(x, y, state, waitTime, hazardType);
 				state.hazards.add(dropper);
 			case "gusher":
 				var hazardType : Hazard.HazardType = getHType(o);

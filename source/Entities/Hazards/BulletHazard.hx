@@ -35,6 +35,11 @@ class BulletHazard extends Hazard
 	
 	override public function update()
 	{
+		if (DeathManager.get().paused)
+		{
+			return;
+		}
+	
 		if (!inWorldBounds()/* || justTouched(FlxObject.ANY)*/)
 			kill();
 		

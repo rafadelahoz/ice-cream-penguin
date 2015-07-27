@@ -61,6 +61,10 @@ class EnemyParashooter extends Enemy
 			return;
 		}
 		
+		if (FlxG.mouse.justPressed)
+			// Shoot!
+			shootBullet();
+		
 		timer.active = true;
 		
 		super.update();
@@ -72,10 +76,9 @@ class EnemyParashooter extends Enemy
 	
 	public function shoot()
 	{
-		// Shoot
-		var bullet : BulletHazard = bullets.recycle(BulletHazard);
-		var shootSpeed : FlxPoint = calculateShootVelocity(player.getMidpoint());
-		bullet.init(Std.int(getMidpoint().x), Std.int(getMidpoint().y - 16), shootSpeed.x, shootSpeed.y);
+		// Shoot!
+		shootBullet();
+		
 		// And idle
 		brain.transition(idle, "idle");
 	}
@@ -91,6 +94,14 @@ class EnemyParashooter extends Enemy
 					});
 			case "shoot":
 		}
+	}
+	
+	public function shootBullet() : Void
+	{
+		// Shoot
+		var bullet : BulletHazard = bullets.recycle(BulletHazard);
+		var shootSpeed : FlxPoint = calculateShootVelocity(player.getMidpoint());
+		bullet.init(Std.int(getMidpoint().x), Std.int(getMidpoint().y - 16), shootSpeed.x, shootSpeed.y);
 	}
 	
 	function calculateShootVelocity(target : FlxPoint) : FlxPoint

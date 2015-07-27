@@ -37,7 +37,8 @@ class Icecream extends FlxSprite {
 		animation.add("fall-top", [13]);
 		animation.add("hurt-top", [14, 15]);
 		// Size
-		setSize(12, 12);
+		setSize(12, 10);
+		offset.y = 2;
 	}
 
 	public function render(frameIndex : Int, carryPos : Int) : Void

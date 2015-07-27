@@ -9,7 +9,7 @@ class DropHazard extends Hazard
 
 	var targetSize : FlxPoint;
 	var prepareTime : Float = 1.5;
-	var fadeTime : Float = 0.5;
+	var fadeTime : Float = 1;
 
 	var deltaSize : Float;
 
@@ -17,24 +17,32 @@ class DropHazard extends Hazard
 	{
 		super(X, Y, Type, World);
 
-		switch (Type)
-		{
-			case None:
-				color = 0xffff00ff;
-			case Fire:
-				color = 0xff881010;
-			case Water:
-				color = 0xff101088;
-			case Dirt:
-				color = 0xff108810;
-			case Collision:
-				color = 0xff101010;
-		}
-
 		// makeGraphic(8, 8, color);
 		loadGraphic("assets/images/droplet.png");
-			
-		brain = new StateMachine(null, onStateChange);
+	}
+	
+	public function init(X : Float, Y : Float, Type : Hazard.HazardType) : Void
+	{
+		x = X;
+		y = Y;
+		
+		switch (Type)
+		{
+			case Hazard.HazardType.None:
+				color = 0xffff00ff;
+			case Hazard.HazardType.Fire:
+				color = 0xff881010;
+			case Hazard.HazardType.Water:
+				color = 0xff101088;
+			case Hazard.HazardType.Dirt:
+				color = 0xff108810;
+			case Hazard.HazardType.Collision:
+				color = 0xff101010;
+		}
+	
+		if (brain == null)
+			brain = new StateMachine(null, onStateChange);
+		
 		brain.transition(prepare, "prepare");
 	}
 	

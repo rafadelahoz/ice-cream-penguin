@@ -51,11 +51,13 @@
   <object id="82" type="Drop" gid="542" x="152" y="72" width="16" height="16">
    <properties>
     <property name="hType" value="Fire"/>
+	<property name="wait" value="4"/>
    </properties>
   </object>
   <object id="92" type="Drop" gid="542" x="128" y="72" width="16" height="16">
    <properties>
     <property name="hType" value="Water"/>
+	<property name="wait" value="2"/>
    </properties>
   </object>
  </objectgroup>
