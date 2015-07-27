@@ -20,11 +20,26 @@ class Penguin extends Entity
 	var icecream : Icecream;
 
 	var gravity : Int = GameConstants.Gravity;
+	
 	var hspeed : Int = 80;
 	var maxHspeed : Int = 90;
 	var jumpHspeed : Float = 5;
 	var jumpSpeed : Int = 250;
-
+	
+	var bounceJumpFactor : Float = 1.05;
+	var bounceFactor : Float = 0.5;
+	
+	var stunJumpFactor : Float = 0.5;
+	var stunHSpeedFactor : Float = 0.25;
+	
+	var waterMaxVSpeed : Float = 20;
+	var waterGravityFactor : Float = 0.6;
+	var waterSurfaceGravityFactor : Float = 0.15;
+	var waterFallSpeedReduction : Float = 0.75;
+	
+	var hazardCollisionStunTime : Float = 0.75;
+	var enemyCollisionStunTime	: Float = 0.75;
+	
 	var onWater : Bool;
 	var waterBody : FlxObject;
 	var onAir : Bool;
@@ -180,19 +195,18 @@ class Penguin extends Entity
 
 			if (y + height > surfaceY + height * 2)
 			{
-				acceleration.y = -gravity * 0.6;
+				acceleration.y = -gravity * waterGravityFactor;
 			} 
 			else 
 			{
 				if (y + height/2.5 > surfaceY) {
-					acceleration.y = -gravity * 0.15;
+					acceleration.y = -gravity * waterSurfaceGravityFactor;
 				} else {
-					acceleration.y = gravity * 0.15;
+					acceleration.y = gravity * waterSurfaceGravityFactor;
 				}
-
-				var maxWaterVSpeed : Float = 20;
-				if (Math.abs(velocity.y) > maxWaterVSpeed)
-					velocity.y *= 0.75;
+				
+				if (Math.abs(velocity.y) > waterMaxVSpeed)
+					velocity.y *= waterFallSpeedReduction;
 
 				jump();
 			}
@@ -205,6 +219,7 @@ class Penguin extends Entity
 		// Carried object control
 		if (!stunned)
 		{
+			// Switch carry position when the button's pressed
 			if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
 				carryPos = (carryPos + 1) % 2; 
 		}
@@ -262,15 +277,15 @@ class Penguin extends Entity
 		if (direction == FlxObject.RIGHT)
 		{
 			facing = FlxObject.LEFT;
-			velocity.x = hspeed * 0.25;
+			velocity.x = hspeed * stunHSpeedFactor;
 		}
 		else
 		{
-			velocity.x = -hspeed * 0.25;
+			velocity.x = -hspeed * stunHSpeedFactor;
 			facing = FlxObject.RIGHT;
 		}
 
-		velocity.y = -jumpSpeed * 0.5;
+		velocity.y = -jumpSpeed * stunJumpFactor;
 
 		stunned = true;
 
@@ -283,12 +298,12 @@ class Penguin extends Entity
 
 		if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
 		{
-			velocity.y = -jumpSpeed * 1.05;
+			velocity.y = -jumpSpeed * bounceJumpFactor;
 			playerJumped = true;
 			turnedOnAir = false;
 		}
 		else
-			velocity.y = -jumpSpeed * 0.5;
+			velocity.y = -jumpSpeed * bounceFactor;
 	}
 
 	public function jump(?force : Bool = false) : Void
@@ -305,16 +320,18 @@ class Penguin extends Entity
 	{
 		if (enemy.type == "Runner" || enemy.type == "Walker")
 		{
+			// Bounce on the top of the enemy if you are on top
 			if (getMidpoint().y < enemy.y)
 			{
 				bounce();
 			}
+			// Or just be hit, you sad penguin
 			else 
 			{
 				if (getMidpoint().x > enemy.getMidpoint().x)
-			 		hit(0.5, FlxObject.RIGHT);
+			 		hit(enemyCollisionStunTime, FlxObject.RIGHT);
 			 	else
-			 		hit(0.5, FlxObject.LEFT);
+			 		hit(enemyCollisionStunTime, FlxObject.LEFT);
 			}
 		}
 	}
@@ -329,7 +346,7 @@ class Penguin extends Entity
 			}
 			else 
 			{*/
-				hit(0.4);
+				hit(hazardCollisionStunTime);
 			/*}*/
 		}
 	}
