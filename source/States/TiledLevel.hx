@@ -177,6 +177,9 @@ class TiledLevel extends TiledMap
 			case "fly":
 				var fly : EnemyBurstFly = new EnemyBurstFly(x, y, state);
 				state.enemies.add(fly);
+			case "slowfloater":
+				var floater : EnemySlowFloater = new EnemySlowFloater(x, y, state);
+				state.enemies.add(floater);
 		}
 	}
 	

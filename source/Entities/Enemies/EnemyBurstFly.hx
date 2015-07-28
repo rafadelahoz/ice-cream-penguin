@@ -37,6 +37,14 @@ class EnemyBurstFly extends Enemy
 		brain.transition(idle, "idle");
 	}
 	
+	override public function update() : Void
+	{
+		if (frozen)
+			return;
+			
+		super.update();
+	}
+	
 	public function onStateChange(newState : String) : Void
 	{
 		switch (newState)
