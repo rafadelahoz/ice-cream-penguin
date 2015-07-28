@@ -12,12 +12,14 @@ class Hazard extends Entity
 	public function new(X : Float = 0, Y : Float = 0, ?Type : HazardType, World : PlayState = null)
 	{
 		super(X, Y, World);
-
+		
 		if (Type == null)
 			Type = HazardType.None;
 		
 		type = Type;
 		dangerous = true;
+		
+		collideWithLevel = false;
 	}
 
 	public function setPlayer(thePlayer : Penguin) 

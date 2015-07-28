@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
 import flixel.util.FlxRandom;
@@ -16,6 +17,8 @@ class EnemyWalkShooter extends Enemy
 	var turning : Bool;
 	var timer : FlxTimer;
 	var alreadyDecided : Bool;
+	
+	var state : String;
 
 	public function new(X : Int, Y : Int, World : PlayState)
 	{	
@@ -33,6 +36,8 @@ class EnemyWalkShooter extends Enemy
 		animation.add("walk", [0, 1, 2, 3, 4, 5, 2, 3], 8, true);
 		animation.add("fall", [12, 13, 14], 8, true);
 		animation.add("turn", [7, 8, 9, 10, 11], 17, false);
+		
+		color = 0xFF1040DD;
 	
 		if (world.penguin.getMidpoint().x < getMidpoint().x)
 			facing = FlxObject.LEFT;
@@ -47,6 +52,8 @@ class EnemyWalkShooter extends Enemy
 	
 		brain = new StateMachine(null, onStateChange);
 		brain.transition(walk, "walk");
+		
+		FlxG.watch.add(this, "state");
 	}
 	
 	override public function destroy() : Void
@@ -96,8 +103,6 @@ class EnemyWalkShooter extends Enemy
 
 	public function turn() : Void
 	{
-		timer.active = false;
-	
 		velocity.x = 0;
 
 		if (facing == FlxObject.LEFT)
@@ -114,12 +119,8 @@ class EnemyWalkShooter extends Enemy
 	
 	public function attack() : Void
 	{
-		var tempAttackAnimDuration : Float = 0.5;
-		timer.start(0.5, function (t : FlxTimer) : Void
-			{
-				shooter.shoot(getMidpoint(), player.getMidpoint());
-				brain.transition(walk, "walk");
-			});
+		animation.play("fall");
+		velocity.x = 0;
 	}
 	
 	public function stunned() : Void
@@ -196,6 +197,17 @@ class EnemyWalkShooter extends Enemy
 					animation.play("turn");
 				});	
 		}
+		else if (nextState == "attack")
+		{
+			var tempAttackAnimDuration : Float = 0.85;
+			timer.start(tempAttackAnimDuration, function (t : FlxTimer) : Void
+				{
+					shooter.shoot(getMidpoint(), player.getMidpoint());
+					brain.transition(walk, "walk");
+				});
+		}
+		
+		state = nextState;
 	}
 	
 	public function doDecide() : Void

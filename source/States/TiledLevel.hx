@@ -169,6 +169,14 @@ class TiledLevel extends TiledMap
 			case "parashooter":
 				var parashooter : EnemyParashooter = new EnemyParashooter(x, y, state);
 				state.enemies.add(parashooter);
+			case "walkshooter":
+				var hazardType : Hazard.HazardType = getHType(o);
+				var walkShooter : EnemyWalkShooter = new EnemyWalkShooter(x, y, state);
+				walkShooter.hazardType = hazardType;
+				state.enemies.add(walkShooter);
+			case "fly":
+				var fly : EnemyBurstFly = new EnemyBurstFly(x, y, state);
+				state.enemies.add(fly);
 		}
 	}
 	

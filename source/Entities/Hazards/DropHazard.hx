@@ -19,6 +19,8 @@ class DropHazard extends Hazard
 
 		// makeGraphic(8, 8, color);
 		loadGraphic("assets/images/droplet.png");
+		
+		collideWithLevel = false;
 	}
 	
 	public function init(X : Float, Y : Float, Type : Hazard.HazardType) : Void

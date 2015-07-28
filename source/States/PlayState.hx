@@ -22,7 +22,7 @@ class PlayState extends FlxState
 	var camera : FlxCamera;
 
 	public var penguin : Penguin;
-	public var icecream : FlxSprite;
+	public var icecream : Icecream;
 
 	public var ground : FlxGroup;
 	public var level : TiledLevel;
@@ -74,11 +74,11 @@ class PlayState extends FlxState
 		// Load level objects
 		level.loadObjects(this);
 		
-		add(enemies);
-		add(hazards);
-
 		add(penguin);
 		add(icecream);
+		
+		add(enemies);
+		add(hazards);
 
 		add(watery);
 
@@ -143,13 +143,24 @@ class PlayState extends FlxState
 				DeathManager.get().onDeath("kill");
 			}
 
+			if (FlxG.keys.anyJustPressed(["UP"]))
+				FlxG.timeScale = Math.min(FlxG.timeScale + 0.5, 1);
+			else if (FlxG.keys.anyJustPressed(["DOWN"]))
+				FlxG.timeScale = Math.max(FlxG.timeScale - 0.5, 0);
+			
 			for (enemy in enemies)
-				level.collideWithLevel(enemy);
+			{
+				if (enemy.collideWithLevel)
+					level.collideWithLevel(enemy);
+			}
 
 			level.collideWithLevel(penguin);
 			
 			for (hazard in mobileHazards)
-				level.collideWithLevel(cast hazard);
+			{
+				if ((cast hazard).collideWithLevel)
+					level.collideWithLevel(cast hazard);
+			}
 			
 			FlxG.collide(oneways, penguin);
 			FlxG.overlap(hazards, penguin, onHazardPlayerCollision);
@@ -220,7 +231,7 @@ class PlayState extends FlxState
 		// add(penguin);
 	}
 
-	public function addIcecream(ic : FlxSprite) : Void
+	public function addIcecream(ic : Icecream) : Void
 	{
 		if (icecream != null)
 			icecream = null;

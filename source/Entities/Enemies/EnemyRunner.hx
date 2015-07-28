@@ -17,6 +17,7 @@ class EnemyRunner extends Enemy
 	var jumpHspFactor : Float = 1.5;
 	var jumpDistance : Int = 32;
 	var jumpSpeed : Int = 125;
+	var bounceSpeed : Int = 100;
 
 	var jumper : Bool;
 	var jumperJumpHspFactor : Float = 1.5;
@@ -284,7 +285,7 @@ class EnemyRunner extends Enemy
 		else
 			velocity.x = hspeed;
 
-		velocity.y = -jumpSpeed * 1;
+		velocity.y = -bounceSpeed;
 
 		bouncing = true;
 

@@ -14,6 +14,8 @@ class BulletHazard extends Hazard
 		
 		loadGraphic("assets/images/droplet.png");
 		color = 0xffffd700;
+		
+		collideWithLevel = false;
 	}
 
 	public function init(X : Int, Y : Int, HSpeed : Float, VSpeed : Float, ?BulletBehaviour : Behaviour)
@@ -41,7 +43,10 @@ class BulletHazard extends Hazard
 		}
 	
 		if (!inWorldBounds() || justTouched(FlxObject.ANY))
+		{
+			trace("bye!");
 			kill();
+		}
 		
 		super.update();
 	}

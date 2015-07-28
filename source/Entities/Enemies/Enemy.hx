@@ -20,6 +20,20 @@ class Enemy extends Entity
 			trace("null player!");
 		return _player;
 	}
+	
+	var icecream (get, null) : Icecream;
+	var _icecream : Icecream;
+	function get_icecream() : Icecream
+	{		
+		if (_icecream == null) 
+		{
+			_icecream = world.icecream;
+		}
+		
+		if (_icecream == null)
+			trace("null icecream!");
+		return _icecream;
+	}
 
 	var brain : StateMachine;
 
@@ -29,6 +43,7 @@ class Enemy extends Entity
 
 		player = world.penguin;
 		hazardType = Hazard.HazardType.None;
+		collideWithLevel = true;
 	}
 
 	override public function update() : Void

@@ -26,10 +26,10 @@ class Penguin extends Entity
 	var jumpHspeed : Float = 3;
 	var jumpSpeed : Int = 195;
 	
-	var bounceJumpFactor : Float = 1.05;
-	var bounceFactor : Float = 0.5;
+	var bounceJumpFactor : Float = 0.95;
+	var bounceFactor : Float = 0.4;
 	
-	var stunJumpFactor : Float = 0.5;
+	var stunJumpFactor : Float = 0.4;
 	var stunHSpeedFactor : Float = 0.25;
 	
 	var waterMaxVSpeed : Float = 20;
@@ -318,7 +318,7 @@ class Penguin extends Entity
 
 	public function onCollisionWithEnemy(enemy : Enemy) : Void
 	{
-		if (enemy.type == "Runner" || enemy.type == "Walker")
+		if (true || enemy.type == "Runner" || enemy.type == "Walker")
 		{
 			// Bounce on the top of the enemy if you are on top
 			if (getMidpoint().y < enemy.y)
