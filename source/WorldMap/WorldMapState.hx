@@ -16,7 +16,7 @@ class WorldMapState extends FlxState
 	
 	public var currentNode : String;
 	public var currentPath : Path;
-	public var currentDir  : String;
+	public var currentDir  : Int;
 	
 	public var cursor : FlxSprite;
 	public var dirSelector : FlxSprite;
@@ -127,7 +127,7 @@ class WorldMapState extends FlxState
 		var allowedDirections : Array<Int> = new Array<Int>();
 			
 		var cNode : Node = nodes.get(currentNode);
-		var cNodeDirsIterator : Iterator<String> = cNode.paths.keys();
+		var cNodeDirsIterator : Iterator<Int> = cNode.paths.keys();
 		while (cNodeDirsIterator.hasNext())
 		{
 			allowedDirections.push(cNodeDirsIterator.next());
