@@ -1,6 +1,7 @@
-package map;
+package;
 
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
 
 class Node extends FlxSprite
 {
@@ -16,11 +17,12 @@ class Node extends FlxSprite
 		levelFile = LevelFile;
 		paths = new Map<Int, Path>();
 	
+		var nodeColor : Int;
 		if (levelFile != null)
-			color = 0xFFC15523;
+			nodeColor = FlxColor.BLUE;
 		else
-			color = 0xFFBBBBBB;
+			nodeColor = FlxColor.WHITE;
 			
-		makeGraphic(8, 8, color);
+		makeGraphic(16, 16, nodeColor);		
 	}
 }
