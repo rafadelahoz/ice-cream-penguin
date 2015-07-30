@@ -56,5 +56,10 @@ class MenuState extends FlxState
 			
 			FlxG.switchState(new PrelevelState());
 		}
+		else if (FlxG.keys.anyJustReleased(["A"]))
+		{
+			trace("Map!");
+			FlxG.switchState(new WorldMapState());
+		}
 	}	
 }
