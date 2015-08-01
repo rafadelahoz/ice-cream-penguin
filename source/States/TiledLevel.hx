@@ -117,6 +117,10 @@ class TiledLevel extends TiledMap
 				addPenguin(x, y, state);
 		
 		/** Elements **/
+			case "goal":
+				var type : Int = Std.parseInt(o.custom.get("type"));
+				var goal : LevelGoal = new LevelGoal(x, y, type);
+				state.levelGoals.add(goal);
 			case "water":
 				var water : FlxSprite = new FlxSprite(x, y);
 				water.makeGraphic(o.width, o.height, 0x440110CC);
