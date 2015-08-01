@@ -49,6 +49,9 @@ class DropHazard extends Hazard
 			case Hazard.HazardType.Collision:
 				loadGraphic("assets/images/droplet.png");
 				color = 0xff101010;
+			default:
+				loadGraphic("assets/images/droplet.png");
+				color = 0xff101010;
 		}
 
 		if (brain == null)

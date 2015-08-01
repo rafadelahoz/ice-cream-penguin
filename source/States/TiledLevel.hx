@@ -160,33 +160,75 @@ class TiledLevel extends TiledMap
 		/** Enemies **/
 			case "bumper":
 				var bumper : EBumper = new EBumper(x, y, state);
+
 				state.enemies.add(bumper);
 			case "runner":
 				var jumper : Bool = o.custom.contains("jumper");
 				var runner : EnemyRunner = new EnemyRunner(x, y, state, jumper);
+				initEnemy(runner, o);
 				state.enemies.add(runner);
 			case "walker": 
 				var hazardType : Hazard.HazardType = getHType(o);
 				var walker : EnemyWalker = new EnemyWalker(x, y, state);
+				initEnemy(walker, o);
 				walker.hazardType = hazardType;
 				state.enemies.add(walker);
 			case "parashooter":
 				var parashooter : EnemyParashooter = new EnemyParashooter(x, y, state);
+				initEnemy(parashooter, o);
 				state.enemies.add(parashooter);
 			case "walkshooter":
 				var hazardType : Hazard.HazardType = getHType(o);
 				var walkShooter : EnemyWalkShooter = new EnemyWalkShooter(x, y, state);
+				initEnemy(walkShooter, o);
 				walkShooter.hazardType = hazardType;
 				state.enemies.add(walkShooter);
 			case "fly":
+				var world : Int = getWorld(o);
 				var fly : EnemyBurstFly = new EnemyBurstFly(x, y, state);
+				initEnemy(fly, o);
 				state.enemies.add(fly);
 			case "slowfloater":
 				var floater : EnemySlowFloater = new EnemySlowFloater(x, y, state);
+				initEnemy(floater, o);
 				state.enemies.add(floater);
 		}
 	}
 	
+	public function initEnemy(e : Enemy, o : TiledObject) : Void
+	{
+		var world : Int = getWorld(o);
+		var variation : Int = getVariation(o);
+
+		e.init(world, variation);
+	}
+
+	public function getWorld(o : TiledObject) : Int
+	{
+		var worldTypeStr : String = o.custom.get("class");
+		
+		switch (worldTypeStr)
+		{
+			case "Monster":
+				return GameConstants.W_MONSTER;
+			case "Ice":
+				return GameConstants.W_ICE;
+			case "Fire":
+				return GameConstants.W_FIRE;
+			default:
+				return GameConstants.W_ANY;
+		}
+	}
+
+	public function getVariation(o : TiledObject) : Int
+	{
+		var worldTypeStr : String = o.custom.get("variation");
+		if (worldTypeStr != null)
+			return Std.parseInt(worldTypeStr);
+		else
+			return 0;
+	}
+
 	public function getHType(o : TiledObject) : Hazard.HazardType
 	{
 		var hazardTypeStr : String = o.custom.get("hType");

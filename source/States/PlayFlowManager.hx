@@ -100,7 +100,8 @@ class PlayFlowManager extends FlxObject
 			var ox = world.icecream.getMidpoint().x - FlxG.camera.scroll.x;
 			var oy = world.icecream.getMidpoint().y - FlxG.camera.scroll.y;
 
-			circle.fill(0x00000000);
+			// circle.fill(0x00000000);
+			circle.drawRect(0, 0, FlxG.width, FlxG.height, 0x00000000);
 			circle.drawCircle(ox, oy, radius, 0x00000000, { color : circleColor, thickness: 300});
 			
 			group.update();

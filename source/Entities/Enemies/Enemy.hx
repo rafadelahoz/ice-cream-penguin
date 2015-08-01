@@ -4,6 +4,8 @@ import flixel.FlxSprite;
 
 class Enemy extends Entity
 {
+	public var category : Int;
+	public var variation : Int;
 	public var type : String;
 	public var hazardType : Hazard.HazardType;
 
@@ -42,8 +44,15 @@ class Enemy extends Entity
 		super(X, Y, World);
 
 		player = world.penguin;
+	}
+
+	public function init(Category : Int, Variation : Int) : Void
+	{
 		hazardType = Hazard.HazardType.None;
 		collideWithLevel = true;
+
+		category = Category;
+		variation = Variation;
 	}
 
 	override public function update() : Void
