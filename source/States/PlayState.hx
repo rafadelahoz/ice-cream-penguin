@@ -37,7 +37,9 @@ class PlayState extends FlxState
 	public var watery : FlxGroup;
 	public var oneways : FlxGroup;
 
-	public var enemies : FlxTypedGroup<Enemy>;
+	public var spawners : FlxTypedGroup<EnemySpawner>;
+	
+	public var enemies : FlxGroup;
 	public var hazards : FlxGroup;
 	public var mobileHazards : FlxGroup;
 
@@ -74,7 +76,9 @@ class PlayState extends FlxState
 		watery = new FlxGroup();
 		oneways = new FlxGroup();
 		
-		enemies = new FlxTypedGroup<Enemy>();
+		spawners = new FlxTypedGroup<EnemySpawner>();
+		
+		enemies = new FlxGroup();
 		
 		hazards = new FlxGroup();
 		mobileHazards = new FlxGroup();
@@ -108,6 +112,8 @@ class PlayState extends FlxState
 		add(icecream);
 		
 		add(collectibles);
+		
+		add(spawners);
 		
 		add(enemies);
 		add(hazards);
@@ -152,6 +158,8 @@ class PlayState extends FlxState
 		level = null;
 		watery.destroy();
 		watery = null;
+		spawners.destroy();
+		spawners = null;
 		enemies.destroy();
 		enemies = null;
 		mobileHazards.destroy();
@@ -179,54 +187,57 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+		/* If the game is not paused due to death, level finished, ... */
 		if (playflowManager.onUpdate()) 
 		{
-			if (FlxG.keys.anyPressed(["K"])) {
-				// FlxG.camera.shake(0.02, 0.05);
-				PlayFlowManager.get().onDeath("kill");
-			}
-
-			if (FlxG.keys.anyJustPressed(["UP"]))
-				FlxG.timeScale = Math.min(FlxG.timeScale + 0.5, 1);
-			else if (FlxG.keys.anyJustPressed(["DOWN"]))
-				FlxG.timeScale = Math.max(FlxG.timeScale - 0.5, 0);
-			
+			/* Resolve collisions */
+			// Enemies vs World
 			for (enemy in enemies)
 			{
-				if (enemy.collideWithLevel)
-					level.collideWithLevel(enemy);
+				if ((cast enemy).collideWithLevel)
+					level.collideWithLevel((cast enemy));
 			}
 
+			// Penguin vs World
 			level.collideWithLevel(penguin);
 			
+			// Mobile hazards vs World
 			for (hazard in mobileHazards)
 			{
 				if ((cast hazard).collideWithLevel)
 					level.collideWithLevel(cast hazard);
 			}
 			
+			// Penguin vs Collectibles
 			FlxG.overlap(collectibles, penguin, onCollectibleCollision);
+			// Penguin vs One way solids
 			FlxG.collide(oneways, penguin);
+			// Penguin vs Hazards
 			FlxG.overlap(hazards, penguin, onHazardPlayerCollision);
+			// Penguin vs Water
 			FlxG.overlap(watery, penguin, overlapWater);
+			// Penguin vs Enemies
 			FlxG.overlap(enemies, penguin, onEnemyCollision);
 			
-			FlxG.collide(enemies/*, enemies*/); // Testing this one
+			// Enemies vs enemies
+			FlxG.collide(enemies, onEnemyEnemyCollision); // Testing this one
 
+			// Icecream vs Hazards
 			FlxG.overlap(hazards, icecream, onHazardIcecreamCollision);
+			// Icecream vs Enemies
 			FlxG.overlap(enemies, icecream, onEnemyIcecreamCollision);	
 
+			// Penguin vs Level Goal
 			FlxG.overlap(levelGoals, penguin, onLevelGoalCollision);
 			
+			/* Update the GUI */
 			gui.updateGUI(icecream, this);
 		}
 		
-		if (FlxG.mouse.justPressed)
-		{
-			var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
-			collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
-		}
+		/* Do the debug things */
+		doDebug();
 
+		/* Go on */
 		super.update();
 	}
 
@@ -260,6 +271,15 @@ class PlayState extends FlxState
 		FlxObject.separate(one, two);
 		one.onCollisionWithPlayer(two);
 		two.onCollisionWithEnemy(one);
+	}
+	
+	public function onEnemyEnemyCollision(a : Enemy, b : Enemy) : Void
+	{
+		trace("Colliding " + a + " and " + b);
+		if (a.collideWithEnemies && b.collideWithEnemies)
+			FlxObject.separate(a, b);
+		else
+			trace("NO COLL");
 	}
 
 	public function onHazardPlayerCollision(a : Hazard, b : Penguin)
@@ -310,5 +330,24 @@ class PlayState extends FlxState
 		icecream = ic;
 
 		// add(icecream);
+	}
+	
+	function doDebug() : Void
+	{
+		if (FlxG.keys.anyPressed(["K"])) {
+			FlxG.camera.shake(0.02, 0.05);
+			PlayFlowManager.get().onDeath("kill");
+		}
+		
+		if (FlxG.mouse.justPressed)
+		{
+			var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
+			collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
+		}
+
+		if (FlxG.keys.anyJustPressed(["UP"]))
+			FlxG.timeScale = Math.min(FlxG.timeScale + 0.5, 1);
+		else if (FlxG.keys.anyJustPressed(["DOWN"]))
+			FlxG.timeScale = Math.max(FlxG.timeScale - 0.5, 0);
 	}
 }

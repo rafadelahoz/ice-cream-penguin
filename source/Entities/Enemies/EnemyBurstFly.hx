@@ -28,7 +28,7 @@ class EnemyBurstFly extends Enemy
 		super(X, Y, World);
 	}
 
-	override public function init(Category : Int, Variation : Int)
+	override public function init(?Category : Int, ?Variation : Int)
 	{
 		super.init(Category, Variation);
 

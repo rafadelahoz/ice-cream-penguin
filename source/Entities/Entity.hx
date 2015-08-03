@@ -8,6 +8,7 @@ class Entity extends FlxSprite
 	
 	public var frozen : Bool;
 	public var collideWithLevel : Bool;
+	public var collideWithEnemies : Bool;
 
 	public function new(X : Float, Y : Float, World : PlayState)
 	{
@@ -15,6 +16,7 @@ class Entity extends FlxSprite
 		world = World;
 		frozen = false;
 		collideWithLevel = true;
+		collideWithEnemies = true;
 
 		world.entities.add(this);
 	}

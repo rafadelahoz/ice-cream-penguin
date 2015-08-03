@@ -46,7 +46,7 @@ class Enemy extends Entity
 		player = world.penguin;
 	}
 
-	public function init(Category : Int, Variation : Int) : Void
+	public function init(?Category : Int, ?Variation : Int) : Void
 	{
 		hazardType = Hazard.HazardType.None;
 		collideWithLevel = true;

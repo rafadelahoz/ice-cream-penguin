@@ -115,16 +115,18 @@ class TiledLevel extends TiledMap
 
 		// The Y position of objects created from tiles must be corrected by the object height
 		if (o.gid != -1) {
-			// y -= g.map.getGidOwner(o.gid).tileHeight;
-			// trace("Up with " + o.gid + " by " + g.map.getGidOwner(o.gid).tileHeight);
 			y -= o.height;
-			// trace("Up with " + o.gid + " by " + o.height);
 		}
 
 		switch (o.type.toLowerCase()) 
 		{
 			case "start":
 				addPenguin(x, y, state);
+		
+		/** Collectibles **/
+			case "ice":
+				var iceShard : IceShard = new IceShard(x, y, state);
+				state.collectibles.add(iceShard);
 		
 		/** Elements **/
 			case "goal":
@@ -168,10 +170,6 @@ class TiledLevel extends TiledMap
 			case "rock":
 			
 		/** Enemies **/
-			case "bumper":
-				var bumper : EBumper = new EBumper(x, y, state);
-
-				state.enemies.add(bumper);
 			case "runner":
 				var jumper : Bool = o.custom.contains("jumper");
 				var runner : EnemyRunner = new EnemyRunner(x, y, state, jumper);
@@ -202,6 +200,27 @@ class TiledLevel extends TiledMap
 				var floater : EnemySlowFloater = new EnemySlowFloater(x, y, state);
 				initEnemy(floater, o);
 				state.enemies.add(floater);
+			case "spawner":
+				loadSpawner(o, state);
+		}
+	}
+	
+	private function loadSpawner(o : TiledObject, state : PlayState) : Void
+	{
+		var spawnee : String = o.custom.get("spawnee");
+		var spawnTimeStr : String = o.custom.get("delay");
+		var spawnTime : Float = 10;
+		if (spawnTimeStr != null)
+			spawnTime = Std.parseFloat(spawnTimeStr);
+			
+		switch (spawnee.toLowerCase())
+		{
+			case "flydrop":
+				var spawner : EnemyFlyDropSpawner = new EnemyFlyDropSpawner(o.x, o.y, state, o.width, o.height, spawnTime);
+				spawner.init();
+				state.spawners.add(spawner);
+			default:
+				trace("wtf spawner?: " + spawnee);
 		}
 	}
 	

@@ -10,7 +10,7 @@ class EnemyRunner extends Enemy
 	var display : FlxText;
 
 	var alertStateTime : Float = 0.5;
-	var jumpDelayTime : Float = 0.68;
+	var jumpDelayTime : Float = 0.58;
 	
 	var alertedDistance : Int = 80;
 	var hspeed : Int = 50;
