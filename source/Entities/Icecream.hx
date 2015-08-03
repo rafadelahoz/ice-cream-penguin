@@ -77,7 +77,7 @@ class Icecream extends FlxSprite {
 		if (ice <= 0)
 		{
 			ice = 0;
-			DeathManager.get().onDeath("hot");
+			PlayFlowManager.get().onDeath("hot");
 		}
 	}
 
@@ -87,17 +87,17 @@ class Icecream extends FlxSprite {
 		if (ice <= 0)
 		{
 			ice = 0;
-			DeathManager.get().onDeath("water");
+			PlayFlowManager.get().onDeath("water");
 		}
 	}
 
 	public function mud(ammount : Float)
 	{
-		DeathManager.get().onDeath("dirty");
+		PlayFlowManager.get().onDeath("dirty");
 	}
 	
 	public function steal(thief : Entity) 
 	{
-		DeathManager.get().onDeath("steal");
+		PlayFlowManager.get().onDeath("steal");
 	}
 }

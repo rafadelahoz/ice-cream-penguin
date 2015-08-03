@@ -17,14 +17,13 @@ class PlayState extends FlxState
 {
 	public var mapName : String;
 
-	var deathManager : DeathManager;
+	var playflowManager : PlayFlowManager;
 
 	var camera : FlxCamera;
 
 	public var penguin : Penguin;
 	public var icecream : Icecream;
 
-	public var ground : FlxGroup;
 	public var level : TiledLevel;
 
 	public var watery : FlxGroup;
@@ -32,8 +31,11 @@ class PlayState extends FlxState
 
 	public var enemies : FlxTypedGroup<Enemy>;
 	public var hazards : FlxGroup;
-		public var mobileHazards : FlxGroup;
+	public var mobileHazards : FlxGroup;
 
+	public var levelGoals : FlxTypedGroup<LevelGoal>;
+
+	// General entities list for pausing
 	public var entities : FlxTypedGroup<Entity>;
 
 	public function new(?Level : String)
@@ -57,13 +59,19 @@ class PlayState extends FlxState
 		// Prepare state holders
 		entities = new FlxTypedGroup<Entity>();
 
+		penguin = null;
 		icecream = null;
+
 		watery = new FlxGroup();
 		oneways = new FlxGroup();
+		
 		enemies = new FlxTypedGroup<Enemy>();
+		
 		hazards = new FlxGroup();
-			mobileHazards = new FlxGroup();
-			hazards.add(mobileHazards);
+		mobileHazards = new FlxGroup();
+		hazards.add(mobileHazards);
+
+		levelGoals = new FlxTypedGroup<LevelGoal>();
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + mapName + ".tmx");
@@ -73,6 +81,8 @@ class PlayState extends FlxState
 
 		// Load level objects
 		level.loadObjects(this);
+
+		add(levelGoals);
 		
 		add(penguin);
 		add(icecream);
@@ -93,7 +103,7 @@ class PlayState extends FlxState
 		// add(Penguin.virtualPad);
 
 		// Prepare death manager
-		deathManager = DeathManager.get(this);
+		playflowManager = PlayFlowManager.get(this);
 
 		// Delegate
 		super.create();
@@ -125,8 +135,8 @@ class PlayState extends FlxState
 		oneways.destroy();
 		oneways = null;
 
-		deathManager.destroy();
-		deathManager = null;
+		playflowManager.destroy();
+		playflowManager = null;
 
 		super.destroy();
 	}
@@ -136,11 +146,11 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
-		if (deathManager.onUpdate()) 
+		if (playflowManager.onUpdate()) 
 		{
 			if (FlxG.keys.anyPressed(["K"])) {
 				// FlxG.camera.shake(0.02, 0.05);
-				DeathManager.get().onDeath("kill");
+				PlayFlowManager.get().onDeath("kill");
 			}
 
 			if (FlxG.keys.anyJustPressed(["UP"]))
@@ -171,6 +181,8 @@ class PlayState extends FlxState
 
 			FlxG.overlap(hazards, icecream, onHazardIcecreamCollision);
 			FlxG.overlap(enemies, icecream, onEnemyIcecreamCollision);	
+
+			FlxG.overlap(levelGoals, penguin, onLevelGoalCollision);
 		}
 
 		super.update();
@@ -179,7 +191,7 @@ class PlayState extends FlxState
 	override public function draw() : Void
 	{
 		super.draw();
-		deathManager.onDraw();
+		playflowManager.onDraw();
 	}
 
 	public function overlapWater(water : FlxObject, entity : FlxObject) : Void
@@ -219,6 +231,11 @@ class PlayState extends FlxState
 	{
 		b.onCollisionWithEnemy(a);
 		a.onCollisionWithIcecream(b);
+	}
+
+	public function onLevelGoalCollision(goal : LevelGoal, pen : Penguin)
+	{
+		playflowManager.onGoal();
 	}
 
 	public function addPenguin(p : Penguin) : Void

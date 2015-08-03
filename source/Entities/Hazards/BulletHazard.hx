@@ -37,7 +37,7 @@ class BulletHazard extends Hazard
 	
 	override public function update()
 	{
-		if (DeathManager.get().paused)
+		if (PlayFlowManager.get().paused)
 		{
 			return;
 		}

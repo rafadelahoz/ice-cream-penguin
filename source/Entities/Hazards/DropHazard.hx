@@ -11,6 +11,8 @@ class DropHazard extends Hazard
 	var prepareTime : Float = 1.5;
 	var fadeTime : Float = 1;
 
+	var animated : Bool;
+
 	var deltaSize : Float;
 
 	public function new(X : Float, Y : Float, World : PlayState, Type : Hazard.HazardType, ?Size : FlxPoint)
@@ -18,7 +20,7 @@ class DropHazard extends Hazard
 		super(X, Y, Type, World);
 
 		// makeGraphic(8, 8, color);
-		loadGraphic("assets/images/droplet.png");
+		// loadGraphic("assets/images/droplet.png");
 		
 		collideWithLevel = false;
 	}
@@ -31,17 +33,27 @@ class DropHazard extends Hazard
 		switch (Type)
 		{
 			case Hazard.HazardType.None:
+				loadGraphic("assets/images/droplet.png");
 				color = 0xffff00ff;
 			case Hazard.HazardType.Fire:
-				color = 0xff881010;
+				loadGraphic("assets/images/lava-drop.png", true, 16, 16);
+				animation.add("fall", [0, 1, 2, 3, 4, 5, 6, 7], 14);				
+				animated = true;
 			case Hazard.HazardType.Water:
-				color = 0xff101088;
+				loadGraphic("assets/images/water-drop.png", true, 16, 16);
+				animation.add("fall", [0, 1, 2, 3, 4], 14);
+				animated = true;
 			case Hazard.HazardType.Dirt:
+				loadGraphic("assets/images/droplet.png");
 				color = 0xff108810;
 			case Hazard.HazardType.Collision:
+				loadGraphic("assets/images/droplet.png");
+				color = 0xff101010;
+			default:
+				loadGraphic("assets/images/droplet.png");
 				color = 0xff101010;
 		}
-	
+
 		if (brain == null)
 			brain = new StateMachine(null, onStateChange);
 		
@@ -77,6 +89,9 @@ class DropHazard extends Hazard
 	public function fall() : Void
 	{
 		alpha = 1;
+
+		animation.play("fall");
+
 		// setSize(targetSize.x, targetSize.y);
 		acceleration.y = GameConstants.Gravity;
 		if (isTouching(FlxObject.DOWN))

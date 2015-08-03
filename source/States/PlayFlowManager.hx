@@ -8,13 +8,13 @@ import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 using flixel.util.FlxSpriteUtil;
 
-class DeathManager extends FlxObject
+class PlayFlowManager extends FlxObject
 {
-	static var instance : DeathManager;
-	public static function get(?World : PlayState = null) : DeathManager
+	static var instance : PlayFlowManager;
+	public static function get(?World : PlayState = null) : PlayFlowManager
 	{
 		if (instance == null)
-			instance = new DeathManager();
+			instance = new PlayFlowManager();
 		
 		if (World != null)
 			instance.world = World;
@@ -27,7 +27,7 @@ class DeathManager extends FlxObject
 	public var group : FlxGroup;
 
 	var circle : FlxSprite;
-
+	var circleColor : Int;
 	var radius : Float = 256;
 	var radiusSpeed : Float = 5;
 	var minRadius : Float = 185;
@@ -100,8 +100,9 @@ class DeathManager extends FlxObject
 			var ox = world.icecream.getMidpoint().x - FlxG.camera.scroll.x;
 			var oy = world.icecream.getMidpoint().y - FlxG.camera.scroll.y;
 
+			// circle.fill(0x00000000);
 			circle.drawRect(0, 0, FlxG.width, FlxG.height, 0x00000000);
-			circle.drawCircle(ox, oy, radius, 0x00000000, { color : 0xff000000, thickness: 300});
+			circle.drawCircle(ox, oy, radius, 0x00000000, { color : circleColor, thickness: 300});
 			
 			group.update();
 			super.update();
@@ -131,6 +132,23 @@ class DeathManager extends FlxObject
 			currentPhase = Phase.Ending;
 	}
 
+	public function onGoal() : Void
+	{
+		if (!paused)
+		{
+			for (entity in world.entities)
+			{
+				entity.freeze();
+			}
+
+			paused = true;
+			currentPhase = Phase.Closing;
+			trace("You win!");
+
+			circleColor = 0xffED0086;
+		}
+	}
+
 	public function onDeath(deathType : String) : Void
 	{
 		if (!paused) 
@@ -144,6 +162,8 @@ class DeathManager extends FlxObject
 			trace("Dead by " + deathType);
 
 			currentPhase = Phase.Closing;
+
+			circleColor = 0xff000000;
 		}
 	}
 }
