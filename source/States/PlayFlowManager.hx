@@ -11,10 +11,10 @@ using flixel.util.FlxSpriteUtil;
 class PlayFlowManager extends FlxObject
 {
 	static var instance : PlayFlowManager;
-	public static function get(?World : PlayState = null) : PlayFlowManager
+	public static function get(?World : PlayState = null, ?Gui : GUI = null) : PlayFlowManager
 	{
 		if (instance == null)
-			instance = new PlayFlowManager();
+			instance = new PlayFlowManager(Gui);
 		
 		if (World != null)
 			instance.world = World;
@@ -35,11 +35,13 @@ class PlayFlowManager extends FlxObject
 
 	var currentPhase : Phase;
 
-	public function new()
+	public function new(?gui : GUI)
 	{
 		super();
 
 		create();
+		if (gui != null)
+			group.add(gui);
 	}
 
 	override public function destroy() : Void
@@ -136,16 +138,8 @@ class PlayFlowManager extends FlxObject
 	{
 		if (!paused)
 		{
-			for (entity in world.entities)
-			{
-				entity.freeze();
-			}
-
-			paused = true;
-			currentPhase = Phase.Closing;
 			trace("You win!");
-
-			circleColor = 0xffED0086;
+			doFinish(0xffED0086);
 		}
 	}
 
@@ -153,19 +147,23 @@ class PlayFlowManager extends FlxObject
 	{
 		if (!paused) 
 		{
-			for (entity in world.entities)
-			{
-				entity.freeze();
-			}
-
-			paused = true;
 			trace("Dead by " + deathType);
-
-			currentPhase = Phase.Closing;
-
-			circleColor = 0xff000000;
+			doFinish(0xff000000);
 		}
+	}
+	
+	function doFinish(color : Int) : Void
+	{
+		for (entity in world.entities)
+		{
+			entity.freeze();
+		}
+
+		paused = true;
+		currentPhase = Phase.Closing;
+		
+		circleColor = color;
 	}
 }
 
-enum Phase { Alive; Closing; Waiting; Ending;}
+enum Phase { Alive; Closing; Waiting; Ending; }

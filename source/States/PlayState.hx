@@ -8,6 +8,8 @@ import flixel.group.FlxGroup;
 import flixel.group.FlxTypedGroup;
 import flixel.FlxCamera;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxTimer;
+import flixel.util.FlxPoint;
 using flixel.util.FlxSpriteUtil;
 
 /**
@@ -15,12 +17,18 @@ using flixel.util.FlxSpriteUtil;
  */
 class PlayState extends FlxState
 {
+	/* Level config */
 	public var mapName : String;
-
+	public var meltingsPerSecond : Float;
+	
+	/* General elements */
 	var playflowManager : PlayFlowManager;
-
 	var camera : FlxCamera;
+	var gui : GUI;
+	var mpsTimer : FlxTimer;
+	public var currentMps : Float;
 
+	/* Entities lists */
 	public var penguin : Penguin;
 	public var icecream : Icecream;
 
@@ -33,6 +41,7 @@ class PlayState extends FlxState
 	public var hazards : FlxGroup;
 	public var mobileHazards : FlxGroup;
 
+	public var collectibles : FlxTypedGroup<Collectible>;
 	public var levelGoals : FlxTypedGroup<LevelGoal>;
 
 	// General entities list for pausing
@@ -71,10 +80,21 @@ class PlayState extends FlxState
 		mobileHazards = new FlxGroup();
 		hazards.add(mobileHazards);
 
+		collectibles = new FlxTypedGroup<Collectible>();
 		levelGoals = new FlxTypedGroup<LevelGoal>();
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + mapName + ".tmx");
+		
+		/* Read level parameters */
+		// MPS (Meltings per second)
+		meltingsPerSecond = level.meltingsPerSecond;
+		// Default 1.6 if not specified (icecream melt in 1 minute)
+		if (meltingsPerSecond == null)
+			meltingsPerSecond = 1.6;
+		
+		currentMps = meltingsPerSecond;
+		mpsTimer = new FlxTimer(1, handleMeltingsPerSecond, 0);
 		
 		// Add tilemaps
 		add(level.backgroundTiles);
@@ -86,6 +106,8 @@ class PlayState extends FlxState
 		
 		add(penguin);
 		add(icecream);
+		
+		add(collectibles);
 		
 		add(enemies);
 		add(hazards);
@@ -99,6 +121,10 @@ class PlayState extends FlxState
 		if (penguin != null)
 			FlxG.camera.follow(penguin, FlxCamera.STYLE_PLATFORMER, null, 0);
 
+		// Add the GUI
+		gui = new GUI();
+		add(gui);
+			
 		// Register the Virtual Pad
 		// add(Penguin.virtualPad);
 
@@ -134,6 +160,13 @@ class PlayState extends FlxState
 		hazards = null;
 		oneways.destroy();
 		oneways = null;
+		levelGoals.destroy();
+		levelGoals = null;
+		collectibles.destroy();
+		collectibles = null;
+		
+		gui.destroy();
+		gui = null;
 
 		playflowManager.destroy();
 		playflowManager = null;
@@ -172,6 +205,7 @@ class PlayState extends FlxState
 					level.collideWithLevel(cast hazard);
 			}
 			
+			FlxG.overlap(collectibles, penguin, onCollectibleCollision);
 			FlxG.collide(oneways, penguin);
 			FlxG.overlap(hazards, penguin, onHazardPlayerCollision);
 			FlxG.overlap(watery, penguin, overlapWater);
@@ -183,15 +217,29 @@ class PlayState extends FlxState
 			FlxG.overlap(enemies, icecream, onEnemyIcecreamCollision);	
 
 			FlxG.overlap(levelGoals, penguin, onLevelGoalCollision);
+			
+			gui.updateGUI(icecream, this);
+		}
+		
+		if (FlxG.mouse.justPressed)
+		{
+			var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
+			collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
 		}
 
 		super.update();
-	}	
+	}
 
 	override public function draw() : Void
 	{
 		super.draw();
 		playflowManager.onDraw();
+	}
+	
+	public function handleMeltingsPerSecond(timer : FlxTimer) : Void
+	{
+		// Called every second to handle icecream melting by environment
+		icecream.makeHotter(currentMps);
 	}
 
 	public function overlapWater(water : FlxObject, entity : FlxObject) : Void
@@ -233,6 +281,12 @@ class PlayState extends FlxState
 		a.onCollisionWithIcecream(b);
 	}
 
+	public function onCollectibleCollision(collectible : Collectible, pen : Penguin)
+	{
+		collectible.onCollisionWithPlayer(pen);
+		// Don't notify the penguin for now
+	}
+	
 	public function onLevelGoalCollision(goal : LevelGoal, pen : Penguin)
 	{
 		playflowManager.onGoal();

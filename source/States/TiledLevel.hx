@@ -22,6 +22,8 @@ class TiledLevel extends TiledMap
 	public var foregroundTiles : FlxGroup;
 	public var backgroundTiles : FlxGroup;
 	public var collidableTileLayers : Array<FlxTilemap>;
+	
+	public var meltingsPerSecond : Float;
 
 	public function new(tiledLevel : Dynamic)
 	{
@@ -33,6 +35,14 @@ class TiledLevel extends TiledMap
 
 		FlxG.camera.setBounds(0, 0, fullWidth, fullHeight, true);
 
+		/* Read config info */
+		var strMps : String = properties.get("MPS");
+		if (strMps != null)
+			meltingsPerSecond = Std.parseFloat(strMps);
+		else
+			meltingsPerSecond = null;
+		
+		/* Read tile info */
 		for (tileLayer in layers)
 		{
 			var tilesetName : String = tileLayer.properties.get("tileset");
