@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
+	<!------------------------------------------------------------------------------>
+	<set name="work" />
+
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
 	<app title="Penguin" file="Penguin" main="Main" version="0.0.1" company="thebadladns" package="com.thebadladns.Penguin" />
@@ -14,7 +17,10 @@
 	<!--------------------------------WINDOW SETTINGS------------------------------->
 	
 	<!--These window settings apply to all targets-->
-	<window width="960" height="520" fps="60" background="#000000" hardware="true" vsync="true" />
+	<window width="960" height="520" fps="30" background="#000000" hardware="true" vsync="true" />
+	
+	<!-- Workplace specific -->
+	<window if="work" width="320" height="200" />
 	
 	<!--Web-specific-->
 	<window if="web" orientation="portrait"  />
@@ -32,6 +38,7 @@
 	<classpath name="source" />
 	<classpath name="source/Meta" />
 	<classpath name="source/States" />
+	<classpath name="source/WorldMap" />
 	<classpath name="source/Entities" />
 	<classpath name="source/Entities/Enemies" />
 	<classpath name="source/Entities/Hazards" />
