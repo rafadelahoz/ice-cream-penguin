@@ -7,7 +7,6 @@ import flixel.util.FlxTimer;
 class EnemyRunner extends Enemy
 {
 	public var state : String;
-	var display : FlxText;
 
 	var alertStateTime : Float = 0.5;
 	var jumpDelayTime : Float = 0.58;

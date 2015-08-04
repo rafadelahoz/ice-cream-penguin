@@ -64,10 +64,10 @@
     <property name="variation" value="0"/>
    </properties>
   </object>
-  <object id="101" type="spawner" x="256" y="0" width="400" height="400">
+  <object id="101" type="spawner" x="0" y="0" width="400" height="400">
    <properties>
     <property name="spawnee" value="flydrop"/>
-    <property name="delay" value="1"/>
+    <property name="delay" value="2.5"/>
    </properties>
   </object>
  </objectgroup>

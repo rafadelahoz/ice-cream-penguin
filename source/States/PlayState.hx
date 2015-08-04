@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxObject;
@@ -40,6 +41,8 @@ class PlayState extends FlxState
 	public var spawners : FlxTypedGroup<EnemySpawner>;
 	
 	public var enemies : FlxGroup;
+		public var collidableEnemies : FlxGroup;
+		public var nonCollidableEnemies : FlxGroup;
 	public var hazards : FlxGroup;
 	public var mobileHazards : FlxGroup;
 
@@ -79,6 +82,10 @@ class PlayState extends FlxState
 		spawners = new FlxTypedGroup<EnemySpawner>();
 		
 		enemies = new FlxGroup();
+			collidableEnemies = new FlxGroup();
+			nonCollidableEnemies = new FlxGroup();
+			enemies.add(collidableEnemies);
+			enemies.add(nonCollidableEnemies);
 		
 		hazards = new FlxGroup();
 		mobileHazards = new FlxGroup();
@@ -160,6 +167,10 @@ class PlayState extends FlxState
 		watery = null;
 		spawners.destroy();
 		spawners = null;
+		collidableEnemies.destroy();
+		collidableEnemies = null;
+		nonCollidableEnemies.destroy();
+		nonCollidableEnemies = null;
 		enemies.destroy();
 		enemies = null;
 		mobileHazards.destroy();
@@ -192,11 +203,7 @@ class PlayState extends FlxState
 		{
 			/* Resolve collisions */
 			// Enemies vs World
-			for (enemy in enemies)
-			{
-				if ((cast enemy).collideWithLevel)
-					level.collideWithLevel((cast enemy));
-			}
+			resolveEnemiesWorldCollision();
 
 			// Penguin vs World
 			level.collideWithLevel(penguin);
@@ -220,7 +227,7 @@ class PlayState extends FlxState
 			FlxG.overlap(enemies, penguin, onEnemyCollision);
 			
 			// Enemies vs enemies
-			FlxG.collide(enemies, onEnemyEnemyCollision); // Testing this one
+			FlxG.collide(collidableEnemies);
 
 			// Icecream vs Hazards
 			FlxG.overlap(hazards, icecream, onHazardIcecreamCollision);
@@ -239,6 +246,21 @@ class PlayState extends FlxState
 
 		/* Go on */
 		super.update();
+	}
+	
+	function resolveEnemiesWorldCollision() : Void
+	{
+		enemies.forEach(resolveEnemyWorldCollision);
+		collidableEnemies.forEach(resolveEnemyWorldCollision);
+		nonCollidableEnemies.forEach(resolveEnemyWorldCollision);
+	}
+	
+	function resolveEnemyWorldCollision(enemy : FlxBasic) : Void
+	{
+		if ((cast enemy).collideWithLevel)
+		{
+			level.collideWithLevel((cast enemy));
+		}
 	}
 
 	override public function draw() : Void
@@ -332,10 +354,18 @@ class PlayState extends FlxState
 		// add(icecream);
 	}
 	
+	public function addEnemy(enemy : Enemy) : Void
+	{
+		if (enemy.collideWithEnemies)
+			collidableEnemies.add(enemy);
+		else
+			nonCollidableEnemies.add(enemy);
+	}
+	
 	function doDebug() : Void
 	{
 		if (FlxG.keys.anyPressed(["K"])) {
-			FlxG.camera.shake(0.02, 0.05);
+			// FlxG.camera.shake(0.02, 0.05);
 			PlayFlowManager.get().onDeath("kill");
 		}
 		

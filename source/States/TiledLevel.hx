@@ -174,32 +174,32 @@ class TiledLevel extends TiledMap
 				var jumper : Bool = o.custom.contains("jumper");
 				var runner : EnemyRunner = new EnemyRunner(x, y, state, jumper);
 				initEnemy(runner, o);
-				state.enemies.add(runner);
+				state.addEnemy(runner);
 			case "walker": 
 				var hazardType : Hazard.HazardType = getHType(o);
 				var walker : EnemyWalker = new EnemyWalker(x, y, state);
 				initEnemy(walker, o);
 				walker.hazardType = hazardType;
-				state.enemies.add(walker);
+				state.addEnemy(walker);
 			case "parashooter":
 				var parashooter : EnemyParashooter = new EnemyParashooter(x, y, state);
 				initEnemy(parashooter, o);
-				state.enemies.add(parashooter);
+				state.addEnemy(parashooter);
 			case "walkshooter":
 				var hazardType : Hazard.HazardType = getHType(o);
 				var walkShooter : EnemyWalkShooter = new EnemyWalkShooter(x, y, state);
 				initEnemy(walkShooter, o);
 				walkShooter.hazardType = hazardType;
-				state.enemies.add(walkShooter);
+				state.addEnemy(walkShooter);
 			case "fly":
 				var world : Int = getWorld(o);
 				var fly : EnemyBurstFly = new EnemyBurstFly(x, y, state);
 				initEnemy(fly, o);
-				state.enemies.add(fly);
+				state.addEnemy(fly);
 			case "slowfloater":
 				var floater : EnemySlowFloater = new EnemySlowFloater(x, y, state);
 				initEnemy(floater, o);
-				state.enemies.add(floater);
+				state.addEnemy(floater);
 			case "spawner":
 				loadSpawner(o, state);
 		}

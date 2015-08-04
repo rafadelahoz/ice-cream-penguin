@@ -1,9 +1,14 @@
 package;
 
 import flixel.FlxSprite;
+import flixel.text.FlxText;
 
 class Enemy extends Entity
 {
+	/* Debug */
+	public var display : FlxText;
+	
+	/* Attributes */
 	public var category : Int;
 	public var variation : Int;
 	public var type : String;
@@ -44,12 +49,15 @@ class Enemy extends Entity
 		super(X, Y, World);
 
 		player = world.penguin;
+		
+		display = new FlxText();
 	}
 
 	public function init(?Category : Int, ?Variation : Int) : Void
 	{
 		hazardType = Hazard.HazardType.None;
 		collideWithLevel = true;
+		collideWithEnemies = true;
 
 		category = Category;
 		variation = Variation;
@@ -62,6 +70,17 @@ class Enemy extends Entity
 		
 		brain.update();
 		super.update();
+		
+		if (display != null)
+			display.update();
+	}
+	
+	override public function draw()
+	{
+		super.draw();
+		
+		if (display != null)
+			display.draw();
 	}
 
 	public function onCollisionWithPlayer(player : Penguin)

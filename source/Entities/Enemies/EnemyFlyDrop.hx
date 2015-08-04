@@ -5,9 +5,9 @@ import flixel.util.FlxRandom;
 
 class EnemyFlyDrop extends Enemy	
 {
-	var sineGeneratorDelta : Float = 0.05;
-	var amplitude : Float = 30;
-	var hspeed : Int = 60;
+	var sineGeneratorDelta : Float = 0.06;
+	var amplitude : Float = 8;
+	var hspeed : Int = 45;
 	var stunnedHspeedFactor : Float = 0.25;
 	
 	var baseY : Float;
@@ -49,8 +49,8 @@ class EnemyFlyDrop extends Enemy
 	public function fly()
 	{
 		acceleration.y = 0;
-		
-		sineGenerator += amplitude;
+	
+		sineGenerator += sineGeneratorDelta;
 		sineGenerator = sineGeneratorClamp(sineGenerator);
 		
 		if (facing == FlxObject.LEFT)
@@ -64,7 +64,7 @@ class EnemyFlyDrop extends Enemy
 			flipX = false;
 		}
 			
-		velocity.y = Math.sin(sineGenerator) * amplitude;
+		y = baseY + Math.sin(sineGenerator) * amplitude;
 	}
 	
 	public function stunned()
