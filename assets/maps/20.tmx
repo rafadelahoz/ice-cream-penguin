@@ -57,13 +57,16 @@
   </object>-->
  </objectgroup>
  <objectgroup name="Enemies">
-  <object id="99" type="fly" x="24" y="16" width="8" height="8"/>
+  <!--<object id="99" type="fly" x="24" y="16" width="8" height="8"/>
   <object id="100" type="fly" x="136" y="24" width="8" height="8">
    <properties>
     <property name="class" value="Monster"/>
     <property name="variation" value="0"/>
    </properties>
-  </object>
+  </object>-->
+  <object id="102" type="surprise" x="128" y="60" width="16" height="16" />
+  <object id="103" type="surprise" x="136" y="52" width="16" height="16" />
+  <object id="104" type="surprise" x="150" y="64" width="16" height="16" />
   <object id="101" type="spawner" x="0" y="0" width="400" height="400">
    <properties>
     <property name="spawnee" value="flydrop"/>

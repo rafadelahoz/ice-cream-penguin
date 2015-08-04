@@ -9,6 +9,8 @@ import flixel.util.FlxRect;
 class EnemyFlyDropSpawner extends EnemySpawner
 {
 	var capacity : Int = 10;
+	var screenCount : Int = 2;
+	
 	var group : FlxTypedGroup<EnemyFlyDrop>;
 	var zoneRect : FlxRect;
 	
@@ -36,7 +38,9 @@ class EnemyFlyDropSpawner extends EnemySpawner
 	override public function spawn() : Void
 	{
 		// Only spawn if the player is in the spawn zone
-		if (zoneRect.containsFlxPoint(world.penguin.getMidpoint()))
+		if (zoneRect.containsFlxPoint(world.penguin.getMidpoint()) &&
+		// And there are no more entities that we want alive at the same time
+			(group.countLiving() < screenCount))
 		{		
 			var cam : FlxCamera = FlxG.camera;
 		
@@ -58,10 +62,8 @@ class EnemyFlyDropSpawner extends EnemySpawner
 			}
 			
 			// Choose y position
-			spawnY = FlxRandom.intRanged(Std.int(cam.scroll.y), Std.int(cam.scroll.y + (cam.height)/2));
-		
-			trace("Spawning at " + spawnX + ", " + spawnY);
-		
+			spawnY = FlxRandom.intRanged(Std.int(cam.scroll.y), Std.int(cam.scroll.y + (cam.height)/4));
+			
 			spawnee.x = spawnX;
 			spawnee.y = spawnY;
 			spawnee.init();

@@ -372,7 +372,8 @@ class PlayState extends FlxState
 		if (FlxG.mouse.justPressed)
 		{
 			var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
-			collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
+			// collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
+			mobileHazards.add(new SurpriseDropHazard(mousePos.x, mousePos.y, this, Hazard.HazardType.Collision));
 		}
 
 		if (FlxG.keys.anyJustPressed(["UP"]))

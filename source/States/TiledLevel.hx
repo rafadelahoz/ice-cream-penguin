@@ -166,8 +166,9 @@ class TiledLevel extends TiledMap
 				var gusher : GushingHazard = new GushingHazard(x, y + o.height, state, hazardType);
 				gusher.configure(idleTime, activeTime, startupTime, inverse);
 				state.hazards.add(gusher);
-			case "ball":
-			case "rock":
+			case "surprise":
+				var surprise : SurpriseDropHazard = new SurpriseDropHazard(x, y, state, Hazard.HazardType.Collision);
+				state.mobileHazards.add(surprise);
 			
 		/** Enemies **/
 			case "runner":

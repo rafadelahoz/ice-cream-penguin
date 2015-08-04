@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxRandom;
 
@@ -12,6 +13,8 @@ class EnemyFlyDrop extends Enemy
 	
 	var baseY : Float;
 	var sineGenerator : Float;
+	
+	var dropper : DropSpawner;
 
 	public function new(X : Int, Y : Int, World : PlayState)
 	{
@@ -30,20 +33,31 @@ class EnemyFlyDrop extends Enemy
 		if (player.getMidpoint().x < getMidpoint().x)
 		{
 			facing = FlxObject.LEFT;
-			trace("GO LEFT");
 		}
 		else
 		{
 			facing = FlxObject.RIGHT;
-			trace("GO RIGHT");
 		}
 			
 		baseY = y;
 		
 		sineGenerator = FlxRandom.intRanged(0, 359);
 		
+		dropper = new DropSpawner(Std.int(getMidpoint().x), Std.int(getMidpoint().y), world, Hazard.HazardType.Dirt);
+		
 		brain = new StateMachine(null);
 		brain.transition(fly, "fly");
+	}
+	
+	override public function update()
+	{
+		if (frozen)
+			return;
+			
+		if (x < FlxG.camera.scroll.x - FlxG.camera.width/2 || x > FlxG.camera.scroll.x + FlxG.camera.width * 1.5)
+			kill();
+			
+		super.update();
 	}
 	
 	public function fly()
@@ -65,6 +79,10 @@ class EnemyFlyDrop extends Enemy
 		}
 			
 		y = baseY + Math.sin(sineGenerator) * amplitude;
+		
+		dropper.x = getMidpoint().x;
+		dropper.y = getMidpoint().y;
+		dropper.update();
 	}
 	
 	public function stunned()
