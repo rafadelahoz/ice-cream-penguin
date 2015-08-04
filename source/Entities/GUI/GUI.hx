@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxSprite;
+import flixel.text.FlxText;
 import flixel.group.FlxTypedGroup;
 
 using flixel.util.FlxSpriteUtil;
@@ -9,7 +10,10 @@ class GUI extends FlxTypedGroup<FlxSprite>
 {
 	var statusGfx : FlxSprite;
 	var temperatureBar : FlxSprite;
+	var temperatureCursor : FlxSprite;
 	var temperatureGfx : FlxSprite;
+
+	var text : FlxText;
 
 	public function new()
 	{
@@ -18,22 +22,30 @@ class GUI extends FlxTypedGroup<FlxSprite>
 		// Add elements
 		// Ice cream status gfx
 		statusGfx = new FlxSprite(8, 8);
-		statusGfx.makeGraphic(24, 24, 0x00000000);
-		statusGfx.drawCircle(12, 12, 12);
+		statusGfx.loadGraphic("assets/images/hud_icestate.png", true, 24, 24);
+		statusGfx.animation.add("status", [0, 0, 0, 0, 1, 2, 3, 4, 5, 6], 0, false);
+		statusGfx.animation.play("status");
 		add(statusGfx);
 		
 		// Temperature Bar
-		temperatureBar = new FlxSprite(32, 12);
-		temperatureBar.makeGraphic(80, 16, 0x00000000);
+		temperatureBar = new FlxSprite(31, 16);
+		temperatureBar.makeGraphic(44, 8, 0x00000000);
 		add(temperatureBar);
+
+		temperatureCursor = new FlxSprite(31, 16);
+		temperatureCursor.loadGraphic("assets/images/hud_temperature-cursor.png");
+		add(temperatureCursor);
 		
 		// Temperature Gfx
-		temperatureGfx = new FlxSprite(32, 12);
-		temperatureGfx.makeGraphic(80, 16, 0x00000000);
-		temperatureGfx.drawRect(1, 1, 77, 13, 0x00000000, { thickness: 3, color: 0xFFFFFFFF });
-		temperatureGfx.drawRect(1, 1, 77, 13, 0x00000000, { thickness: 1, color: 0xFF000000 });
+		temperatureGfx = new FlxSprite(24, 8);
+		temperatureGfx.loadGraphic("assets/images/hud_temperature-overlay.png", true, 72, 24);
+		temperatureGfx.animation.add("idle", [0]);
+		temperatureGfx.animation.add("panic", [1, 0], 4, true);
 		add(temperatureGfx);
 		
+		text = new FlxText(32, 27, 48, "");
+		add(text);
+
 		// Scrollfactor.set()
 		forEach(function(spr : FlxSprite) {
 			spr.scrollFactor.set();
@@ -44,12 +56,20 @@ class GUI extends FlxTypedGroup<FlxSprite>
 	{
 		// Update temperature
 		var ice : Float = icecream.ice;
-		var hp : Int = Std.int(ice / 10 * 8);
+		var hp : Int = Std.int(ice / 10 * 4);
 		
 		temperatureBar.fill(0xFFBE3241);
-		temperatureBar.drawRect(0, 0, hp, 16, 0xFF3EA5F2);
-		
-		temperatureGfx.drawRect(1, 1, 77, 13, 0x00000000, { thickness: 3, color: 0xFFFFFFFF });
-		temperatureGfx.drawRect(1, 1, 77, 13, 0x00000000, { thickness: 1, color: 0xFF000000 });
+		temperatureBar.drawRect(0, 0, hp + 1, 8, 0xFF3EA5F2);
+
+		temperatureCursor.x = temperatureBar.x + hp;
+
+		statusGfx.animation.play("status", true, Std.int(10 - ice/10));
+
+		if (ice < 30)
+			temperatureGfx.animation.play("panic");
+		else
+			temperatureGfx.animation.play("idle");
+
+		// text.text = "Ice: " + ice + "[" + Std.int(10 - ice/10) + "]";
 	}
 }

@@ -102,7 +102,7 @@ class PlayState extends FlxState
 		meltingsPerSecond = level.meltingsPerSecond;
 		// Default 1.6 if not specified (icecream melt in 1 minute)
 		if (meltingsPerSecond == null)
-			meltingsPerSecond = 1.6;
+			meltingsPerSecond = 10;
 		
 		currentMps = meltingsPerSecond;
 		mpsTimer = new FlxTimer(1, handleMeltingsPerSecond, 0);
@@ -142,7 +142,7 @@ class PlayState extends FlxState
 		// add(Penguin.virtualPad);
 
 		// Prepare death manager
-		playflowManager = PlayFlowManager.get(this);
+		playflowManager = PlayFlowManager.get(this, gui);
 
 		// Delegate
 		super.create();
@@ -272,7 +272,7 @@ class PlayState extends FlxState
 	public function handleMeltingsPerSecond(timer : FlxTimer) : Void
 	{
 		// Called every second to handle icecream melting by environment
-		icecream.makeHotter(currentMps);
+		icecream.makeHotter(Math.floor(currentMps));
 	}
 
 	public function overlapWater(water : FlxObject, entity : FlxObject) : Void
@@ -372,8 +372,8 @@ class PlayState extends FlxState
 		if (FlxG.mouse.justPressed)
 		{
 			var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
-			// collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
-			mobileHazards.add(new SurpriseDropHazard(mousePos.x, mousePos.y, this, Hazard.HazardType.Collision));
+			collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
+			// mobileHazards.add(new SurpriseDropHazard(mousePos.x, mousePos.y, this, Hazard.HazardType.Collision));
 		}
 
 		if (FlxG.keys.anyJustPressed(["UP"]))

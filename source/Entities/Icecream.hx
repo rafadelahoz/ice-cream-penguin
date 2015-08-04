@@ -5,9 +5,9 @@ import flixel.text.FlxText;
 
 class Icecream extends FlxSprite {
 	
-	public static var MaxIce : Float = 100.0;
+	public static var MaxIce : Int = 100;
 
-	public var ice : Float;
+	public var ice : Int;
 	public var debugLabel : FlxText;
 
 	public function new(X : Float = 0, Y : Float = 0) {
@@ -64,14 +64,14 @@ class Icecream extends FlxSprite {
 		
 	}
 
-	public function makeColder(ammount : Float) 
+	public function makeColder(ammount : Int) 
 	{
 		ice += ammount;
 		if (ice > MaxIce)
 			ice = MaxIce;
 	}
 
-	public function makeHotter(ammount : Float) 
+	public function makeHotter(ammount : Int) 
 	{
 		ice -= ammount;
 		if (ice <= 0)
@@ -81,7 +81,7 @@ class Icecream extends FlxSprite {
 		}
 	}
 
-	public function water(ammount : Float)
+	public function water(ammount : Int)
 	{
 		ice -= ammount;
 		if (ice <= 0)
@@ -91,7 +91,7 @@ class Icecream extends FlxSprite {
 		}
 	}
 
-	public function mud(ammount : Float)
+	public function mud(ammount : Int)
 	{
 		PlayFlowManager.get().onDeath("dirty");
 	}
