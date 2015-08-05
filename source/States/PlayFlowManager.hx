@@ -14,7 +14,9 @@ class PlayFlowManager extends FlxObject
 	public static function get(?World : PlayState = null, ?Gui : GUI = null) : PlayFlowManager
 	{
 		if (instance == null)
+		{
 			instance = new PlayFlowManager(Gui);
+		}
 		
 		if (World != null)
 			instance.world = World;
@@ -25,7 +27,8 @@ class PlayFlowManager extends FlxObject
 	public var world : PlayState;
 	public var paused : Bool;
 	public var group : FlxGroup;
-
+	
+	var gui : GUI;
 	var circle : FlxSprite;
 	var circleColor : Int;
 	var radius : Float = 256;
@@ -35,13 +38,16 @@ class PlayFlowManager extends FlxObject
 
 	var currentPhase : Phase;
 
-	public function new(?gui : GUI)
+	public function new(?Gui : GUI)
 	{
 		super();
 
 		create();
-		if (gui != null)
+		if (Gui != null)
+		{
+			gui = Gui;
 			group.add(gui);
+		}
 	}
 
 	override public function destroy() : Void
@@ -74,6 +80,9 @@ class PlayFlowManager extends FlxObject
 	{
 		if (paused)
 		{
+			/* Update the GUI */
+			gui.updateGUI(world.icecream, world);
+		
 			switch (currentPhase)
 			{
 				case Closing:

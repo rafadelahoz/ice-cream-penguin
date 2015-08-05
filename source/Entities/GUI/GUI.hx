@@ -87,12 +87,18 @@ class GUI extends FlxTypedGroup<FlxSprite>
 
 		temperatureCursor.x = temperatureBar.x + hp;
 
-		statusGfx.animation.play("status", true, Std.int(10 - ice/10));
-
+		var frameIndex : Int = Std.int(10 - ice/10);
+		if (frameIndex < 0 || frameIndex > 9)
+			frameIndex = 9;
+		statusGfx.animation.play("status", true, frameIndex);
+		
 		if (ice < 30)
 			temperatureGfx.animation.play("panic");
 		else
 			temperatureGfx.animation.play("idle");
+	
+		// Pause the awfull termomether animation on death or win
+		temperatureGfx.animation.paused = PlayFlowManager.get().paused;		
 
 		// text.text = "Ice: " + ice + "[" + Std.int(10 - ice/10) + "]";
 	}

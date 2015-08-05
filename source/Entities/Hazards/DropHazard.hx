@@ -35,20 +35,35 @@ class DropHazard extends Hazard
 			case Hazard.HazardType.None:
 				loadGraphic("assets/images/droplet.png");
 				color = 0xffff00ff;
+				
 			case Hazard.HazardType.Fire:
 				loadGraphic("assets/images/lava-drop.png", true, 16, 16);
+				// Setup mask
+				setSize(8, 8);
+				offset.set(4, 5);
+				// Setup anims
 				animation.add("fall", [0, 1, 2, 3, 4, 5, 6, 7], 14);				
 				animated = true;
+				
 			case Hazard.HazardType.Water:
 				loadGraphic("assets/images/water-drop.png", true, 16, 16);
+				// Setup mask
+				setSize(8, 8);
+				offset.set(4, 5);
+				// Setup anims
 				animation.add("fall", [0, 1, 2, 3, 4], 14);
 				animated = true;
+				// Water drops shall not affect the penguin
+				dangerous = false;
+				
 			case Hazard.HazardType.Dirt:
 				loadGraphic("assets/images/droplet.png");
 				color = 0xff108810;
+				
 			case Hazard.HazardType.Collision:
 				loadGraphic("assets/images/droplet.png");
 				color = 0xff101010;
+				
 			default:
 				loadGraphic("assets/images/droplet.png");
 				color = 0xff101010;
@@ -88,6 +103,8 @@ class DropHazard extends Hazard
 
 	public function fall() : Void
 	{
+		collideWithLevel = true;
+		
 		alpha = 1;
 
 		animation.play("fall");
@@ -129,6 +146,7 @@ class DropHazard extends Hazard
 		if (velocity.y != 0)
 		{
 			brain.transition(splash, "splash");
+			alive = false;
 		}
 	}
 	
