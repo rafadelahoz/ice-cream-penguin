@@ -102,7 +102,7 @@ class PlayState extends FlxState
 		meltingsPerSecond = level.meltingsPerSecond;
 		// Default 1.6 if not specified (icecream melt in 1 minute)
 		if (meltingsPerSecond == null)
-			meltingsPerSecond = 10;
+			meltingsPerSecond = GameConstants.DefaultMPS;
 		
 		currentMps = meltingsPerSecond;
 		mpsTimer = new FlxTimer(1, handleMeltingsPerSecond, 0);
@@ -139,7 +139,7 @@ class PlayState extends FlxState
 		add(gui);
 			
 		// Register the Virtual Pad
-		// add(Penguin.virtualPad);
+		add(Penguin.virtualPad);
 
 		// Prepare death manager
 		playflowManager = PlayFlowManager.get(this, gui);

@@ -134,10 +134,7 @@ class TiledLevel extends TiledMap
 				var goal : LevelGoal = new LevelGoal(x, y, type);
 				state.levelGoals.add(goal);
 			case "water":
-				var water : FlxSprite = new FlxSprite(x, y);
-				water.makeGraphic(o.width, o.height, 0x440110CC);
-				water.setSize(o.width, o.height);
-				water.centerOrigin();
+				var water : CleanWater = new CleanWater(x, y, o.width, o.height);
 				state.watery.add(water);
 			case "oneway":
 				var oneway : FlxObject = new FlxObject(x, y, o.width, o.height);

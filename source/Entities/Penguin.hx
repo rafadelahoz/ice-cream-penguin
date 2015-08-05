@@ -32,6 +32,7 @@ class Penguin extends Entity
 	var stunJumpFactor : Float = 0.4;
 	var stunHSpeedFactor : Float = 0.25;
 	
+	var waterSpeedFactor : Float = 0.9;
 	var waterMaxVSpeed : Float = 20;
 	var waterGravityFactor : Float = 0.6;
 	var waterSurfaceGravityFactor : Float = 0.15;
@@ -108,64 +109,59 @@ class Penguin extends Entity
 			velocity.y = -jumpSpeed * 2;
 		}
 
-		if (!stunned) 
+		if (onWater) 
 		{
-			if (!onAir || onWater)
+			handleWaterBehaviour();
+		} 
+		else
+		{
+			if (!stunned) 
 			{
-				// Horizontal movement
-				if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+				if (!onAir)
 				{
-					facing = FlxObject.LEFT;
-					velocity.x = -hspeed;
-					animation.play("walk"); 
-				}
-				else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
-				{
-					facing = FlxObject.RIGHT;
-					velocity.x = hspeed;
-					animation.play("walk"); 
-				}
-				else 
-				{
-					velocity.x = 0;
-					animation.play("idle"); 
-				}
-			}
-			else
-			{
-				if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
-				{
-					if (facing == FlxObject.RIGHT && !turnedOnAir)
+					// Horizontal movement
+					if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
 					{
 						facing = FlxObject.LEFT;
-						turnedOnAir = true;
+						velocity.x = -hspeed;
+						animation.play("walk"); 
 					}
-					velocity.x -= jumpHspeed;
-					velocity.x = Math.max(velocity.x, -maxHspeed);
-				}
-				else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
-				{
-					if (facing == FlxObject.LEFT && !turnedOnAir) 
+					else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
 					{
 						facing = FlxObject.RIGHT;
-						turnedOnAir = true;
+						velocity.x = hspeed;
+						animation.play("walk"); 
 					}
-					velocity.x += jumpHspeed;
-					velocity.x = Math.min(velocity.x, maxHspeed);
+					else 
+					{
+						velocity.x = 0;
+						animation.play("idle"); 
+					}
 				}
-			}
-		}
-		else 
-		{
-			animation.play("hurt");
-		}
-
-		if (!onWater) 
-		{
-			acceleration.y = gravity;
-
-			if (!stunned)
-			{
+				else
+				{
+					if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+					{
+						if (facing == FlxObject.RIGHT && !turnedOnAir)
+						{
+							facing = FlxObject.LEFT;
+							turnedOnAir = true;
+						}
+						velocity.x -= jumpHspeed;
+						velocity.x = Math.max(velocity.x, -maxHspeed);
+					}
+					else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+					{
+						if (facing == FlxObject.LEFT && !turnedOnAir) 
+						{
+							facing = FlxObject.RIGHT;
+							turnedOnAir = true;
+						}
+						velocity.x += jumpHspeed;
+						velocity.x = Math.min(velocity.x, maxHspeed);
+					}
+				}
+				
 				// Vertical movement
 				if (velocity.y == 0) 
 				{
@@ -173,7 +169,7 @@ class Penguin extends Entity
 				} 
 				else
 				{
-					if (velocity.y < 0 && (playerJumped && (!FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))))
+					if (velocity.y < 0 && (playerJumped && !(FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))))
 					{
 						velocity.y /= 2;
 						playerJumped = false;
@@ -184,44 +180,18 @@ class Penguin extends Entity
 					else
 						animation.play("fall");
 				}
-			}
-		}
-		else // if (onWater) 
-		{
-			if (stunned)
-				stunned = false;
-
-			var surfaceY = waterBody.y;
-
-			if (y + height > surfaceY + height * 2)
-			{
-				acceleration.y = -gravity * waterGravityFactor;
-			} 
-			else 
-			{
-				if (y + height/2.5 > surfaceY) {
-					acceleration.y = -gravity * waterSurfaceGravityFactor;
-				} else {
-					acceleration.y = gravity * waterSurfaceGravityFactor;
-				}
 				
-				if (Math.abs(velocity.y) > waterMaxVSpeed)
-					velocity.y *= waterFallSpeedReduction;
-
-				jump();
+				// Carried object control
+				// Switch carry position when the button's pressed
+				if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
+					carryPos = (carryPos + 1) % 2; 
 			}
-
+			else // if (stunned)
+			{
+				animation.play("hurt");
+			}
 			
-
-			animation.play("jump");
-		}
-
-		// Carried object control
-		if (!stunned)
-		{
-			// Switch carry position when the button's pressed
-			if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
-				carryPos = (carryPos + 1) % 2; 
+			acceleration.y = gravity;
 		}
 
 		// Control flipping
@@ -261,6 +231,52 @@ class Penguin extends Entity
 	override public function destroy() : Void
 	{
 		super.destroy();
+	}
+	
+	public function handleWaterBehaviour() : Void
+	{
+		if (stunned)
+			stunned = false;
+	
+		// Horizontal movement
+		if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+		{
+			facing = FlxObject.LEFT;
+			velocity.x = -hspeed * waterSpeedFactor;
+		}
+		else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+		{
+			facing = FlxObject.RIGHT;
+			velocity.x = hspeed * waterSpeedFactor;
+		}
+		else 
+		{
+			velocity.x = 0;
+		}
+
+		// Vertical movement
+		var surfaceY = waterBody.y;
+
+		if (y + height > surfaceY + height * 2)
+		{
+			acceleration.y = -gravity * waterGravityFactor;
+		} 
+		else 
+		{
+			if (y + height/2.5 > surfaceY) {
+				acceleration.y = -gravity * waterSurfaceGravityFactor;
+			} else {
+				acceleration.y = gravity * waterSurfaceGravityFactor;
+			}
+			
+			if (Math.abs(velocity.y) > waterMaxVSpeed)
+				velocity.y *= waterFallSpeedReduction;
+
+			jump();
+		}
+		
+		// Float animation
+		animation.play("jump");
 	}
 
 	public function hit(duration : Float = 0.2, ?direction : Int = FlxObject.NONE, ?force : Bool = false) 
