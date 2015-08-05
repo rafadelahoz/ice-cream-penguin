@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.util.FlxTimer;
 import flixel.util.FlxPoint;
+import flixel.util.FlxRect;
 import flixel.ui.FlxVirtualPad;
 import flixel.ui.FlxButton;
 
@@ -42,7 +43,7 @@ class Penguin extends Entity
 	var enemyCollisionStunTime	: Float = 0.75;
 	
 	var onWater : Bool;
-	var waterBody : FlxObject;
+	var waterBody : Hazard;
 	var onAir : Bool;
 
 	var playerJumped : Bool;
@@ -182,9 +183,7 @@ class Penguin extends Entity
 				}
 				
 				// Carried object control
-				// Switch carry position when the button's pressed
-				if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
-					carryPos = (carryPos + 1) % 2; 
+				handleCarriedObject();
 			}
 			else // if (stunned)
 			{
@@ -233,50 +232,84 @@ class Penguin extends Entity
 		super.destroy();
 	}
 	
+	function handleCarriedObject() : Void
+	{
+		// Switch carry position when the button's pressed
+		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
+			carryPos = (carryPos + 1) % 2; 
+	}
+	
 	public function handleWaterBehaviour() : Void
 	{
 		if (stunned)
 			stunned = false;
 	
-		// Horizontal movement
-		if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+		// Swimming in dangerous water bodies is not recommended
+		if (waterBody.dangerous)
 		{
-			facing = FlxObject.LEFT;
-			velocity.x = -hspeed * waterSpeedFactor;
-		}
-		else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
-		{
-			facing = FlxObject.RIGHT;
-			velocity.x = hspeed * waterSpeedFactor;
-		}
-		else 
-		{
-			velocity.x = 0;
-		}
-
-		// Vertical movement
-		var surfaceY = waterBody.y;
-
-		if (y + height > surfaceY + height * 2)
-		{
-			acceleration.y = -gravity * waterGravityFactor;
-		} 
-		else 
-		{
-			if (y + height/2.5 > surfaceY) {
-				acceleration.y = -gravity * waterSurfaceGravityFactor;
-			} else {
-				acceleration.y = gravity * waterSurfaceGravityFactor;
-			}
-			
 			if (Math.abs(velocity.y) > waterMaxVSpeed)
 				velocity.y *= waterFallSpeedReduction;
+				
+			animation.play("hurt");
+			acceleration.y = GameConstants.Gravity * 0.1;
+			velocity.x /= 3;
+		}
+		// Swimming on clean, still waters shall be a really pleasant experience
+		else
+		{
+			// Horizontal movement
+			if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+			{
+				facing = FlxObject.LEFT;
+				velocity.x = -hspeed * waterSpeedFactor;
+			}
+			else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+			{
+				facing = FlxObject.RIGHT;
+				velocity.x = hspeed * waterSpeedFactor;
+			}
+			else 
+			{
+				velocity.x = 0;
+			}
 
-			jump();
+			// Vertical movement
+			var surfaceY = waterBody.y;
+
+			if (y + height > surfaceY + height * 2)
+			{
+				acceleration.y = -gravity * waterGravityFactor;
+			} 
+			else 
+			{
+				if (y + height/2.5 > surfaceY) {
+					acceleration.y = -gravity * waterSurfaceGravityFactor;
+				} else {
+					acceleration.y = gravity * waterSurfaceGravityFactor;
+				}
+				
+				if (Math.abs(velocity.y) > waterMaxVSpeed)
+					velocity.y *= waterFallSpeedReduction;
+
+				jump();
+			}
+			
+			// Carried object control
+			handleCarriedObject();
+			
+			// Float animation
+			animation.play("jump");
 		}
 		
-		// Float animation
-		animation.play("jump");
+		// Check whether the icecream is in danger!
+		var rect : FlxRect = new FlxRect(waterBody.x, waterBody.y, waterBody.width, waterBody.height);
+		if (icecream.containedIn(rect))
+		{
+			var ruin : Int = 1;
+			if (waterBody.dangerous)
+				ruin = 10;
+			icecream.water(ruin);
+		}
 	}
 
 	public function hit(duration : Float = 0.2, ?direction : Int = FlxObject.NONE, ?force : Bool = false) 
@@ -374,7 +407,7 @@ class Penguin extends Entity
 		timer = null;
 	}
 
-	public function onEnterWater(waterBlock : FlxObject) : Void
+	public function onEnterWater(waterBlock : Hazard) : Void
 	{
 		waterBody = waterBlock;
 		onWater = true;

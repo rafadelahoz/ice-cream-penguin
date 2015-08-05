@@ -11,6 +11,7 @@ import flixel.FlxCamera;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxTimer;
 import flixel.util.FlxPoint;
+import flixel.util.FlxRect;
 using flixel.util.FlxSpriteUtil;
 
 /**
@@ -279,8 +280,7 @@ class PlayState extends FlxState
 	{
 		if (Std.is(entity, Penguin)) 
 		{
-			(cast(entity, Penguin)).onEnterWater(water);
-			// entity.velocity.y -= water.height - (water.y - entity.y - 16) / water.height * 1.0;
+			(cast(entity, Penguin)).onEnterWater(cast(water, Hazard));
 		}
 		else 
 		{
@@ -369,13 +369,20 @@ class PlayState extends FlxState
 			PlayFlowManager.get().onDeath("kill");
 		}
 		
+		var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
+		
 		if (FlxG.mouse.justPressed)
 		{
-			var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
 			collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
 			// mobileHazards.add(new SurpriseDropHazard(mousePos.x, mousePos.y, this, Hazard.HazardType.Collision));
 		}
-
+		
+		if (FlxG.keys.anyJustPressed(["T"]))
+		{
+			penguin.x = Std.int(mousePos.x);
+			penguin.y = Std.int(mousePos.y);
+		}
+		
 		if (FlxG.keys.anyJustPressed(["UP"]))
 			FlxG.timeScale = Math.min(FlxG.timeScale + 0.5, 1);
 		else if (FlxG.keys.anyJustPressed(["DOWN"]))

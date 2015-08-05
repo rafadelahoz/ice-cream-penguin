@@ -2,12 +2,17 @@ package;
 
 import flixel.FlxSprite;
 import flixel.text.FlxText;
+import flixel.util.FlxPoint;
+import flixel.util.FlxRect;
+import flixel.util.FlxTimer;
 
 class Icecream extends FlxSprite {
 	
 	public static var MaxIce : Int = 100;
+	public static var MaxDry : Int = 100;
 
 	public var ice : Int;
+	public var dry : Int;
 	public var debugLabel : FlxText;
 
 	public function new(X : Float = 0, Y : Float = 0) {
@@ -17,6 +22,7 @@ class Icecream extends FlxSprite {
 		initGraphics();
 
 		ice = MaxIce;
+		dry = MaxDry;
 
 		debugLabel = new FlxText(x, y);
 	}
@@ -83,10 +89,10 @@ class Icecream extends FlxSprite {
 
 	public function water(ammount : Int)
 	{
-		ice -= ammount;
-		if (ice <= 0)
+		dry -= ammount;
+		if (dry <= 0)
 		{
-			ice = 0;
+			dry = 0;
 			PlayFlowManager.get().onDeath("water");
 		}
 	}
@@ -99,5 +105,18 @@ class Icecream extends FlxSprite {
 	public function steal(thief : Entity) 
 	{
 		PlayFlowManager.get().onDeath("steal");
+	}
+	
+	/**
+	 * Checks whether the icecream is fully contained in the given FlxRect
+	 * @param rect Rectangle to check with	 
+	 * @return Whether the rectangle contains the icecream or not
+	*/
+	public function containedIn(rect : FlxRect) : Bool
+	{
+		var topleft : FlxPoint = new FlxPoint(x, y);
+		var botright: FlxPoint = new FlxPoint(topleft.x + width, topleft.y + height);
+		
+		return rect.containsFlxPoint(topleft) && rect.containsFlxPoint(botright);
 	}
 }

@@ -134,7 +134,10 @@ class TiledLevel extends TiledMap
 				var goal : LevelGoal = new LevelGoal(x, y, type);
 				state.levelGoals.add(goal);
 			case "water":
-				var water : CleanWater = new CleanWater(x, y, o.width, o.height);
+				var water : CleanWater = new CleanWater(x, y, o.width, o.height, state);
+				state.watery.add(water);
+			case "deepwater":
+				var water : DeepWater = new DeepWater(x, y, o.width, o.height, state);
 				state.watery.add(water);
 			case "oneway":
 				var oneway : FlxObject = new FlxObject(x, y, o.width, o.height);

@@ -5,7 +5,7 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.tile.FlxTileblock;
 
-class CleanWater extends Hazard
+class DeepWater extends Hazard
 {
 	var tideTween : FlxTween;
 	var surface : FlxTileblock;
@@ -14,7 +14,7 @@ class CleanWater extends Hazard
 	{
 		super(X, Y, Hazard.HazardType.Water, World);
 		
-		makeGraphic(Width, Height, 0x440110CC);
+		makeGraphic(Width, Height, 0xFF010877);
 		setSize(Width, Height);
 		centerOrigin();
 		
@@ -22,13 +22,11 @@ class CleanWater extends Hazard
 		surface.loadTiles("assets/images/water-surface.png", 8, 8);
 		
 		tideTween = FlxTween.tween(this, {y: y + 3}, 1+Math.random(), { ease: FlxEase.quadInOut, type: FlxTween.PINGPONG });
-		
-		dangerous = false;
 	}
 	
 	override public function update() : Void
 	{
-		// makeGraphic(Std.int(width), Std.int(height), 0x440110CC);
+		// makeGraphic(Std.int(width), Std.int(height), 0xFF010877);
 	
 		super.update();
 		

@@ -7,6 +7,7 @@ import flixel.text.FlxText;
 import flixel.group.FlxTypedGroup;
 import flixel.util.FlxRect;
 import flixel.util.FlxPoint;
+import flixel.util.FlxColorUtil;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -78,6 +79,13 @@ class GUI extends FlxTypedGroup<FlxSprite>
 		// Handle the GUI position
 		handlePosition(world);
 	
+		updateTemperature(icecream);
+
+		updateHumidity(icecream);
+	}
+	
+	private function updateTemperature(icecream : Icecream)
+	{
 		// Update temperature
 		var ice : Float = icecream.ice;
 		var hp : Int = Std.int(ice / 10 * 4);
@@ -98,9 +106,24 @@ class GUI extends FlxTypedGroup<FlxSprite>
 			temperatureGfx.animation.play("idle");
 	
 		// Pause the awfull termomether animation on death or win
-		temperatureGfx.animation.paused = PlayFlowManager.get().paused;		
-
+		temperatureGfx.animation.paused = PlayFlowManager.get().paused;
+		
 		// text.text = "Ice: " + ice + "[" + Std.int(10 - ice/10) + "]";
+	}
+	
+	private function updateHumidity(icecream : Icecream)
+	{
+		var dry : Int = icecream.dry;
+		var hp : Float = 1 - dry / 100.0;
+		
+		// Lerp from white towards blue-ish when getting wet (hm...)
+		var color : Int = FlxColorUtil.makeFromARGB(1, 255 - Std.int((255-62)*hp), 255 - Std.int((255-165)*hp), 255 - Std.int((255 - 242)*hp));
+		
+		// Tint the hud
+		statusGfx.color = color;
+		// temperatureGfx.color = color;
+		
+		// text.text = "Dry: " + hp + "[from:" + dry + "]";
 	}
 	
 	private function handlePosition(world : PlayState)

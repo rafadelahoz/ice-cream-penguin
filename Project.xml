@@ -36,6 +36,7 @@
 	
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
+	<classpath name="source/Debug" />
 	<classpath name="source/Meta" />
 	<classpath name="source/States" />
 	<classpath name="source/WorldMap" />	
