@@ -3,6 +3,8 @@ package;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 
+using flixel.util.FlxSpriteUtil;
+
 class Node extends FlxSprite
 {
 	public var name : String;
@@ -23,6 +25,8 @@ class Node extends FlxSprite
 		else
 			nodeColor = FlxColor.WHITE;
 			
-		makeGraphic(16, 16, nodeColor);		
+		makeGraphic(12, 12, 0x00000000);
+		offset.set(2, 2);
+		drawRoundRect(1, 1, 10, 10, 10, 10, 0x00000000, { thickness: 1, color: nodeColor });
 	}
 }

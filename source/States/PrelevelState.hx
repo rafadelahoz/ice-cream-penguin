@@ -49,14 +49,24 @@ class PrelevelState extends FlxState
 
 		if (FlxG.keys.anyJustReleased(["ENTER"]))
 		{
+			trace("Map!");
+			FlxG.switchState(new WorldMapState());
+		}
+		
+		if (FlxG.keys.anyJustReleased(["A"]))
+		{
 			GameController.save();
 			FlxG.switchState(new PlayState("" + GameController.GameStatus.currentLevel));
 		}
 
 		if (FlxG.keys.anyJustReleased(["UP"]))
-			GameController.GameStatus.currentLevel++;
+		{
+			GameController.GameStatus.currentLevel = Std.string(Std.parseInt(GameController.GameStatus.currentLevel) + 1);
+		}
 		else if (FlxG.keys.anyJustReleased(["DOWN"]))
-			GameController.GameStatus.currentLevel--;
+		{
+			GameController.GameStatus.currentLevel = Std.string(Std.parseInt(GameController.GameStatus.currentLevel) - 1);
+		}
 
 		titleText.text = "Level 1-" + GameController.GameStatus.currentLevel;
 	}	

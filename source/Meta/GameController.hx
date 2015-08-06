@@ -7,18 +7,20 @@ class GameController
 	private static var gameSave : FlxSave;
 
 	public static var GameStatus = {
-		currentLevel : 0
+		currentWorld : "0",
+		currentLevel : "0"
 	};
 	
 	public static function init() 
 	{
 		gameSave = new FlxSave();
-		GameStatus.currentLevel = 0;
+		GameStatus.currentLevel = "0";
+		GameStatus.currentWorld = "0";
 	}
 	
 	public static function save() 
 	{
-		trace("Saving...");
+		trace("Saving: " + GameStatus);
 		gameSave.bind("SAVE0");
 		gameSave.data.gameStatus = GameStatus;
 		gameSave.flush();

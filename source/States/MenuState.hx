@@ -49,16 +49,15 @@ class MenuState extends FlxState
 	{
 		super.update();
 
-		if (FlxG.keys.anyJustReleased(["ENTER"]))
+		if (FlxG.keys.anyJustReleased(["A"]))
 		{
 			trace("Loading...");
 			GameController.load();
 			
 			FlxG.switchState(new PrelevelState());
 		}
-		else if (FlxG.keys.anyJustReleased(["A"]))
+		else if (FlxG.keys.anyJustReleased(["ENTER"]))
 		{
-			trace("Map!");
 			FlxG.switchState(new WorldMapState());
 		}
 	}	

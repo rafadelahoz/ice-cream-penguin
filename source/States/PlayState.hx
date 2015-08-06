@@ -383,9 +383,9 @@ class PlayState extends FlxState
 			penguin.y = Std.int(mousePos.y);
 		}
 		
-		if (FlxG.keys.anyJustPressed(["UP"]))
+		/*if (FlxG.keys.anyJustPressed(["UP"]))
 			FlxG.timeScale = Math.min(FlxG.timeScale + 0.5, 1);
 		else if (FlxG.keys.anyJustPressed(["DOWN"]))
-			FlxG.timeScale = Math.max(FlxG.timeScale - 0.5, 0);
+			FlxG.timeScale = Math.max(FlxG.timeScale - 0.5, 0);*/
 	}
 }

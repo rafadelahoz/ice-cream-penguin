@@ -28,21 +28,16 @@ class PlayFlowManager extends FlxObject
 	public var paused : Bool;
 	public var group : FlxGroup;
 	
+	var spotlightFx : SpotlightEffect;
+	
 	var gui : GUI;
-	var circle : FlxSprite;
-	var circleColor : Int;
-	var radius : Float = 256;
-	var radiusSpeed : Float = 5;
-	var minRadius : Float = 185;
-	var waitingDuration : Float = 1;
-
-	var currentPhase : Phase;
 
 	public function new(?Gui : GUI)
 	{
 		super();
 
 		create();
+		
 		if (Gui != null)
 		{
 			gui = Gui;
@@ -54,7 +49,9 @@ class PlayFlowManager extends FlxObject
 	{
 		group.destroy();
 		group = null;
-		circle = null;
+		
+		spotlightFx.destroy();
+		spotlightFx = null;
 
 		instance = null;
 	}
@@ -64,16 +61,12 @@ class PlayFlowManager extends FlxObject
 		paused = false;
 		group = new FlxGroup();
 
-		circle = new FlxSprite(0, 0);
-		circle.makeGraphic(FlxG.width, FlxG.height, 0x00000000, true);
-		circle.scrollFactor.set();
-		group.add(circle);
+		spotlightFx = new SpotlightEffect();
+		group.add(spotlightFx);
 
 		/*var txt : FlxText = new FlxText(FlxG.width/2, 16, "DEAD!");
 		txt.scrollFactor.set();
 		group.add(txt);*/
-
-		currentPhase = Phase.Alive;
 	}
 
 	public function onUpdate() : Bool
@@ -83,37 +76,12 @@ class PlayFlowManager extends FlxObject
 			/* Update the GUI */
 			gui.updateGUI(world.icecream, world);
 		
-			switch (currentPhase)
-			{
-				case Closing:
-					radius -= radiusSpeed;
-					if (radius < minRadius)
-					{
-						radius = minRadius;
-						currentPhase = Phase.Waiting;
-						new FlxTimer(waitingDuration, onTimer);
-					}
-				case Waiting:
-				case Ending:
-					radius -= radiusSpeed * 0.8;
-					if (radius <= 0) 
-					{
-						radius = 0;
-						FlxG.switchState(new PrelevelState());
-					}
-				default:
-
-			}
-
-			circle.x = 0;
-			circle.y = 0;
-
+			// Update the Spotlight
 			var ox = world.icecream.getMidpoint().x - FlxG.camera.scroll.x;
 			var oy = world.icecream.getMidpoint().y - FlxG.camera.scroll.y;
-
-			// circle.fill(0x00000000);
-			circle.drawRect(0, 0, FlxG.width, FlxG.height, 0x00000000);
-			circle.drawCircle(ox, oy, radius, 0x00000000, { color : circleColor, thickness: 300});
+			
+			spotlightFx.target.x = ox;
+			spotlightFx.target.y = oy;
 			
 			group.update();
 			super.update();
@@ -135,12 +103,6 @@ class PlayFlowManager extends FlxObject
 		}
 
 		return true;
-	}
-
-	public function onTimer(timer : FlxTimer) : Void
-	{
-		if (currentPhase == Phase.Waiting)
-			currentPhase = Phase.Ending;
 	}
 
 	public function onGoal() : Void
@@ -169,10 +131,9 @@ class PlayFlowManager extends FlxObject
 		}
 
 		paused = true;
-		currentPhase = Phase.Closing;
 		
-		circleColor = color;
+		spotlightFx.close(color, function() {			
+			FlxG.switchState(new WorldMapState());
+		});
 	}
 }
-
-enum Phase { Alive; Closing; Waiting; Ending; }

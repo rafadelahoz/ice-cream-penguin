@@ -40,6 +40,7 @@
 	<classpath name="source/Meta" />
 	<classpath name="source/States" />
 	<classpath name="source/WorldMap" />	
+	<classpath name="source/Effects" />
 	<classpath name="source/Entities" />
 	<classpath name="source/Entities/Items" />
 	<classpath name="source/Entities/GUI" />

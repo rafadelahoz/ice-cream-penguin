@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="8" tileheight="8" nextobjectid="17">
+ <tileset firstgid="1" name="tileset" tilewidth="8" tileheight="8">
+  <image source="../tilesets/color_tileset.png" trans="ff00ff" width="240" height="144"/>
+ </tileset>
+ <layer name="tilemap" width="30" height="20">
+  <properties>
+   <property name="tileset" value="tileset"/>
+  </properties>
+  <data encoding="base64">
+   awEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAF0AAABdAAAAXQAAAF0AAABdAAAAXQAAAF0AAABdAAAAXQAAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAF0AAABdAAAAXQAAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABdAAAAXQAAAF0AAABdAAAAXQAAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAAAyAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAF0AAAAyAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABdAAAAXQAAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABdAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABrAQAAawEAAF0AAABdAAAAXQAAAF0AAABdAAAAXQAAAF0AAABdAAAAXQAAAGsBAABrAQAAawEAAGsBAABdAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABdAAAAXQAAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAGsBAABrAQAAawEAAGsBAABdAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAGsBAABrAQAAawEAAGsBAABdAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAADIAAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAGsBAABrAQAAawEAAGsBAABdAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAGsBAABrAQAAawEAAGsBAABdAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAGsBAABrAQAAawEAAGsBAABdAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAXQAAAF0AAABdAAAAXQAAAF0AAAAyAAAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAF0AAABdAAAAXQAAAF0AAABdAAAAMgAAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAAawEAAGsBAABrAQAA
+  </data>
+ </layer>
+ <objectgroup name="paths">
+  <object id="1" type="Path" x="56" y="72" width="2" height="2">
+   <properties>
+    <property name="from" value="N@level-1"/>
+    <property name="to" value="W@level-2"/>
+   </properties>
+   <polyline points="24,0 24,-24 88,-24 88,24 128,24"/>
+  </object>
+  <object id="2" name="level-1" type="Node" x="80" y="72" width="8" height="8">
+   <properties>
+    <property name="file" value="20"/>
+    <property name="initial" value="true"/>
+   </properties>
+  </object>
+  <object id="3" name="level-2" type="Node" x="184" y="96" width="8" height="8">
+   <properties>
+    <property name="file" value="10"/>
+   </properties>
+  </object>
+  <object id="4" name="ice-1" type="Node" x="184" y="32" width="8" height="8">
+   <properties>
+    <property name="file" value="9"/>
+   </properties>
+  </object>
+  <object id="5" name="forest" type="Node" x="40" y="32" width="8" height="8">
+   <properties>
+    <property name="file" value="4"/>
+   </properties>
+  </object>
+  <object id="7" type="Path" x="184" y="96">
+   <properties>
+    <property name="from" value="N@level-2"/>
+    <property name="to" value="S@ice-1"/>
+   </properties>
+   <polyline points="0,0 0,-28 0,-64"/>
+  </object>
+  <object id="10" type="Path" x="40" y="32">
+   <properties>
+    <property name="from" value="W@ice-1"/>
+    <property name="to" value="N@forest"/>
+   </properties>
+   <polyline points="0,0 0,-8 32,-8 32,-24 104,-24 104,-16 128,-16 128,0 144,0"/>
+  </object>
+  <object id="12" type="Path" x="40" y="40">
+   <properties>
+    <property name="from" value="W@level-1"/>
+    <property name="to" value="S@forest"/>
+   </properties>
+   <polyline points="40,32 32,32 32,16 16,16 16,0 0,0 0,-8"/>
+  </object>
+  <object id="13" type="Path" x="80" y="80">
+   <properties>
+    <property name="from" value="S@level-1"/>
+    <property name="to" value="W@nothing"/>
+   </properties>
+   <polyline points="0,-8 0,48 40,48"/>
+  </object>
+  <object id="16" name="nothing" type="node" x="120" y="128" width="8" height="8"/>
+ </objectgroup>
+</map>

@@ -13,7 +13,7 @@ import flixel.tile.FlxTilemap;
 import flixel.FlxSprite;
 import flixel.util.FlxPoint;
 
-class TiledLevel extends TiledMap
+class TiledMap extends TiledMap
 {
 	private inline static var spritesPath = "assets/images/";
 	private inline static var tilesetPath = "assets/tilesets/";
@@ -32,7 +32,6 @@ class TiledLevel extends TiledMap
 		overlayTiles = new FlxGroup();
 		foregroundTiles = new FlxGroup();
 		backgroundTiles = new FlxGroup();
-		collidableTileLayers = new Array<FlxTilemap>();
 
 		FlxG.camera.setBounds(0, 0, fullWidth, fullHeight, true);
 
@@ -85,6 +84,9 @@ class TiledLevel extends TiledMap
 			else
 			{
 				// trace("Found collision layer");
+				if (collidableTileLayers == null)
+					collidableTileLayers = new Array<FlxTilemap>();
+
 				collidableTileLayers.push(tilemap);
 			}
 		}

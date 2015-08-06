@@ -11,6 +11,8 @@ import flixel.tweens.FlxTween;
 
 class WorldMapState extends FlxState
 {
+	public var mapName : String;
+
 	public var nodes : Map<String, Node>;
 	var numNodes : Int;
 	
@@ -20,43 +22,84 @@ class WorldMapState extends FlxState
 	
 	public var cursor : FlxSprite;
 	public var dirSelector : FlxSprite;
+	
+	public var map : TiledWorldMap;
 
-	public function new()
+	public function new(?MapName : String)
 	{
 		super();
+		
+		if (MapName == null)
+			MapName = "" + GameController.GameStatus.currentWorld;
+			
+		mapName = MapName;
 		
 		nodes = new Map<String, Node>();
 	}
 
 	override public function create() : Void
 	{
-		// Load map, read nodes and paths and such
-		generateMap();
+		// Load the tiled map
+		map = new TiledWorldMap("assets/maps/world-" + mapName + ".tmx");
+	
+		// Add tilemaps
+		add(map.backgroundTiles);
 		
+		// Load map objects
+		map.loadObjects(this);
+	
+		// Load map, read nodes and paths and such
+		// generateMap();
+		
+		// Add entities
 		var nodesIt : Iterator<Node> = nodes.iterator();
 		while (nodesIt.hasNext())
 			add(nodesIt.next());
 			
-		cursor = new FlxSprite(0, 0).makeGraphic(16, 16, 0xFFCC03AA);
+		cursor = new FlxSprite(0, 0).makeGraphic(8, 8, 0xFFCC03AA);
 		add(cursor);
 		FlxG.camera.follow(cursor);
 		
 		updateCursorPosition();
 		
-		dirSelector = new FlxSprite(4, 4).makeGraphic(16, 16, 0xFF0303FF);
+		dirSelector = new FlxSprite(4, 4).makeGraphic(2, 2, 0xFF0303FF);
 		add(dirSelector);
+		
+		// Add overlay tiles
+		add(map.overlayTiles);
+	}
+	
+	override public function destroy()
+	{
+		map.destroy();
+		map = null;
 	}
 	
 	override public function update()
 	{
-		if (FlxG.keys.anyJustReleased(["A"]))
-		{
-			FlxG.switchState(new WorldMapState());
-		}
-		
+		if (FlxG.keys.anyJustReleased(["ENTER"]))
+			FlxG.switchState(new PrelevelState());
+	
 		// Only allow movement if we are not moving
 		if (currentPath == null)
 		{
+			// Enter level
+			if (FlxG.keys.anyJustReleased(["A"]))
+			{
+				var cNode : Node = nodes.get(currentNode);
+				
+				if (cNode.levelFile != null)
+				{
+					// Store the current level
+					GameController.GameStatus.currentLevel = cNode.levelFile;
+					// Save
+					GameController.save();
+					// Go!
+					FlxG.switchState(new PlayState(GameController.GameStatus.currentLevel));
+				}
+			}
+		
+			// Direction
 			handleDirSelector();
 			
 			var direction : Int = FlxObject.NONE;
@@ -65,14 +108,15 @@ class WorldMapState extends FlxState
 			if (FlxG.keys.anyJustReleased(["Left"])) direction = FlxObject.LEFT;
 			if (FlxG.keys.anyJustReleased(["Right"])) direction = FlxObject.RIGHT;
 			
-			if (direction != FlxObject.NONE)
+			if (direction != FlxObject.NONE && currentNode != null)
 			{
 				var cNode : Node = nodes.get(currentNode);
 				var path : Path = cNode.paths.get(direction);
 				if (path != null)
 				{
 					currentPath = path;
-					FlxTween.linearPath(cursor, path.nodes, 0.7, { ease: FlxEase.quadInOut, complete: onPathFinished });
+					var timeToWalk : Float = path.length() / 8 * 0.2;
+					FlxTween.linearPath(cursor, path.nodes, timeToWalk, { complete: onPathFinished });
 				}
 			}
 		}
@@ -102,23 +146,25 @@ class WorldMapState extends FlxState
 	
 	public function updateCursorPosition()
 	{
-		var cNode : Node = nodes.get(currentNode);
-		if (cNode != null)
+		if (currentNode != null) 
 		{
-			cursor.x = cNode.x;
-			cursor.y = cNode.y;
-			
-			// Debug directions
-			trace("Directions from " + cNode.name + ":");
-			for (dir in [FlxObject.UP, FlxObject.RIGHT, FlxObject.DOWN, FlxObject.LEFT])
+			var cNode : Node = nodes.get(currentNode);
+			if (cNode != null)
 			{
-				if (cNode.paths.get(dir) != null)
-					trace("  - " + dirName(dir) + ": " + cNode.paths.get(dir).pointB.name);
+				cursor.x = cNode.x;
+				cursor.y = cNode.y;
+				
+				// Debug directions
+				trace("Directions from " + cNode.name + ":");
+				for (dir in [FlxObject.UP, FlxObject.RIGHT, FlxObject.DOWN, FlxObject.LEFT])
+				{
+					if (cNode.paths.get(dir) != null)
+						trace("  - " + dirName(dir) + ": " + cNode.paths.get(dir).pointB.name);
+				}
+				
+				currentDir = getAllowedDirections()[0];
 			}
-			
-			currentDir = getAllowedDirections()[0];
-		}
-		
+		}		
 		
 	}
 	
@@ -258,14 +304,14 @@ class WorldMapState extends FlxState
 		return path;
 	}
 	
-	function dirsWithout(Dir : Int) : Array<Int>
+	public static function dirsWithout(Dir : Int) : Array<Int>
 	{
 		var dirs : Array<Int> = [FlxObject.UP, FlxObject.DOWN, FlxObject.LEFT, FlxObject.RIGHT];
 		dirs.remove(Dir);
 		return dirs;
 	}
 	
-	function dirName(Dir : Int) : String
+	public static function dirName(Dir : Int) : String
 	{
 		switch (Dir)
 		{
@@ -282,7 +328,24 @@ class WorldMapState extends FlxState
 		}
 	}
 	
-	function inverseDir(Dir : Int) : Int
+	public static function encodeDirName(Dir : String) : Int
+	{
+		switch (Dir)
+		{
+			case "W":
+				return FlxObject.LEFT;
+			case "E":
+				return FlxObject.RIGHT;
+			case "N":
+				return FlxObject.UP;
+			case "S":
+				return FlxObject.DOWN;
+			default:
+				return -1;
+		}
+	}
+	
+	public static function inverseDir(Dir : Int) : Int
 	{
 		switch (Dir)
 		{

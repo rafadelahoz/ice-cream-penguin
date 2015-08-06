@@ -22,6 +22,18 @@ class Path
 		directionB = ToDirection;
 	}
 	
+	public function length() : Float
+	{
+		var length : Float = 0;
+		
+		for (i in 0...Std.int(Math.max(0, nodes.length-2)))
+		{
+			length += nodes[i].distanceTo(nodes[i+1]);
+		}
+		
+		return length;
+	}
+	
 	public function inverse() : Path
 	{
 		var inverse : Path = new Path();
