@@ -4,7 +4,9 @@ import flixel.FlxSprite;
 
 class LevelGoal extends FlxSprite
 {
-	public function new(X : Int, Y : Int, ?Frame : Int)
+	public var unlocks : String;
+
+	public function new(X : Int, Y : Int, ?Frame : Int, ?Unlocks : String)
 	{
 		super(X, Y);
 
@@ -19,5 +21,7 @@ class LevelGoal extends FlxSprite
 		offset.set(5, 13);
 		x = x+5;
 		y = y+13;
+		
+		unlocks = Unlocks;
 	}
 }

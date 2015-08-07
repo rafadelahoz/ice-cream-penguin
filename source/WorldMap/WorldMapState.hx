@@ -20,6 +20,7 @@ class WorldMapState extends FlxState
 	public var currentPath : Path;
 	public var currentDir  : Int;
 	
+	public var waitingForPlayer : Bool;
 	public var cursor : FlxSprite;
 	public var dirSelector : FlxSprite;
 	
@@ -60,6 +61,8 @@ class WorldMapState extends FlxState
 		add(cursor);
 		FlxG.camera.follow(cursor);
 		
+		positionAtSavedNode();
+		
 		updateCursorPosition();
 		
 		dirSelector = new FlxSprite(4, 4).makeGraphic(2, 2, 0xFF0303FF);
@@ -67,6 +70,8 @@ class WorldMapState extends FlxState
 		
 		// Add overlay tiles
 		add(map.overlayTiles);
+		
+		waitingForPlayer = true;
 	}
 	
 	override public function destroy()
@@ -77,11 +82,11 @@ class WorldMapState extends FlxState
 	
 	override public function update()
 	{
-		if (FlxG.keys.anyJustReleased(["ENTER"]))
-			FlxG.switchState(new PrelevelState());
+		/*if (FlxG.keys.anyJustReleased(["ENTER"]))
+			FlxG.switchState(new PrelevelState());*/
 	
 		// Only allow movement if we are not moving
-		if (currentPath == null)
+		if (waitingForPlayer)
 		{
 			// Enter level
 			if (FlxG.keys.anyJustReleased(["A"]))
@@ -90,12 +95,21 @@ class WorldMapState extends FlxState
 				
 				if (cNode.levelFile != null)
 				{
+					waitingForPlayer = false;
+					
 					// Store the current level
 					GameController.GameStatus.currentLevel = cNode.levelFile;
 					// Save
 					GameController.save();
-					// Go!
-					FlxG.switchState(new PlayState(GameController.GameStatus.currentLevel));
+					
+					// Spotlight effect
+					var spotlightFx : SpotlightEffect = new SpotlightEffect();
+					add(spotlightFx);
+					spotlightFx.close(cursor.getMidpoint(), 0.0, function() {
+						spotlightFx.cancel();
+						// Go!
+						FlxG.switchState(new PlayState(GameController.GameStatus.currentLevel));	
+					});					
 				}
 			}
 		
@@ -112,14 +126,18 @@ class WorldMapState extends FlxState
 			{
 				var cNode : Node = nodes.get(currentNode);
 				var path : Path = cNode.paths.get(direction);
-				if (path != null)
+				if (path != null && path.isOpen())
 				{
+					waitingForPlayer = false;
+					
 					currentPath = path;
-					var timeToWalk : Float = path.length() / 8 * 0.2;
+					var timeToWalk : Float = path.length() / 8 * 0.1;
 					FlxTween.linearPath(cursor, path.nodes, timeToWalk, { complete: onPathFinished });
 				}
 			}
 		}
+		
+		super.update();
 	}
 	
 	function handleDirSelector() : Void
@@ -141,6 +159,7 @@ class WorldMapState extends FlxState
 			updateCursorPosition();
 			
 			currentPath = null;
+			waitingForPlayer = true;
 		}
 	}
 	
@@ -180,6 +199,22 @@ class WorldMapState extends FlxState
 		}
 		
 		return allowedDirections;
+	}
+	
+	function positionAtSavedNode() : Void
+	{
+		if (GameController.GameStatus.currentLevel != null)
+		{
+			for (node in nodes)
+			{
+				if (node.levelFile == GameController.GameStatus.currentLevel)
+				{
+					trace("Located node for level " + node.levelFile);
+					currentNode = node.name;
+					break;
+				}
+			}
+		}
 	}
 	
 	/* Generation utils */

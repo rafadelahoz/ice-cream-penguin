@@ -331,7 +331,7 @@ class PlayState extends FlxState
 	
 	public function onLevelGoalCollision(goal : LevelGoal, pen : Penguin)
 	{
-		playflowManager.onGoal();
+		playflowManager.onGoal(goal);
 	}
 
 	public function addPenguin(p : Penguin) : Void
@@ -373,8 +373,16 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justPressed)
 		{
-			collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
+			// collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
 			// mobileHazards.add(new SurpriseDropHazard(mousePos.x, mousePos.y, this, Hazard.HazardType.Collision));
+			var spotlightFx : SpotlightEffect = new SpotlightEffect();
+			add(spotlightFx);
+
+			PlayFlowManager.get().doPause();
+			spotlightFx.close(mousePos, function() {
+				PlayFlowManager.get().doUnpause();
+				spotlightFx.cancel();
+			});
 		}
 		
 		if (FlxG.keys.anyJustPressed(["T"]))

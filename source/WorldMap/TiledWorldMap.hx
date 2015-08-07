@@ -110,7 +110,7 @@ class TiledWorldMap extends TiledMap
 		
 			absolutePointPositions(tpath.points, fromNode);
 		
-			var path : Path = new Path(tpath.points, fromNode, toNode, tpath.fromDir, tpath.toDir);
+			var path : Path = new Path(tpath.points, fromNode, toNode, tpath.fromDir, tpath.toDir, tpath.lock);
 			fromNode.paths.set(tpath.fromDir, path);
 			toNode.paths.set(tpath.toDir, path.inverse());
 		}
@@ -137,13 +137,15 @@ class TiledWorldMap extends TiledMap
 				
 				var from : String = o.custom.get("from");
 				var to : String = o.custom.get("to");
+				var lock : String = o.custom.get("lock");
 				
 				var tempPath : TempPath = { 
 					points : points, 
 					from : extractPathNodeName(from), 
 					to: extractPathNodeName(to),
 					fromDir : extractPathNodeDir(from),
-					toDir : extractPathNodeDir(to)
+					toDir : extractPathNodeDir(to),
+					lock : lock
 				};
 				
 				paths.push(tempPath);
@@ -168,18 +170,14 @@ class TiledWorldMap extends TiledMap
 		// Fetch node origin
 		var node : FlxPoint = new FlxPoint(from.x, from.y);
 		
-		/*for (point in points)
-		{
-			point.add(node.x, node.y);
-		}*/
-		
-		// The node might be the first or the last one of the array
+		// The path might be specified backwards 
+		// (i.e. the first point is the "to" node instead of the "from node)
+		// In that case, the path point list is reversed
 		var first : FlxPoint = points[0];
 		var last : FlxPoint = points[points.length-1];
 		
 		if (node.distanceTo(last) < node.distanceTo(first))
 		{
-			trace("Reversing " + points);
 			points.reverse();
 		}
 	}
@@ -242,5 +240,6 @@ typedef TempPath = {
 	from : String, 
 	to : String, 
 	fromDir : Int, 
-	toDir : Int
+	toDir : Int,
+	lock : String
 };

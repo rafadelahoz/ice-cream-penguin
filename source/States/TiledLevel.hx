@@ -129,7 +129,8 @@ class TiledLevel extends TiledMap
 		/** Elements **/
 			case "goal":
 				var type : Int = Std.parseInt(o.custom.get("type"));
-				var goal : LevelGoal = new LevelGoal(x, y, type);
+				var unlocks : String = o.custom.get("unlocks");
+				var goal : LevelGoal = new LevelGoal(x, y, type, unlocks);
 				state.levelGoals.add(goal);
 			case "water":
 				var water : CleanWater = new CleanWater(x, y, o.width, o.height, state);

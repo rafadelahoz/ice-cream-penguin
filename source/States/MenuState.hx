@@ -13,6 +13,7 @@ import flixel.system.scaleModes.PixelPerfectScaleMode;
 class MenuState extends FlxState
 {
 	var titleText : FlxText;
+	var menuText : FlxText;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -24,6 +25,10 @@ class MenuState extends FlxState
 		titleText = new FlxText(0, 0);
 		titleText.text = "Penguin Game";
 		add(titleText);
+		
+		menuText = new FlxText(FlxG.width / 2 - 48, 2 * FlxG.height / 3, 96);
+		menuText.text = "[N]     New Game\n[Enter] Continue\n";
+		add(menuText);
 
 		var fixedSM : flixel.system.scaleModes.PixelPerfectScaleMode = new PixelPerfectScaleMode();
 		FlxG.scaleMode = fixedSM;
@@ -49,15 +54,25 @@ class MenuState extends FlxState
 	{
 		super.update();
 
-		if (FlxG.keys.anyJustReleased(["A"]))
+		/*if (FlxG.keys.anyJustReleased(["A"]))
 		{
 			trace("Loading...");
 			GameController.load();
 			
 			FlxG.switchState(new PrelevelState());
-		}
-		else if (FlxG.keys.anyJustReleased(["ENTER"]))
+		}*/
+		
+		if (FlxG.keys.anyJustPressed(["N"]))
 		{
+			GameController.clearSave();
+			GameController.init();
+			GameController.save();
+			FlxG.switchState(new WorldMapState());
+		}
+		
+		if (FlxG.keys.anyJustReleased(["ENTER"]))
+		{
+			GameController.load();
 			FlxG.switchState(new WorldMapState());
 		}
 	}	
