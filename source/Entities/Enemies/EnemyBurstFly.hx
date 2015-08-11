@@ -18,6 +18,7 @@ class EnemyBurstFly extends Enemy
 	var randomTargetRadius : Int = 24;
 	var retarget : Bool = false;
 
+	var canTurn : Bool;
 	var timer : FlxTimer;
 	var tween : FlxTween;
 	var mobileTarget : Bool;
@@ -44,25 +45,42 @@ class EnemyBurstFly extends Enemy
 			loadGraphic("assets/images/fly-monster.png", true, 24, 20);
 			animation.add("idle", [Variation, Variation+1], 4);
 			animation.add("charge", [Variation, Variation+1], 8);
-			animation.play("idle");
 
 			setSize(12, 12);
 			offset.set(6, 5);
 
 			hazardType = Hazard.HazardType.Theft;
+
+			canTurn = true;
+		}
+		else if (Category == GameConstants.W_WATER)
+		{
+			loadGraphic("assets/images/fly-water.png", true, 16, 16);
+			animation.add("idle", [0, 1], FlxRandom.intRanged(2, 5));
+			animation.add("charge", [0, 1], FlxRandom.intRanged(6, 10));
+
+			setSize(10, 10);
+			offset.set(3, 3);
+
+			hazardType = Hazard.HazardType.Water;
+
+			canTurn = false;
 		}
 		else
 		{
 			loadGraphic("assets/images/fly.png", true, 24, 24);
 			animation.add("idle", [0, 1, 2, 1], 30);
 			animation.add("charge", [0, 1, 2, 1], 50);
-			animation.play("idle");
 
 			setSize(8, 8);
 			offset.set(8, 7);
 
 			hazardType = Hazard.HazardType.Dirt;
+
+			canTurn = true;
 		}
+
+		animation.play("idle");
 		
 		timer = new FlxTimer();
 		
@@ -78,10 +96,13 @@ class EnemyBurstFly extends Enemy
 			return;
 		}
 			
-		if (icecream.getMidpoint().x < getMidpoint().x)
-			flipX = true;
-		else
-			flipX = false;
+		if (canTurn)
+		{
+			if (icecream.getMidpoint().x < getMidpoint().x)
+				flipX = true;
+			else
+				flipX = false;
+		}
 
 		super.update();
 	}

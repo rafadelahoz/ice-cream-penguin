@@ -243,6 +243,8 @@ class TiledLevel extends TiledMap
 				return GameConstants.W_ICE;
 			case "Fire":
 				return GameConstants.W_FIRE;
+			case "Water":
+				return GameConstants.W_WATER;
 			default:
 				return GameConstants.W_ANY;
 		}

@@ -12,13 +12,20 @@ class IceShard extends Collectible
 		
 		floaty = true;
 		
-		makeGraphic(10, 10, 0x00000000);
-		drawRoundRect(1, 1, 8, 8, 3, 3, 0xFFEEF8FF);
+		loadGraphic("assets/images/iceshards.png", true, 16, 16);
+		animation.add("idle", [0, 1, 2], 0, false);
+		animation.play("idle", true, -1);
+
+		setSize(10, 10);
+		offset.set(3, 3);
 	}
 	
 	override public function onCollisionWithPlayer(pen : Penguin) : Void
 	{
-		world.icecream.makeColder(value);
-		super.onCollisionWithPlayer(pen);
+		if (alive)
+		{
+			world.icecream.makeColder(value);
+			super.onCollisionWithPlayer(pen);
+		}
 	}
 }
