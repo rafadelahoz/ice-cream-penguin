@@ -128,7 +128,9 @@ class TiledLevel extends TiledMap
 		
 		/** Elements **/
 			case "goal":
-				var type : Int = Std.parseInt(o.custom.get("type"));
+				var type : Int = 0;
+				if (o.custom.contains("type"))
+					type = Std.parseInt(o.custom.get("type"));
 				var unlocks : String = o.custom.get("unlocks");
 				var goal : LevelGoal = new LevelGoal(x, y, type, unlocks);
 				state.levelGoals.add(goal);
@@ -162,7 +164,11 @@ class TiledLevel extends TiledMap
 				var activeTime 	: Float = Std.parseFloat(o.custom.get("active"));
 				var startupTime	: Float = Std.parseFloat(o.custom.get("startup"));
 				
-				var gusher : GushingHazard = new GushingHazard(x, y + o.height, state, hazardType);
+				var gusher : Dynamic = null;
+				if (hazardType == Hazard.HazardType.Fire)
+					gusher = new FlameHazard(x, y + o.height, state, hazardType);
+				else
+				 	gusher = new GushingHazard(x, y + o.height, state, hazardType);
 				gusher.configure(idleTime, activeTime, startupTime, inverse);
 				state.hazards.add(gusher);
 			case "surprise":

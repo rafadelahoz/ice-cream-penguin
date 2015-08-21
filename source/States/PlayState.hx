@@ -375,14 +375,15 @@ class PlayState extends FlxState
 		{
 			// collectibles.add(new IceShard(mousePos.x, mousePos.y, this));
 			// mobileHazards.add(new SurpriseDropHazard(mousePos.x, mousePos.y, this, Hazard.HazardType.Collision));
-			var spotlightFx : SpotlightEffect = new SpotlightEffect();
+			
+			/*var spotlightFx : SpotlightEffect = new SpotlightEffect();
 			add(spotlightFx);
 
 			PlayFlowManager.get().doPause();
 			spotlightFx.close(mousePos, function() {
 				PlayFlowManager.get().doUnpause();
 				spotlightFx.cancel();
-			});
+			});*/
 		}
 		
 		if (FlxG.keys.anyJustPressed(["T"]))

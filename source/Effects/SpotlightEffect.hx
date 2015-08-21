@@ -11,7 +11,7 @@ class SpotlightEffect extends FlxSprite
 	var effectColor : Int;
 	var initialClosingRadius : Float = 256;
 	var initialOpeningRadius : Float = 0;
-	var radiusSpeed : Float = 4;
+	var radiusSpeed : Float = 5;
 	var pauseRadius : Float = 32;
 	var waitingDuration : Float = 1;
 

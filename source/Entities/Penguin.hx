@@ -75,7 +75,7 @@ class Penguin extends Entity
 		animation.add("jump", [4]);
 		animation.add("fall", [5]);
 		animation.add("hurt", [6, 7], 6, true);
-		animation.play("idle");
+		animation.play("fall");
 
 		// Ice cream & carrying setup
 		setupIcecream();
@@ -90,6 +90,8 @@ class Penguin extends Entity
 		acceleration.y = gravity;
 
 		timer = null;
+
+		positionCarriedObject();
 
 		setupVirtualPad();
 	}
@@ -200,21 +202,7 @@ class Penguin extends Entity
 		super.update();
 
 		// Handle icecream
-		if (icecream != null)
-		{
-			var offsetMap : Map<Int, FlxPoint> = icecreamOffset.get(carryPos);
-			var aoffset : FlxPoint = offsetMap.get(facing);
-			icecream.x = x + aoffset.x;
-			icecream.y = y + aoffset.y;
-
-			icecream.offset.x = offset.x + aoffset.x;
-			icecream.offset.y = offset.y + aoffset.y;
-
-			icecream.flipX = flipX;		
-
-			icecream.animation.play(animation.name + "-" + carryAnim[carryPos], false, animation.frameIndex);
-			
-		}
+		positionCarriedObject();
 
 		// Reset state
 		onWater = false;
@@ -237,6 +225,24 @@ class Penguin extends Entity
 		// Switch carry position when the button's pressed
 		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
 			carryPos = (carryPos + 1) % 2; 
+	}
+
+	function positionCarriedObject() : Void
+	{
+		if (icecream != null)
+		{
+			var offsetMap : Map<Int, FlxPoint> = icecreamOffset.get(carryPos);
+			var aoffset : FlxPoint = offsetMap.get(facing);
+			icecream.x = x + aoffset.x;
+			icecream.y = y + aoffset.y;
+
+			icecream.offset.x = offset.x + aoffset.x;
+			icecream.offset.y = offset.y + aoffset.y;
+
+			icecream.flipX = flipX;		
+
+			icecream.animation.play(animation.name + "-" + carryAnim[carryPos], false, animation.frameIndex);	
+		}
 	}
 	
 	public function handleWaterBehaviour() : Void

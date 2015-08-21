@@ -6,6 +6,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
+import flixel.util.FlxTimer;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 
@@ -106,9 +107,15 @@ class WorldMapState extends FlxState
 					var spotlightFx : SpotlightEffect = new SpotlightEffect();
 					add(spotlightFx);
 					spotlightFx.close(cursor.getMidpoint(), 0.0, function() {
-						spotlightFx.cancel();
-						// Go!
-						FlxG.switchState(new PlayState(GameController.GameStatus.currentLevel));	
+						// spotlightFx.cancel();
+						// TODO: Move this into the SpotlightEffect class
+						// Leave the screen black
+						FlxG.camera.fade(0xFF000000, 0.0, false);
+						// Wait a tad before going back
+						new FlxTimer(0.75, function(_t:FlxTimer) {
+							// Go!
+							FlxG.switchState(new PlayState(GameController.GameStatus.currentLevel));	
+						});						
 					});					
 				}
 			}

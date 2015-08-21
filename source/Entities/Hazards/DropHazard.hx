@@ -111,12 +111,19 @@ class DropHazard extends Hazard
 
 		// setSize(targetSize.x, targetSize.y);
 		acceleration.y = GameConstants.Gravity;
-		if (isTouching(FlxObject.DOWN))
+
+		if (isTouching(FlxObject.ANY) && velocity.y != 0)
+		{
 			brain.transition(splash, "splash");
+			alive = false;
+		}
 	}
 
 	public function splash() : Void
 	{
+		acceleration.set(0, 0);
+		velocity.set(0, 0);
+
 		if (alpha > 0)
 		{
 			alpha -= deltaSize;

@@ -38,7 +38,7 @@
   </object>
   <object id="5" name="forest" type="Node" x="40" y="32" width="8" height="8">
    <properties>
-    <property name="file" value="4"/>
+    <property name="file" value="21"/>
    </properties>
   </object>
   <object id="7" name="w0p2" type="Path" x="184" y="96">

@@ -3,7 +3,7 @@ package;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
-class GushingHazard extends Hazard
+class FlameHazard extends Hazard
 {
 	static var StatusIdle : String = "Idle";
 	static var StatusActivating : String = "Activating";
@@ -29,6 +29,8 @@ class GushingHazard extends Hazard
 
 	public function new(X : Int, Y : Int, World : PlayState, Type : Hazard.HazardType)
 	{
+		Type = Hazard.HazardType.Fire;
+
 		super(X, Y, Type, World);
 		
 		configured = false;
@@ -37,31 +39,18 @@ class GushingHazard extends Hazard
 		activeHeight = 40;
 		
 		// TODO: Load appropriate graphic, setup animations
-		var gfxName : String = "assets/images/";
-		switch (type)
-		{
-			case Hazard.HazardType.Fire:
-				color = FlxColor.WHITE;
-				gfxName += "flame-gusher.png";
-			case Hazard.HazardType.Water:
-				color = 0xFF3EA5F2;
-				gfxName += "gusher-fire-grayscale.png";
-			case Hazard.HazardType.Dirt:
-				color = FlxColor.PUCE;
-				gfxName += "gusher-fire-grayscale.png";
-			default:
-				color = 0xFFFF00FF;
-				gfxName += "gusher-fire-grayscale.png";
-		}
-		
-		loadGraphic(gfxName, true, 32, 40);
+		var gfxName : String = "assets/images/flame-gusher.png";
+		loadGraphic(gfxName, true, 24, 40);
 
-		animation.add("idle", 			[0, 1, 2], 8);
-		animation.add("active", 		[3, 4, 5], 12);
-		animation.add("activating", 	[ 6,  7,  8,  6,  7,  8,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17], 32, false);
-		animation.add("deactivating", 	[15, 16, 17, 12, 13, 14, 12, 13, 14, 12, 13, 14, 9, 10 , 11,  6,  7,  8], 32, false);
+		animation.add("idle", 			[4]);
+		animation.add("active", 		[2, 3], 12);
+		animation.add("activating", 	[1, 2, 3], 8, false);
+		animation.add("deactivating", 	[3, 2, 1], 8, false);
 
 		animation.callback = animationStepCallback;
+
+		setSize(10, 33);
+		offset.set(7, 7);
 		
 		x -= 8;
 
@@ -73,7 +62,14 @@ class GushingHazard extends Hazard
 	
 	public function animationStepCallback(Name : String, FrameNumber : Int, FrameIndex : Int) : Void
 	{
-		switch (FrameIndex) 
+		switch (FrameIndex)
+		{
+			case 0, 1, 4:
+				dangerous = false;
+			case 2, 3:
+				dangerous = true;
+		}
+		/*switch (FrameIndex) 
 		{
 			case 0, 1, 2:
 				dangerous = false;
@@ -99,7 +95,7 @@ class GushingHazard extends Hazard
 				dangerous = true;
 				offset.set(11, 12);
 				setSize(10, 28);
-		}
+		}*/
 
 		if (flipY)
 			offset.y = 0;
@@ -145,15 +141,15 @@ class GushingHazard extends Hazard
 
 		switch (currentStatus)
 		{
-			case GushingHazard.StatusIdle:
+			case FlameHazard.StatusIdle:
 				// dangerous = false;
-			case GushingHazard.StatusActivating:
+			case FlameHazard.StatusActivating:
 				// dangerous = true;
 				if (animation.finished)
 					toActive();
-			case GushingHazard.StatusActive:
+			case FlameHazard.StatusActive:
 				// dangerous = true;
-			case GushingHazard.StatusDeactivating:
+			case FlameHazard.StatusDeactivating:
 				// dangerous = true;
 				if (animation.finished)
 					toIdle();
@@ -175,8 +171,8 @@ class GushingHazard extends Hazard
 	public function toActivating(?theTimer : FlxTimer) : Void
 	{
 		currentStatus = StatusActivating;
-		offset.set(8, 8);
-		setSize(16, 32);
+		/*offset.set(8, 8);
+		setSize(16, 32);*/
 		animation.play("activating");
 	}
 	
@@ -190,8 +186,8 @@ class GushingHazard extends Hazard
 	public function toDeactivating(?theTimer : FlxTimer) : Void
 	{
 		currentStatus = StatusDeactivating;
-		offset.set(11, 12);
-		setSize(10, 28);
+		/*offset.set(11, 12);
+		setSize(10, 28);*/
 		animation.play("deactivating");
 	}
 

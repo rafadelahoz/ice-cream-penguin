@@ -147,7 +147,12 @@ class PlayFlowManager extends FlxObject
 		
 		spotlightFx.close(function() {		
 			// spotlightFx.cancel();
-			FlxG.camera.fade(function(){
+
+			// TODO: Move this into the SpotlightEffect class
+			// Set screen to full black
+			FlxG.camera.fade(0xFF000000, 0.0, false);
+			// Wait a tad before going back
+			new FlxTimer(0.75, function(_t:FlxTimer) {
 				FlxG.switchState(new WorldMapState());
 			});
 		});
