@@ -13,13 +13,19 @@ class PlayFlowManager extends FlxObject
 	static var instance : PlayFlowManager;
 	public static function get(?World : PlayState = null, ?Gui : GUI = null) : PlayFlowManager
 	{
+		// There is no instance: create one
 		if (instance == null)
 		{
-			instance = new PlayFlowManager(Gui);
+			instance = new PlayFlowManager(World, Gui);
 		}
-		
-		if (World != null)
-			instance.world = World;
+		// There is a former instance, update references
+		else 
+		{
+			if (World != null)
+				instance.world = World;
+			if (Gui != null)
+				instance.gui = Gui;
+		}
 		
 		return instance;
 	}
@@ -32,10 +38,15 @@ class PlayFlowManager extends FlxObject
 	
 	var gui : GUI;
 
-	public function new(?Gui : GUI)
+	public function new(?World : PlayState, ?Gui : GUI)
 	{
 		super();
 
+		if (World != null)
+		{
+			world = World;
+		}
+		
 		create();
 		
 		if (Gui != null)
@@ -64,9 +75,12 @@ class PlayFlowManager extends FlxObject
 		spotlightFx = new SpotlightEffect();
 		group.add(spotlightFx);
 
-		/*var txt : FlxText = new FlxText(FlxG.width/2, 16, "DEAD!");
-		txt.scrollFactor.set();
-		group.add(txt);*/
+		new FlxTimer(0.01, function(_t:FlxTimer) {
+			doPause();
+			spotlightFx.open(world.penguin.getMidpoint(), function() {
+				doUnpause();
+			});
+		});
 	}
 
 	public function onUpdate() : Bool
@@ -105,11 +119,15 @@ class PlayFlowManager extends FlxObject
 		return true;
 	}
 
-	public function onGoal() : Void
+	public function onGoal(goal : LevelGoal) : Void
 	{
 		if (!paused)
 		{
 			trace("You win!");
+			
+			// Do this in a more cool way
+			GameController.setLock(goal.unlocks, true);
+			
 			doFinish(0xffED0086);
 		}
 	}
@@ -125,15 +143,33 @@ class PlayFlowManager extends FlxObject
 	
 	function doFinish(color : Int) : Void
 	{
+		doPause();
+		
+		spotlightFx.close(function() {		
+			// spotlightFx.cancel();
+			FlxG.camera.fade(function(){
+				FlxG.switchState(new WorldMapState());
+			});
+		});
+	}
+	
+	public function doPause() : Void
+	{
+		paused = true;
+		
 		for (entity in world.entities)
 		{
 			entity.freeze();
 		}
-
-		paused = true;
+	}
+	
+	public function doUnpause() : Void
+	{
+		paused = false;
 		
-		spotlightFx.close(color, function() {			
-			FlxG.switchState(new WorldMapState());
-		});
+		for (entity in world.entities)
+		{
+			entity.resume();
+		}
 	}
 }

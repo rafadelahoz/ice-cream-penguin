@@ -5,12 +5,16 @@ import flixel.util.FlxPoint;
 class Path
 {
 	public var nodes : Array<FlxPoint>;
+
 	public var pointA : Node;
 	public var pointB : Node;
+
 	public var directionA : Int;
 	public var directionB : Int;
 	
-	public function new(?Nodes : Array<FlxPoint>, ?From : Node, ?To : Node, ?FromDirection : Int, ?ToDirection : Int)
+	public var lock : String;
+	
+	public function new(?Nodes : Array<FlxPoint>, ?From : Node, ?To : Node, ?FromDirection : Int, ?ToDirection : Int, ?Lock : String)
 	{
 		if (Nodes == null)
 			Nodes = new Array<FlxPoint>();
@@ -18,18 +22,23 @@ class Path
 		
 		pointA = From;
 		pointB = To;
+		
 		directionA = FromDirection;
 		directionB = ToDirection;
+		
+		lock = Lock;
 	}
 	
 	public function length() : Float
 	{
 		var length : Float = 0;
 		
-		for (i in 0...Std.int(Math.max(0, nodes.length-2)))
+		for (i in 0...Std.int(Math.max(0, nodes.length-1)))
 		{
 			length += nodes[i].distanceTo(nodes[i+1]);
 		}
+		
+		trace("Path length: " + length);
 		
 		return length;
 	}
@@ -48,7 +57,15 @@ class Path
 		inverse.directionA = directionB;
 		inverse.directionB = directionA;
 		
+		// Setup the lock
+		inverse.lock = lock;
+		
 		// 'K go!
 		return inverse;
+	}
+	
+	public function isOpen() : Bool
+	{
+		return GameController.getLock(lock);
 	}
 }
