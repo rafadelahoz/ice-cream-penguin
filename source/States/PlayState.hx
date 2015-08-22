@@ -12,6 +12,7 @@ import flixel.tile.FlxTilemap;
 import flixel.util.FlxTimer;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRect;
+import flixel.util.FlxRandom;
 using flixel.util.FlxSpriteUtil;
 
 /**
@@ -70,6 +71,10 @@ class PlayState extends FlxState
 	{
 		// FlxG.debugger.visible = true;
 		// FlxG.log.redirectTraces = true;
+
+		// Random Background color
+		var bgColors = [0xFFBE3241, 0xFFDF7A92, 0xFF3EA5F2, 0xFF545454, 0xFF24323F, 0xFF6888FC, 0xFF3C565C, 0xFF529023, 0xFFA6CD33, 0xFFFFFFFF, 0xFFF7E176, 0xFF574A38, 0xFF463C2D, 0xFF352D22, 0xFF231E17, 0xFF120F0C];
+		FlxG.camera.bgColor = bgColors[FlxRandom.intRanged(0, bgColors.length-1)];
 
 		// Prepare state holders
 		entities = new FlxTypedGroup<Entity>();

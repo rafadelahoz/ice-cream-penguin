@@ -29,6 +29,13 @@ class EnemyFlyDrop extends Enemy
 		collideWithEnemies = false;
 		
 		makeGraphic(20, 18, 0xFF101010);
+		loadGraphic("assets/images/flydrop-bird.png", true, 32, 32);
+		animation.add("fall", [0]);
+		animation.add("rise", [1]);
+		animation.play("fall");
+
+		setSize(20, 18);
+		offset.set(6, 8);
 		
 		if (player.getMidpoint().x < getMidpoint().x)
 		{
@@ -84,8 +91,14 @@ class EnemyFlyDrop extends Enemy
 			velocity.x = hspeed;
 			flipX = false;
 		}
-			
-		y = baseY + Math.sin(sineGenerator) * amplitude;
+		
+		var sine : Float = Math.sin(sineGenerator);
+		y = baseY + sine * amplitude;
+
+		if (sine < 0)
+			animation.play("rise");
+		else
+			animation.play("fall");
 		
 		dropper.x = getMidpoint().x;
 		dropper.y = getMidpoint().y;
