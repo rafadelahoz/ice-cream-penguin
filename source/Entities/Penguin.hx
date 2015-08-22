@@ -103,7 +103,13 @@ class Penguin extends Entity
 		if (frozen)
 			return;
 
+		var previouslyOnAir : Bool = onAir;
 		onAir = !isTouching(FlxObject.DOWN);
+
+		if (!onAir && previouslyOnAir)
+		{
+			FlxG.sound.play("land");
+		}
 
 		// Death proof
 		if (y > FlxG.camera.bounds.bottom)
@@ -224,7 +230,11 @@ class Penguin extends Entity
 	{
 		// Switch carry position when the button's pressed
 		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
+		{
 			carryPos = (carryPos + 1) % 2; 
+
+			FlxG.sound.play("switch");
+		}
 	}
 
 	function positionCarriedObject() : Void
@@ -368,6 +378,8 @@ class Penguin extends Entity
 			velocity.y = -jumpSpeed;
 			playerJumped = true;
 			turnedOnAir = false;
+
+			FlxG.sound.play("jump");
 		}
 	}
 

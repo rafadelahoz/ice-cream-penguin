@@ -48,6 +48,11 @@
 	<classpath name="source/Entities/Hazards" />
 	
 	<assets path="assets" />
+	<assets path="assets/sounds">
+		<sound path="jump.wav" id="jump" />
+		<sound path="land.wav" id="land" />
+		<sound path="switch_carry_pos.wav" id="switch" />
+	</assets>
 	
 	<!--------------------------------LIBRARIES------------------------------------->
 
