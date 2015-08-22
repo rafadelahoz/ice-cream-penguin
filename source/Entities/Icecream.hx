@@ -14,6 +14,7 @@ class Icecream extends FlxSprite {
 	public var ice : Int;
 	public var dry : Int;
 	public var debugLabel : FlxText;
+	public var baseOffset : FlxPoint;
 
 	public function new(X : Float = 0, Y : Float = 0) {
 	
@@ -43,8 +44,8 @@ class Icecream extends FlxSprite {
 		animation.add("fall-top", [13]);
 		animation.add("hurt-top", [14, 15]);
 		// Size
-		setSize(12, 10);
-		offset.y = 2;
+		setSize(10, 8);
+		baseOffset = new FlxPoint(2, 4);
 	}
 
 	public function render(frameIndex : Int, carryPos : Int) : Void

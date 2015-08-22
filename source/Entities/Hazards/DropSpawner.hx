@@ -38,8 +38,11 @@ class DropSpawner extends Hazard
 	
 	override public function destroy() : Void
 	{
+		world.mobileHazards.remove(droplets);
 		droplets.destroy();
 		droplets = null;
+
+		timer.destroy();
 	}
 	
 	public function spawnDrop(_timer : FlxTimer) : Void

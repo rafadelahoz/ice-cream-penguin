@@ -233,11 +233,11 @@ class Penguin extends Entity
 		{
 			var offsetMap : Map<Int, FlxPoint> = icecreamOffset.get(carryPos);
 			var aoffset : FlxPoint = offsetMap.get(facing);
-			icecream.x = x + aoffset.x;
-			icecream.y = y + aoffset.y;
+			icecream.x = x + aoffset.x + icecream.baseOffset.x;
+			icecream.y = y + aoffset.y + icecream.baseOffset.y;
 
-			icecream.offset.x = offset.x + aoffset.x;
-			icecream.offset.y = offset.y + aoffset.y;
+			icecream.offset.x = offset.x + aoffset.x + icecream.baseOffset.x;
+			icecream.offset.y = offset.y + aoffset.y + icecream.baseOffset.y;
 
 			icecream.flipX = flipX;		
 
@@ -371,9 +371,23 @@ class Penguin extends Entity
 		}
 	}
 
+	function dangerousHazard(hazardType : Hazard.HazardType) : Bool
+	{
+		switch (hazardType)
+		{
+			case Hazard.HazardType.Fire, 
+				Hazard.HazardType.Collision,
+				Hazard.HazardType.Dirt,
+				Hazard.HazardType.Theft:
+				return true;
+			case Hazard.HazardType.Water, Hazard.HazardType.None:
+				return false;
+		}
+	}
+
 	public function onCollisionWithEnemy(enemy : Enemy) : Void
 	{
-		if (true || enemy.type == "Runner" || enemy.type == "Walker")
+		if (dangerousHazard(enemy.hazardType) || enemy.type == "Runner" || enemy.type == "Walker")
 		{
 			// Bounce on the top of the enemy if you are on top
 			if (getMidpoint().y < enemy.y)
@@ -417,6 +431,11 @@ class Penguin extends Entity
 	{
 		waterBody = waterBlock;
 		onWater = true;
+	}
+
+	public function onDeath(deathType : String) : Void
+	{
+		animation.play("hurt");
 	}
 
 	public function getIcecream() : Icecream

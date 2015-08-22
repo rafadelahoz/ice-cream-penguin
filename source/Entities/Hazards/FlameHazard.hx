@@ -64,38 +64,19 @@ class FlameHazard extends Hazard
 	{
 		switch (FrameIndex)
 		{
-			case 0, 1, 4:
-				dangerous = false;
+			case 0, 1:
+				dangerous = true;
+				offset.set(8, 34);
+				setSize(8, 6);
 			case 2, 3:
 				dangerous = true;
-		}
-		/*switch (FrameIndex) 
-		{
-			case 0, 1, 2:
+				setSize(10, 33);
+				offset.set(7, 7);
+			case 4:
 				dangerous = false;
-				offset.set(14, 38);
-				setSize(2, 2);
-			case 3, 4, 5:
-				dangerous = true;
-				offset.set(8, 8);
-				setSize(16, 32);
-			case 6, 7, 8:
-				dangerous = true;
-				offset.set(13, 35);
-				setSize(6, 5);
-			case 9, 10, 11:
-				dangerous = true;
-				offset.set(13, 28);
-				setSize(6, 12);
-			case 12, 13, 14:
-				dangerous = true;
-				offset.set(13, 23);
-				setSize(6, 17);
-			case 15, 16, 17:
-				dangerous = true;
-				offset.set(11, 12);
-				setSize(10, 28);
-		}*/
+				setSize(10, 1);
+				offset.set(7, 39);
+		}
 
 		if (flipY)
 			offset.y = 0;
@@ -142,19 +123,32 @@ class FlameHazard extends Hazard
 		switch (currentStatus)
 		{
 			case FlameHazard.StatusIdle:
+				dangerous = false;
+				setSize(10, 1);
+				offset.set(7, 39);
 				// dangerous = false;
 			case FlameHazard.StatusActivating:
-				// dangerous = true;
+				dangerous = true;
+				offset.set(8, 34);
+				setSize(8, 6);
 				if (animation.finished)
 					toActive();
 			case FlameHazard.StatusActive:
 				// dangerous = true;
 			case FlameHazard.StatusDeactivating:
-				// dangerous = true;
+				dangerous = true;
+				offset.set(8, 34);
+				setSize(8, 6);
 				if (animation.finished)
 					toIdle();
 			default:
 		}
+
+		if (flipY)
+			offset.y = 0;
+
+		x = baseX - 0  + offset.x;
+		y = baseY - 40 + offset.y;
 		
 		super.update();
 	}
@@ -171,8 +165,6 @@ class FlameHazard extends Hazard
 	public function toActivating(?theTimer : FlxTimer) : Void
 	{
 		currentStatus = StatusActivating;
-		/*offset.set(8, 8);
-		setSize(16, 32);*/
 		animation.play("activating");
 	}
 	
@@ -186,8 +178,6 @@ class FlameHazard extends Hazard
 	public function toDeactivating(?theTimer : FlxTimer) : Void
 	{
 		currentStatus = StatusDeactivating;
-		/*offset.set(11, 12);
-		setSize(10, 28);*/
 		animation.play("deactivating");
 	}
 

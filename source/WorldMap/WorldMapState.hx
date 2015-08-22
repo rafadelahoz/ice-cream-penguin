@@ -106,7 +106,12 @@ class WorldMapState extends FlxState
 					// Spotlight effect
 					var spotlightFx : SpotlightEffect = new SpotlightEffect();
 					add(spotlightFx);
-					spotlightFx.close(cursor.getMidpoint(), 0.0, function() {
+
+					var spotlightTarget = cursor.getMidpoint();
+					spotlightTarget.x -= FlxG.camera.scroll.x;
+					spotlightTarget.y -= FlxG.camera.scroll.y;
+
+					spotlightFx.close(spotlightTarget, 0.0, function() {
 						// spotlightFx.cancel();
 						// TODO: Move this into the SpotlightEffect class
 						// Leave the screen black

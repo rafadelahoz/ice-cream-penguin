@@ -116,15 +116,16 @@ class PlayState extends FlxState
 
 		add(levelGoals);
 		
-		add(penguin);
-		add(icecream);
-		
-		add(collectibles);
-		
 		add(spawners);
 		
 		add(enemies);
+
+		add(penguin);
+		add(icecream);
+
 		add(hazards);
+		
+		add(collectibles);
 
 		add(watery);
 
@@ -210,11 +211,19 @@ class PlayState extends FlxState
 			level.collideWithLevel(penguin);
 			
 			// Mobile hazards vs World
-			for (hazard in mobileHazards)
-			{
-				if ((cast hazard).collideWithLevel)
-					level.collideWithLevel(cast hazard);
-			}
+			mobileHazards.forEachOfType(Hazard, function(hazard : Hazard) : Void {
+				level.collideWithLevel(hazard);
+			});
+
+			// Groups inside mobile hazards vs World
+			mobileHazards.forEachOfType(FlxTypedGroup, function(hazardGroup : FlxTypedGroup<Hazard>) : Void {
+				if (hazardGroup != null)
+				{
+					for (actualHazard in hazardGroup)
+						if ((cast actualHazard).collideWithLevel)
+							level.collideWithLevel(cast actualHazard);
+				}
+			});
 			
 			// Penguin vs Collectibles
 			FlxG.overlap(collectibles, penguin, onCollectibleCollision);

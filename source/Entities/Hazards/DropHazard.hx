@@ -22,7 +22,7 @@ class DropHazard extends Hazard
 		// makeGraphic(8, 8, color);
 		// loadGraphic("assets/images/droplet.png");
 		
-		collideWithLevel = false;
+		collideWithLevel = true;
 	}
 	
 	public function init(X : Float, Y : Float, Type : Hazard.HazardType) : Void
@@ -37,28 +37,36 @@ class DropHazard extends Hazard
 				color = 0xffff00ff;
 				
 			case Hazard.HazardType.Fire:
-				loadGraphic("assets/images/lava-drop.png", true, 16, 16);
+				loadGraphic("assets/images/falling-hazards.png", true, 13, 13);
 				// Setup mask
-				setSize(8, 8);
-				offset.set(4, 5);
+				setSize(7, 7);
+				offset.set(3, 3);
 				// Setup anims
-				animation.add("fall", [0, 1, 2, 3, 4, 5, 6, 7], 14);				
+				animation.add("fall", [4]);	
+				animation.add("splash", [5, 6, 7], 8, false);
 				animated = true;
 				
 			case Hazard.HazardType.Water:
-				loadGraphic("assets/images/water-drop.png", true, 16, 16);
+				loadGraphic("assets/images/falling-hazards.png", true, 13, 13);
 				// Setup mask
-				setSize(8, 8);
-				offset.set(4, 5);
+				setSize(7, 7);
+				offset.set(3, 3);
 				// Setup anims
-				animation.add("fall", [0, 1, 2, 3, 4], 14);
+				animation.add("fall", [0]);
+				animation.add("splash", [1, 2, 3], 8, false);
 				animated = true;
 				// Water drops shall not affect the penguin
 				dangerous = false;
 				
 			case Hazard.HazardType.Dirt:
-				loadGraphic("assets/images/droplet.png");
-				color = 0xff108810;
+				loadGraphic("assets/images/falling-hazards.png", true, 13, 13);
+				// Setup mask
+				setSize(7, 7);
+				offset.set(3, 3);
+				// Setup anims
+				animation.add("fall", [8]);
+				animation.add("splash", [9, 10, 11], 8, false);
+				animated = true;
 				
 			case Hazard.HazardType.Collision:
 				loadGraphic("assets/images/droplet.png");
@@ -72,14 +80,17 @@ class DropHazard extends Hazard
 		if (brain == null)
 			brain = new StateMachine(null, onStateChange);
 		
+		velocity.set(0, 0);
+		acceleration.set(0, 0);
+
 		brain.transition(prepare, "prepare");
 	}
 	
-	override public function destroy() : Void
+	override public function kill() : Void
 	{
 		velocity.set(0, 0);
 		acceleration.set(0, 0);
-		kill();
+		super.kill();
 	}
 
 	override public function update() : Void
@@ -102,9 +113,7 @@ class DropHazard extends Hazard
 	}
 
 	public function fall() : Void
-	{
-		collideWithLevel = true;
-		
+	{		
 		alpha = 1;
 
 		animation.play("fall");
@@ -112,19 +121,24 @@ class DropHazard extends Hazard
 		// setSize(targetSize.x, targetSize.y);
 		acceleration.y = GameConstants.Gravity;
 
-		if (isTouching(FlxObject.ANY) && velocity.y != 0)
+		if (isTouching(FlxObject.ANY))
 		{
 			brain.transition(splash, "splash");
-			alive = false;
+			// alive = false;
 		}
 	}
 
 	public function splash() : Void
 	{
+		// animation.play("splash");
+
 		acceleration.set(0, 0);
 		velocity.set(0, 0);
 
-		if (alpha > 0)
+		if (animation.finished)
+			kill();
+
+		/*if (alpha > 0)
 		{
 			alpha -= deltaSize;
 			
@@ -133,7 +147,7 @@ class DropHazard extends Hazard
 				alpha = 0;
 				destroy();
 			}
-		}
+		}*/
 	}
 
 	public function onStateChange(newState : String) : Void
@@ -144,7 +158,9 @@ class DropHazard extends Hazard
 				// deltaSize = targetSize.x / prepareTime;
 			case "fall":
 			case "splash":
-				deltaSize = 1.0 / fadeTime;
+				animation.play("splash");
+				solid = false;
+				// deltaSize = 1.0 / fadeTime;
 		}
 	}
 	
@@ -153,14 +169,18 @@ class DropHazard extends Hazard
 		if (velocity.y != 0)
 		{
 			brain.transition(splash, "splash");
-			alive = false;
+			// alive = false;
 		}
 	}
 	
 	override public function onCollisionWithIcecream(icecream : Icecream)
 	{
-		if (velocity.y != 0)
+		if (velocity.y != 0 && icecream.getMidpoint().y > getMidpoint().y)
 		{
+			y = icecream.y - height;
+
+			animation.play("splash", true, 1);
+
 			switch (type)
 			{
 				case Hazard.HazardType.Fire:

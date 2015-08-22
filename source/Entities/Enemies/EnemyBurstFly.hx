@@ -198,5 +198,9 @@ class EnemyBurstFly extends Enemy
 		{
 			icecream.mud(101);
 		}
+		else if (hazardType == Hazard.HazardType.Water)
+		{
+			icecream.water(101);
+		}
 	}
 }

@@ -10,6 +10,7 @@ using flixel.util.FlxSpriteUtil;
 class EnemyParashooter extends Enemy
 {
 	var idleTime : Float = 4;
+	var shootTime : Float = 1;
 	var shoots : Int = 1;
 		
 	var timer : FlxTimer;
@@ -21,8 +22,14 @@ class EnemyParashooter extends Enemy
 		
 		type = "Parashooter";
 		hazardType = Hazard.HazardType.None;
+		solid = false;
 
-		makeGraphic(16, 16, 0xFF550120);
+		// makeGraphic(16, 16, 0xFF550120);
+		loadGraphic("assets/images/plant-sheet.png", true, 32, 24);
+		animation.add("idle", [4]);
+		animation.add("open", [4, 5], 6, false);
+		animation.add("shoot", [6]);
+		animation.play("idle");
 		
 		timer = new FlxTimer();
 		
@@ -61,15 +68,25 @@ class EnemyParashooter extends Enemy
 	
 	public function idle()
 	{
+		animation.play("idle");
 	}
 	
 	public function shoot()
 	{
-		// Shoot!
-		shootBullet();
-		
-		// And idle
-		brain.transition(idle, "idle");
+		if (animation.name == "open" && animation.finished)
+		{
+			animation.play("shoot");
+
+			// Shoot!
+			shootBullet();
+			
+			// Wait a tad...
+			timer.start(shootTime, function(t : FlxTimer) : Void {
+				// And idle
+				brain.transition(idle, "idle");
+			});
+			
+		}
 	}
 	
 	public function onStateChange(newState : String) : Void
@@ -82,6 +99,7 @@ class EnemyParashooter extends Enemy
 						brain.transition(shoot, "shoot");
 					});
 			case "shoot":
+				animation.play("open");
 		}
 	}
 	

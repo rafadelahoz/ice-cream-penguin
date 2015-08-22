@@ -51,6 +51,11 @@ class BulletHazard extends Hazard
 		super.update();
 	}
 	
+	override public function onCollisionWithPlayer(player : Penguin)
+	{
+		kill();
+	}
+
 	override public function onCollisionWithIcecream(icecream : Icecream)
 	{
 		if (velocity.y != 0)

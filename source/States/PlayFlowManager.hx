@@ -137,6 +137,9 @@ class PlayFlowManager extends FlxObject
 		if (!paused) 
 		{
 			trace("Dead by " + deathType);
+
+			world.penguin.onDeath(deathType);
+
 			doFinish(0xff000000);
 		}
 	}

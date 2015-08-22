@@ -49,6 +49,13 @@ class EnemyFlyDrop extends Enemy
 		brain.transition(fly, "fly");
 	}
 	
+	override public function kill()
+	{
+		if (dropper != null)
+			dropper.destroy();
+		super.kill();
+	}
+
 	override public function update()
 	{
 		if (frozen)
