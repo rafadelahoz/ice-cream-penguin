@@ -5,18 +5,21 @@ import flixel.group.FlxGroup;
 import flixel.util.FlxTimer;
 import flixel.util.FlxRandom;
 
-class EnemySpawner extends FlxObject
+class EnemySpawner extends Entity
 {
 	var secondsPerSpawnVariation : Float = 0.3;
-	
-	var world : PlayState;
 	
 	var secondsPerSpawn : Float;
 	var timer : FlxTimer;
 	
 	public function new(X : Int, Y : Int, World : PlayState, Width : Int, Height : Int, SecondsPerSpawn : Float)
 	{
-		super(X, Y, Width, Height);
+		super(X, Y, World);
+		
+		visible = false;
+		
+		width = Width;
+		height = Height;
 		
 		world = World;
 		secondsPerSpawn = SecondsPerSpawn;
@@ -27,6 +30,18 @@ class EnemySpawner extends FlxObject
 		init();
 		
 		// Won't call prepareSpawn automatically, do that by hand
+	}
+	
+	override public function freeze() : Void
+	{
+		super.freeze();
+		timer.active = false;
+	}
+
+	override public function resume() : Void
+	{
+		super.resume();
+		timer.active = true;
 	}
 	
 	// Override this

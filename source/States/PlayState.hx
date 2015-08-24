@@ -18,7 +18,7 @@ using flixel.util.FlxSpriteUtil;
 /**
  * A FlxState which can be used for the actual gameplay.
  */
-class PlayState extends FlxState
+class PlayState extends GameState
 {
 	/* Level config */
 	public var mapName : String;
@@ -145,9 +145,6 @@ class PlayState extends FlxState
 		gui = new GUI();
 		add(gui);
 			
-		// Register the Virtual Pad
-		add(Penguin.virtualPad);
-
 		// Prepare death manager
 		playflowManager = PlayFlowManager.get(this, gui);
 
@@ -208,6 +205,11 @@ class PlayState extends FlxState
 		/* If the game is not paused due to death, level finished, ... */
 		if (playflowManager.onUpdate()) 
 		{
+			if (GamePad.justPressed(GamePad.Pause))
+			{
+				playflowManager.doPause();
+			}
+		
 			/* Resolve collisions */
 			// Enemies vs World
 			resolveEnemiesWorldCollision();
@@ -254,6 +256,11 @@ class PlayState extends FlxState
 			
 			/* Update the GUI */
 			gui.updateGUI(icecream, this);
+		}
+		else
+		{
+			if (GamePad.justPressed(GamePad.Pause))
+				playflowManager.doUnpause();
 		}
 		
 		/* Do the debug things */

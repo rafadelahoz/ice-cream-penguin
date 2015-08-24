@@ -4,8 +4,9 @@ import flixel.FlxObject;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
-import flixel.text.FlxText;
+import flixel.util.FlxPoint;
 import flixel.util.FlxTimer;
+import flixel.text.FlxText;
 using flixel.util.FlxSpriteUtil;
 
 class PlayFlowManager extends FlxObject
@@ -31,12 +32,15 @@ class PlayFlowManager extends FlxObject
 	}
 
 	public var world : PlayState;
+	public var canResume : Bool;
 	public var paused : Bool;
 	public var group : FlxGroup;
 	
 	var spotlightFx : SpotlightEffect;
 	
 	var gui : GUI;
+	
+	var pauseGUI : FlxGroup;
 
 	public function new(?World : PlayState, ?Gui : GUI)
 	{
@@ -54,6 +58,12 @@ class PlayFlowManager extends FlxObject
 			gui = Gui;
 			group.add(gui);
 		}
+		
+		pauseGUI = new FlxGroup();
+		pauseGUI.add(new FlxSprite(FlxG.width / 2 - 40, FlxG.height / 4 - 2).makeGraphic(80, 32, 0x99000000));
+		pauseGUI.add(new FlxText(FlxG.width / 2 - 32, FlxG.height / 4, 64, " ~ PAUSED! ~ ", 8));
+		pauseGUI.setAll("scrollFactor", new FlxPoint(0, 0));
+		group.add(pauseGUI);
 	}
 
 	override public function destroy() : Void
@@ -76,9 +86,9 @@ class PlayFlowManager extends FlxObject
 		group.add(spotlightFx);
 
 		new FlxTimer(0.01, function(_t:FlxTimer) {
-			doPause();
+			doPause(true);
 			spotlightFx.open(world.penguin.getMidpoint(), function() {
-				doUnpause();
+				doUnpause(true);
 			});
 		});
 	}
@@ -146,7 +156,7 @@ class PlayFlowManager extends FlxObject
 	
 	function doFinish(color : Int) : Void
 	{
-		doPause();
+		doPause(true);
 		
 		spotlightFx.close(function() {		
 			// spotlightFx.cancel();
@@ -161,8 +171,11 @@ class PlayFlowManager extends FlxObject
 		});
 	}
 	
-	public function doPause() : Void
+	public function doPause(silent : Bool = false) : Void
 	{
+		pauseGUI.visible = !silent;
+		canResume = !silent;
+	
 		paused = true;
 		
 		for (entity in world.entities)
@@ -171,8 +184,13 @@ class PlayFlowManager extends FlxObject
 		}
 	}
 	
-	public function doUnpause() : Void
+	public function doUnpause(force : Bool = false) : Void
 	{
+		if (!canResume && !force)
+			return;
+	
+		pauseGUI.visible = false;
+		
 		paused = false;
 		
 		for (entity in world.entities)

@@ -10,10 +10,13 @@ import flixel.system.scaleModes.PixelPerfectScaleMode;
 /**
  * A FlxState which can be used for the game's menu.
  */
-class MenuState extends FlxState
+class MenuState extends GameState
 {
 	var titleText : FlxText;
 	var menuText : FlxText;
+	
+	var currentOption : Int;
+	var options : Int;
 
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -21,19 +24,22 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-
+		
 		titleText = new FlxText(0, 0);
 		titleText.text = "Penguin Game";
 		add(titleText);
 		
 		menuText = new FlxText(FlxG.width / 2 - 48, 2 * FlxG.height / 3, 96);
-		menuText.text = "[N]     New Game\n[Enter] Continue\n";
+		menuText.text = "[New Game]\n Continue \n";
 		add(menuText);
 
 		var fixedSM : flixel.system.scaleModes.PixelPerfectScaleMode = new PixelPerfectScaleMode();
 		FlxG.scaleMode = fixedSM;
 		
 		GameController.init();
+		
+		options = 2;
+		currentOption = 0;
 	}
 	
 	/**
@@ -54,26 +60,54 @@ class MenuState extends FlxState
 	{
 		super.update();
 
-		/*if (FlxG.keys.anyJustReleased(["A"]))
+		if (GamePad.justPressed(GamePad.Left))
 		{
-			trace("Loading...");
-			GameController.load();
-			
-			FlxG.switchState(new PrelevelState());
-		}*/
+			currentOption -= 1;
+			if (currentOption < 0)
+				currentOption = options - 1;
+		}
+		else if (GamePad.justPressed(GamePad.Right))
+		{
+			currentOption += 1;
+			if (currentOption >= options)
+				currentOption = 0;
+		}
 		
+		if (currentOption == 0)
+			menuText.text = "- New game\n Continue \n";
+		else if (currentOption == 1)
+			menuText.text = " New game \n- Continue\n";
+		
+		if (GamePad.justPressed(GamePad.A))
+			handleSelectedOption();
+		
+		// Debug things
 		if (FlxG.keys.anyJustPressed(["N"]))
 		{
-			GameController.clearSave();
-			GameController.init();
-			GameController.save();
-			FlxG.switchState(new WorldMapState());
-		}
-		
-		if (FlxG.keys.anyJustReleased(["ENTER"]))
+			currentOption = 0;
+			handleSelectedOption();
+		} 
+		else if (FlxG.keys.anyJustReleased(["ENTER"]))
 		{
-			GameController.load();
-			FlxG.switchState(new WorldMapState());
+			currentOption = 1;
+			handleSelectedOption();
 		}
-	}	
+	}
+	
+	function handleSelectedOption()
+	{
+		switch (currentOption)
+		{
+			case 0:
+				// New game
+				GameController.clearSave();
+				GameController.init();
+				GameController.save();
+				FlxG.switchState(new WorldMapState());
+			case 1:
+				// Continue
+				GameController.load();
+				FlxG.switchState(new WorldMapState());
+		}
+	}
 }

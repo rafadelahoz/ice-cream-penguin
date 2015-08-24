@@ -7,15 +7,9 @@ import flixel.FlxState;
 import flixel.util.FlxTimer;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRect;
-import flixel.ui.FlxVirtualPad;
-import flixel.ui.FlxButton;
 
 class Penguin extends Entity
 {
-	public static var virtualPad : FlxVirtualPad;
-	var previousPadState : Map<Int, Bool>;
-	var currentPadState : Map<Int, Bool>;
-
 	var timer : FlxTimer;
 
 	var icecream : Icecream;
@@ -92,14 +86,10 @@ class Penguin extends Entity
 		timer = null;
 
 		positionCarriedObject();
-
-		setupVirtualPad();
 	}
 
 	override public function update() : Void
 	{
-		handlePadState();
-
 		if (frozen)
 			return;
 
@@ -129,13 +119,13 @@ class Penguin extends Entity
 				if (!onAir)
 				{
 					// Horizontal movement
-					if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+					if (GamePad.checkButton(GamePad.Left))
 					{
 						facing = FlxObject.LEFT;
 						velocity.x = -hspeed;
 						animation.play("walk"); 
 					}
-					else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+					else if (GamePad.checkButton(GamePad.Right))
 					{
 						facing = FlxObject.RIGHT;
 						velocity.x = hspeed;
@@ -149,7 +139,7 @@ class Penguin extends Entity
 				}
 				else
 				{
-					if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+					if (GamePad.checkButton(GamePad.Left))
 					{
 						if (facing == FlxObject.RIGHT && !turnedOnAir)
 						{
@@ -159,7 +149,7 @@ class Penguin extends Entity
 						velocity.x -= jumpHspeed;
 						velocity.x = Math.max(velocity.x, -maxHspeed);
 					}
-					else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+					else if (GamePad.checkButton(GamePad.Right))
 					{
 						if (facing == FlxObject.LEFT && !turnedOnAir) 
 						{
@@ -178,7 +168,7 @@ class Penguin extends Entity
 				} 
 				else
 				{
-					if (velocity.y < 0 && (playerJumped && !(FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))))
+					if (velocity.y < 0 && (playerJumped && !GamePad.checkButton(GamePad.A)))
 					{
 						velocity.y /= 2;
 						playerJumped = false;
@@ -229,7 +219,7 @@ class Penguin extends Entity
 	function handleCarriedObject() : Void
 	{
 		// Switch carry position when the button's pressed
-		if (FlxG.keys.anyJustPressed(["S", "X"]) || justPressed(B))
+		if (GamePad.justPressed(GamePad.B))
 		{
 			carryPos = (carryPos + 1) % 2; 
 
@@ -274,12 +264,12 @@ class Penguin extends Entity
 		else
 		{
 			// Horizontal movement
-			if (FlxG.keys.anyPressed(["LEFT"]) || checkButton(Left))
+			if (GamePad.checkButton(GamePad.Left))
 			{
 				facing = FlxObject.LEFT;
 				velocity.x = -hspeed * waterSpeedFactor;
 			}
-			else if (FlxG.keys.anyPressed(["RIGHT"]) || checkButton(Right))
+			else if (GamePad.checkButton(GamePad.Right))
 			{
 				facing = FlxObject.RIGHT;
 				velocity.x = hspeed * waterSpeedFactor;
@@ -361,7 +351,7 @@ class Penguin extends Entity
 	{
 		// velocity.y = -jumpSpeed * 0.7;
 
-		if (FlxG.keys.anyPressed(["A", "Z"]) || checkButton(A))
+		if (GamePad.checkButton(GamePad.A))
 		{
 			velocity.y = -jumpSpeed * bounceJumpFactor;
 			playerJumped = true;
@@ -373,7 +363,7 @@ class Penguin extends Entity
 
 	public function jump(?force : Bool = false) : Void
 	{
-		if (force || FlxG.keys.anyJustPressed(["A", "Z"]) || justPressed(A))
+		if (force || GamePad.justPressed(GamePad.A))
 		{
 			velocity.y = -jumpSpeed;
 			playerJumped = true;
@@ -478,72 +468,4 @@ class Penguin extends Entity
 		topOffset.set(FlxObject.RIGHT, new FlxPoint(2, -12));
 		icecreamOffset.set(1, topOffset);
 	}
-
-	private function setupVirtualPad() : Void
-	{	
-		virtualPad = new FlxVirtualPad(LEFT_RIGHT, A_B);
-		virtualPad.alpha = 0.65;
-
-		setupVPButton(virtualPad.buttonRight);
-		setupVPButton(virtualPad.buttonLeft);
-		virtualPad.buttonLeft.x += 10;
-		setupVPButton(virtualPad.buttonA);
-		setupVPButton(virtualPad.buttonB);
-		virtualPad.buttonB.x += 10;
-	}
-
-	private function setupVPButton(button : FlxSprite) : Void
-	{
-		button.scale.x = 0.5;
-		button.scale.y = 0.5;
-		button.width *= 0.5;
-		button.height *= 0.5;
-		button.updateHitbox();
-		button.y += 17;
-	}
-
-	function checkButton(button : Int) : Bool
-	{
-		return currentPadState.get(button);
-	}
-
-	function justPressed(button : Int) : Bool
-	{
-		return currentPadState.get(button) && !previousPadState.get(button);
-	}
-
-	function justReleased(button : Int) : Bool
-	{
-		return !currentPadState.get(button) && previousPadState.get(button);
-	}
-
-	private function initPadState() : Void
-	{
-		currentPadState = new Map<Int, Bool>();
-		currentPadState.set(Left, false);
-		currentPadState.set(Right, false);
-		currentPadState.set(A, false);
-		currentPadState.set(B, false);
-
-		previousPadState = new Map<Int, Bool>();
-		previousPadState.set(Left, false);
-		previousPadState.set(Right, false);
-		previousPadState.set(A, false);
-		previousPadState.set(B, false);
-	}
-
-	private function handlePadState() : Void
-	{
-		previousPadState = currentPadState;
-		currentPadState = new Map<Int, Bool>();
-		currentPadState.set(Left, virtualPad.buttonLeft.status == FlxButton.PRESSED);
-		currentPadState.set(Right, virtualPad.buttonRight.status == FlxButton.PRESSED);
-		currentPadState.set(A, virtualPad.buttonA.status == FlxButton.PRESSED);
-		currentPadState.set(B, virtualPad.buttonB.status == FlxButton.PRESSED);
-	}
-
-	private static var Left : Int = 0;
-	private static var Right : Int = 1;
-	private static var A : Int = 2;
-	private static var B : Int = 3;
 }

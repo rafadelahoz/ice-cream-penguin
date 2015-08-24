@@ -92,8 +92,15 @@ class EnemyBurstFly extends Enemy
 	{
 		if (frozen)
 		{
+			timer.active = false;
+			animation.paused = true;
 			tween.cancel();
 			return;
+		}
+		else
+		{
+			timer.active = true;
+			animation.paused = false;
 		}
 			
 		if (canTurn)

@@ -66,7 +66,12 @@ class EnemyFlyDrop extends Enemy
 	override public function update()
 	{
 		if (frozen)
+		{
+			dropper.pause();
 			return;
+		}
+		else
+			dropper.unpause();
 			
 		if (x < FlxG.camera.scroll.x - FlxG.camera.width/2 || x > FlxG.camera.scroll.x + FlxG.camera.width * 1.5)
 			kill();

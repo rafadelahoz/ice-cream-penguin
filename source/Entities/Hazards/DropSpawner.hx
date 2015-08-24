@@ -52,4 +52,14 @@ class DropSpawner extends Hazard
 		
 		timer.reset(waitTime);
 	}
+	
+	public function pause() : Void
+	{
+		timer.active = false;
+	}
+	
+	public function unpause() : Void
+	{
+		timer.active = true;
+	}
 }

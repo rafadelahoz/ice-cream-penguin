@@ -225,6 +225,7 @@ class TiledLevel extends TiledMap
 				var spawner : EnemyFlyDropSpawner = new EnemyFlyDropSpawner(o.x, o.y, state, o.width, o.height, spawnTime);
 				spawner.init();
 				state.spawners.add(spawner);
+				state.entities.add(spawner);
 			default:
 				trace("wtf spawner?: " + spawnee);
 		}

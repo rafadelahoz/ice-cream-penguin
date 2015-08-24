@@ -10,7 +10,7 @@ import flixel.util.FlxTimer;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 
-class WorldMapState extends FlxState
+class WorldMapState extends GameState
 {
 	public var mapName : String;
 
@@ -66,13 +66,16 @@ class WorldMapState extends FlxState
 		
 		updateCursorPosition();
 		
-		dirSelector = new FlxSprite(4, 4).makeGraphic(2, 2, 0xFF0303FF);
+		dirSelector = new FlxSprite(6, 6).makeGraphic(6, 6, 0xFF0303FF);
 		add(dirSelector);
+		currentDir = FlxObject.UP;
 		
 		// Add overlay tiles
 		add(map.overlayTiles);
 		
 		waitingForPlayer = true;
+		
+		super.create();
 	}
 	
 	override public function destroy()
@@ -90,7 +93,7 @@ class WorldMapState extends FlxState
 		if (waitingForPlayer)
 		{
 			// Enter level
-			if (FlxG.keys.anyJustReleased(["A"]))
+			if (GamePad.justPressed(GamePad.A))
 			{
 				var cNode : Node = nodes.get(currentNode);
 				
@@ -129,10 +132,8 @@ class WorldMapState extends FlxState
 			handleDirSelector();
 			
 			var direction : Int = FlxObject.NONE;
-			if (FlxG.keys.anyJustReleased(["Up"])) direction = FlxObject.UP;
-			if (FlxG.keys.anyJustReleased(["Down"])) direction = FlxObject.DOWN;
-			if (FlxG.keys.anyJustReleased(["Left"])) direction = FlxObject.LEFT;
-			if (FlxG.keys.anyJustReleased(["Right"])) direction = FlxObject.RIGHT;
+			if (GamePad.justPressed(GamePad.B))
+				direction = currentDir;
 			
 			if (direction != FlxObject.NONE && currentNode != null)
 			{
@@ -154,13 +155,75 @@ class WorldMapState extends FlxState
 	
 	function handleDirSelector() : Void
 	{
+		if (!waitingForPlayer)
+		{
+			dirSelector.visible = false;
+			return;
+		}
+		else
+		{
+			dirSelector.visible = true;
+		}
+	
 		if (currentNode != null)
 		{
-			// If direction change button pressed
-			// Find next allowed direction
-				// The allowed directions are in nodes.get(currentNode)
-			// Change to it
+			// Check whether the direction change button was pressed
+			var left : Bool = GamePad.justPressed(GamePad.Left);
+			var right : Bool = GamePad.justPressed(GamePad.Right);
+			
+			if (left || right) 
+			{
+				// Direction
+				var delta = 1;
+				if (left)
+					delta = -1;
+					
+				// Find next allowed direction
+				var cNode : Node = nodes.get(currentNode);
+				var allowedDirs : Array<Int> = getAllowedDirections(cNode);
+				
+				// Try to fetch next dir
+				var nextDir : Int = allowedDirs.indexOf(currentDir) + delta;
+				if (nextDir < 0)
+					nextDir = allowedDirs.length + nextDir;
+				else if (nextDir >= allowedDirs.length)
+					nextDir -= allowedDirs.length;
+					
+				trace(nextDir);
+				// Change to it
+				currentDir = allowedDirs[nextDir];
+			}
 		}
+		
+		dirSelector.x = cursor.getMidpoint().x;
+		dirSelector.y = cursor.getMidpoint().y;
+		switch (currentDir)
+		{
+			case FlxObject.UP:
+				dirSelector.y -= 8;
+			case FlxObject.DOWN:
+				dirSelector.y += 8;
+			case FlxObject.LEFT:
+				dirSelector.x -= 8;
+			case FlxObject.RIGHT:
+				dirSelector.x += 8;
+		}
+		
+		dirSelector.x -= dirSelector.width / 2;
+		dirSelector.y -= dirSelector.height / 2;
+	}
+	
+	function getAllowedDirections(node : Node) : Array<Int>
+	{
+		var allowedDirs : Array<Int> = new Array<Int>();
+		
+		for (dir in [FlxObject.UP, FlxObject.RIGHT, FlxObject.DOWN, FlxObject.LEFT])
+		{
+			if (node.paths[dir] != null)
+				allowedDirs.push(dir);
+		}
+		
+		return allowedDirs;
 	}
 	
 	public function onPathFinished(Tween : FlxTween) : Void
@@ -168,6 +231,9 @@ class WorldMapState extends FlxState
 		if (currentPath != null)
 		{
 			currentNode = currentPath.pointB.name;
+			currentDir = currentPath.directionB;
+			trace(currentDir);
+			
 			updateCursorPosition();
 			
 			currentPath = null;
@@ -186,31 +252,15 @@ class WorldMapState extends FlxState
 				cursor.y = cNode.y;
 				
 				// Debug directions
-				trace("Directions from " + cNode.name + ":");
+				/*trace("Directions from " + cNode.name + ":");
 				for (dir in [FlxObject.UP, FlxObject.RIGHT, FlxObject.DOWN, FlxObject.LEFT])
 				{
 					if (cNode.paths.get(dir) != null)
 						trace("  - " + dirName(dir) + ": " + cNode.paths.get(dir).pointB.name);
-				}
-				
-				currentDir = getAllowedDirections()[0];
+				}*/
 			}
 		}		
 		
-	}
-	
-	function getAllowedDirections() : Array<Int>
-	{
-		var allowedDirections : Array<Int> = new Array<Int>();
-			
-		var cNode : Node = nodes.get(currentNode);
-		var cNodeDirsIterator : Iterator<Int> = cNode.paths.keys();
-		while (cNodeDirsIterator.hasNext())
-		{
-			allowedDirections.push(cNodeDirsIterator.next());
-		}
-		
-		return allowedDirections;
 	}
 	
 	function positionAtSavedNode() : Void
