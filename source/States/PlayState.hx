@@ -48,6 +48,8 @@ class PlayState extends GameState
 	public var hazards : FlxGroup;
 	public var mobileHazards : FlxGroup;
 
+	public var temperatureZones : FlxTypedGroup<TemperatureZone>;
+	
 	public var collectibles : FlxTypedGroup<Collectible>;
 	public var levelGoals : FlxTypedGroup<LevelGoal>;
 
@@ -96,6 +98,8 @@ class PlayState extends GameState
 		hazards = new FlxGroup();
 		mobileHazards = new FlxGroup();
 		hazards.add(mobileHazards);
+		
+		temperatureZones = new FlxTypedGroup<TemperatureZone>();
 
 		collectibles = new FlxTypedGroup<Collectible>();
 		levelGoals = new FlxTypedGroup<LevelGoal>();
@@ -111,7 +115,7 @@ class PlayState extends GameState
 			meltingsPerSecond = GameConstants.DefaultMPS;
 		
 		currentMps = meltingsPerSecond;
-		mpsTimer = new FlxTimer(1, handleMeltingsPerSecond, 0);
+		mpsTimer = new FlxTimer(0.1, handleMeltingsPerSecond, 0);
 		
 		// Add tilemaps
 		add(level.backgroundTiles);
@@ -129,6 +133,8 @@ class PlayState extends GameState
 		add(icecream);
 
 		add(hazards);
+		
+		add(temperatureZones);
 		
 		add(collectibles);
 
@@ -181,6 +187,8 @@ class PlayState extends GameState
 		mobileHazards = null;
 		hazards.destroy();
 		hazards = null;
+		temperatureZones.destroy();
+		temperatureZones = null;
 		oneways.destroy();
 		oneways = null;
 		levelGoals.destroy();
@@ -231,6 +239,12 @@ class PlayState extends GameState
 							level.collideWithLevel(cast actualHazard);
 				}
 			});
+			
+			// Reset meltings per second (it will be modified on the next overlap)
+			currentMps = meltingsPerSecond;
+			
+			// Penguin vs Temperature zones
+			FlxG.overlap(temperatureZones, penguin, onPlayerOverTemperatureZone);
 			
 			// Penguin vs Collectibles
 			FlxG.overlap(collectibles, penguin, onCollectibleCollision);
@@ -293,8 +307,11 @@ class PlayState extends GameState
 	
 	public function handleMeltingsPerSecond(timer : FlxTimer) : Void
 	{
-		// Called every second to handle icecream melting by environment
-		icecream.makeHotter(Math.floor(currentMps));
+		if (!playflowManager.paused)
+		{
+			// Called every second to handle icecream melting by environment
+			icecream.makeHotter(currentMps * 0.1);
+		}
 	}
 
 	public function overlapWater(water : FlxObject, entity : FlxObject) : Void
@@ -307,6 +324,15 @@ class PlayState extends GameState
 		{
 			trace("Something is trying to float: " + entity);
 		}
+	}
+	
+	public function onPlayerOverTemperatureZone(zone : TemperatureZone, player : Penguin)
+	{
+		if (zone.isSpecific)
+			currentMps = zone.mpsSpecific;
+		else
+			currentMps = meltingsPerSecond * zone.mpsMultiplier;
+		
 	}
 
 	public function onEnemyCollision(one : Enemy, two : Penguin) : Void
@@ -327,9 +353,9 @@ class PlayState extends GameState
 
 	public function onHazardPlayerCollision(a : Hazard, b : Penguin)
 	{
-		b.onCollisionWithHazard(a);
-		
-		a.onCollisionWithPlayer(b);
+		// Notify the Penguin only if the hazard didn't handle the collision
+		if (!a.onCollisionWithPlayer(b))
+			b.onCollisionWithHazard(a);
 	}
 
 	public function onHazardIcecreamCollision(a : Hazard, b : Icecream)

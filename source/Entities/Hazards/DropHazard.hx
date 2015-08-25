@@ -164,13 +164,15 @@ class DropHazard extends Hazard
 		}
 	}
 	
-	override public function onCollisionWithPlayer(player : Penguin)
+	override public function onCollisionWithPlayer(player : Penguin) : Bool
 	{
 		if (velocity.y != 0)
 		{
 			brain.transition(splash, "splash");
 			// alive = false;
 		}
+		
+		return false;
 	}
 	
 	override public function onCollisionWithIcecream(icecream : Icecream)

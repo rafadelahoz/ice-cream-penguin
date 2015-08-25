@@ -72,19 +72,18 @@ class TiledLevel extends TiledMap
 			tilemap.heightInTiles = height;
 			tilemap.loadMap(tileLayer.tileArray, processedPath, tileset.tileWidth, tileset.tileHeight, 0, 1, 1, 1);
 			
+			tilemap.ignoreDrawDebug = true;
+			
 			if (tileLayer.properties.contains("overlay"))
 			{
 				overlayTiles.add(tilemap);
-				// trace("Found overlay");
 			}
 			else if (tileLayer.properties.contains("nocollide")) 
 			{
-				// trace("Found non-collidable layer");
 				backgroundTiles.add(tilemap);
 			}
 			else
 			{
-				// trace("Found collision layer");
 				collidableTileLayers.push(tilemap);
 			}
 		}
@@ -177,6 +176,23 @@ class TiledLevel extends TiledMap
 			case "surprise":
 				var surprise : SurpriseDropHazard = new SurpriseDropHazard(x, y, state, Hazard.HazardType.Collision);
 				state.mobileHazards.add(surprise);
+			case "temperature":
+				var tzone : TemperatureZone = new TemperatureZone(x, y, o.width, o.height);
+				if (o.custom.contains("mps"))
+				{
+					var mps : Float = Std.parseFloat(o.custom.get("mps"));
+					tzone.setSpecificMPS(mps);
+				}
+				else if (o.custom.contains("factor"))
+				{
+					var factor : Float = Std.parseFloat(o.custom.get("factor"));
+					tzone.setMultiplierMPS(factor);
+				}
+				else
+					tzone = null;
+					
+				if (tzone != null)
+					state.temperatureZones.add(tzone);
 			
 		/** Enemies **/
 			case "runner":

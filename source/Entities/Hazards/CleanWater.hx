@@ -28,7 +28,15 @@ class CleanWater extends Hazard
 	
 	override public function update() : Void
 	{
-		// makeGraphic(Std.int(width), Std.int(height), 0x440110CC);
+		if (PlayFlowManager.get().paused)
+		{
+			tideTween.active = false;
+			return;
+		}
+		else
+		{
+			tideTween.active = true;
+		}
 	
 		super.update();
 		

@@ -113,7 +113,7 @@ class GUI extends FlxTypedGroup<FlxSprite>
 	
 	private function updateHumidity(icecream : Icecream)
 	{
-		var dry : Int = icecream.dry;
+		var dry : Float = icecream.dry;
 		var hp : Float = 1 - dry / 100.0;
 		
 		// Lerp from white towards blue-ish when getting wet (hm...)

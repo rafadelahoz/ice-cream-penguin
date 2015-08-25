@@ -11,11 +11,13 @@ class FireHazard extends Hazard
 		makeGraphic(16, 16, 0xDDAA0101);
 	} 
 
-	override public function onCollisionWithPlayer(player : Penguin)
+	override public function onCollisionWithPlayer(player : Penguin) : Bool
 	{
 		// Player bounces, stunned?
 		trace("yay");
 		player.bounce();
+		
+		return true;
 	}
 
 	override public function onCollisionWithIcecream(icecream : Icecream) 

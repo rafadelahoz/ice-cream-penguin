@@ -44,6 +44,7 @@ class Penguin extends Entity
 	var turnedOnAir : Bool;
 
 	var stunned : Bool;
+	var allowControl : Bool;
 
 	public static var CarrySide : Int = 0;
 	public static var CarryTop : Int = 1;
@@ -92,20 +93,32 @@ class Penguin extends Entity
 	{
 		if (frozen)
 			return;
-
-		var previouslyOnAir : Bool = onAir;
-		onAir = !isTouching(FlxObject.DOWN);
-
-		if (!onAir && previouslyOnAir)
-		{
-			FlxG.sound.play("land");
-		}
-
+			
 		// Death proof
 		if (y > FlxG.camera.bounds.bottom)
 		{
 			y = FlxG.camera.bounds.bottom;
 			velocity.y = -jumpSpeed * 2;
+		}	
+
+		var previouslyOnAir : Bool = onAir;
+		onAir = !isTouching(FlxObject.DOWN);
+
+		// When landing
+		if (!onAir && previouslyOnAir)
+		{
+			// If the player jumped (or fell), play landing sound
+			if (!stunned)
+			{
+				FlxG.sound.play("land");
+			} 
+			// If the player was stunned or something
+			else
+			{
+				// If it was a controlled stun, end it
+				if (allowControl)
+					stunned = false;
+			}
 		}
 
 		if (onWater) 
@@ -116,50 +129,8 @@ class Penguin extends Entity
 		{
 			if (!stunned) 
 			{
-				if (!onAir)
-				{
-					// Horizontal movement
-					if (GamePad.checkButton(GamePad.Left))
-					{
-						facing = FlxObject.LEFT;
-						velocity.x = -hspeed;
-						animation.play("walk"); 
-					}
-					else if (GamePad.checkButton(GamePad.Right))
-					{
-						facing = FlxObject.RIGHT;
-						velocity.x = hspeed;
-						animation.play("walk"); 
-					}
-					else 
-					{
-						velocity.x = 0;
-						animation.play("idle"); 
-					}
-				}
-				else
-				{
-					if (GamePad.checkButton(GamePad.Left))
-					{
-						if (facing == FlxObject.RIGHT && !turnedOnAir)
-						{
-							facing = FlxObject.LEFT;
-							turnedOnAir = true;
-						}
-						velocity.x -= jumpHspeed;
-						velocity.x = Math.max(velocity.x, -maxHspeed);
-					}
-					else if (GamePad.checkButton(GamePad.Right))
-					{
-						if (facing == FlxObject.LEFT && !turnedOnAir) 
-						{
-							facing = FlxObject.RIGHT;
-							turnedOnAir = true;
-						}
-						velocity.x += jumpHspeed;
-						velocity.x = Math.min(velocity.x, maxHspeed);
-					}
-				}
+				// Handle horizontal movement
+				handleHorizontalMovement();
 				
 				// Vertical movement
 				if (velocity.y == 0) 
@@ -185,6 +156,9 @@ class Penguin extends Entity
 			}
 			else // if (stunned)
 			{
+				if (allowControl)
+					handleHorizontalMovement(true);
+			
 				animation.play("hurt");
 			}
 			
@@ -214,6 +188,60 @@ class Penguin extends Entity
 	override public function destroy() : Void
 	{
 		super.destroy();
+	}
+	
+	function handleHorizontalMovement(?reduced : Bool = false) : Void
+	{
+		if (!onAir)
+		{
+			// Horizontal movement
+			if (GamePad.checkButton(GamePad.Left))
+			{
+				facing = FlxObject.LEFT;
+				velocity.x = -hspeed;
+				
+				if (!reduced)
+					animation.play("walk"); 
+			}
+			else if (GamePad.checkButton(GamePad.Right))
+			{
+				facing = FlxObject.RIGHT;
+				velocity.x = hspeed;
+				
+				if (!reduced)
+					animation.play("walk"); 
+			}
+			else 
+			{
+				velocity.x = 0;
+				
+				if (!reduced)
+					animation.play("idle"); 
+			}
+		}
+		else
+		{
+			if (GamePad.checkButton(GamePad.Left))
+			{
+				if (facing == FlxObject.RIGHT && !turnedOnAir)
+				{
+					facing = FlxObject.LEFT;
+					turnedOnAir = true;
+				}
+				velocity.x -= jumpHspeed;
+				velocity.x = Math.max(velocity.x, -maxHspeed);
+			}
+			else if (GamePad.checkButton(GamePad.Right))
+			{
+				if (facing == FlxObject.LEFT && !turnedOnAir) 
+				{
+					facing = FlxObject.RIGHT;
+					turnedOnAir = true;
+				}
+				velocity.x += jumpHspeed;
+				velocity.x = Math.min(velocity.x, maxHspeed);
+			}
+		}
 	}
 	
 	function handleCarriedObject() : Void
@@ -346,6 +374,7 @@ class Penguin extends Entity
 		velocity.y = -jumpSpeed * stunJumpFactor;
 
 		stunned = true;
+		allowControl = false;
 
 		timer = new FlxTimer(duration, onTimer);
 	}
@@ -374,6 +403,16 @@ class Penguin extends Entity
 
 			FlxG.sound.play("jump");
 		}
+	}
+	
+	public function jumpCry() : Void
+	{
+		velocity.y = -jumpSpeed;
+
+		stunned = true;
+		allowControl = true;
+
+		// timer = new FlxTimer(0.3, onTimer);
 	}
 
 	function dangerousHazard(hazardType : Hazard.HazardType) : Bool

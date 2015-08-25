@@ -11,8 +11,8 @@ class Icecream extends FlxSprite {
 	public static var MaxIce : Int = 100;
 	public static var MaxDry : Int = 100;
 
-	public var ice : Int;
-	public var dry : Int;
+	public var ice : Float;
+	public var dry : Float;
 	public var debugLabel : FlxText;
 	public var baseOffset : FlxPoint;
 
@@ -71,14 +71,14 @@ class Icecream extends FlxSprite {
 		
 	}
 
-	public function makeColder(ammount : Int) 
+	public function makeColder(ammount : Float) 
 	{
 		ice += ammount;
 		if (ice > MaxIce)
 			ice = MaxIce;
 	}
 
-	public function makeHotter(ammount : Int) 
+	public function makeHotter(ammount : Float) 
 	{
 		ice -= ammount;
 		if (ice <= 0)
@@ -88,7 +88,7 @@ class Icecream extends FlxSprite {
 		}
 	}
 
-	public function water(ammount : Int)
+	public function water(ammount : Float)
 	{
 		dry -= ammount;
 		if (dry <= 0)
@@ -98,7 +98,7 @@ class Icecream extends FlxSprite {
 		}
 	}
 
-	public function mud(ammount : Int)
+	public function mud(ammount : Float)
 	{
 		PlayFlowManager.get().onDeath("dirty");
 	}

@@ -92,7 +92,6 @@ class SpotlightEffect extends FlxSprite
 	
 	public function onTimer(timer : FlxTimer) : Void
 	{
-		trace("Timer!");
 		if (currentPhase == Phase.Waiting)
 			currentPhase = Phase.Ending;
 	}

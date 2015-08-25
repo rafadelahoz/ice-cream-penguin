@@ -47,7 +47,6 @@ class LavaPool extends Hazard
 	
 	override public function destroy() : Void
 	{
-		world.mobileHazards.remove(effects);
 		effects.destroy();
 		effects = null;
 
@@ -56,6 +55,16 @@ class LavaPool extends Hazard
 	
 	override public function update() : Void
 	{
+		if (PlayFlowManager.get().paused)
+		{
+			tideTween.active = false;
+			return;
+		}
+		else
+		{
+			tideTween.active = true;
+		}
+	
 		effects.forEachAlive(function (effect : LavaEffect) {
 			effect.update();
 		});
@@ -80,6 +89,18 @@ class LavaPool extends Hazard
 		});
 		
 		gradient.draw();
+	}
+	
+	override public function onCollisionWithPlayer(player : Penguin) : Bool
+	{
+		player.jumpCry();
+		return true;
+	}
+	
+	override public function onCollisionWithIcecream(icecream : Icecream)
+	{
+		// Melt
+		icecream.makeHotter(1000);
 	}
 	
 	function setupEffects()

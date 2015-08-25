@@ -51,9 +51,11 @@ class BulletHazard extends Hazard
 		super.update();
 	}
 	
-	override public function onCollisionWithPlayer(player : Penguin)
+	override public function onCollisionWithPlayer(player : Penguin) : Bool
 	{
 		kill();
+		
+		return false;
 	}
 
 	override public function onCollisionWithIcecream(icecream : Icecream)

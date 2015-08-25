@@ -66,17 +66,14 @@ class TiledWorldMap extends TiledMap
 			
 			if (tileLayer.properties.contains("overlay"))
 			{
-				trace("Found overlay");
 				overlayTiles.add(tilemap);
 			}
 			else if (tileLayer.properties.contains("collide")) 
 			{
-				trace("Found collidable");
 				collidableTileLayers.push(tilemap);
 			}
 			else 
 			{
-				trace("Found tilemap");
 				backgroundTiles.add(tilemap);
 			}
 			

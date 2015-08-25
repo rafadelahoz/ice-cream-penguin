@@ -29,12 +29,12 @@ class Hazard extends Entity
 
 	public function onCollisionWithIcecream(icecream : Icecream)
 	{
-
+	
 	}
 
-	public function onCollisionWithPlayer(player : Penguin) 
+	public function onCollisionWithPlayer(player : Penguin) : Bool
 	{
-
+		return false;
 	}
 
 	public function onCollisionWithEnemy(enemy : Enemy)
