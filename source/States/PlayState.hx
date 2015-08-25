@@ -331,7 +331,15 @@ class PlayState extends GameState
 		if (zone.isSpecific)
 			currentMps = zone.mpsSpecific;
 		else
-			currentMps = meltingsPerSecond * zone.mpsMultiplier;
+		{
+			// Multiplier only applies to hotter values
+			var mps : Float = meltingsPerSecond;
+			
+			if (meltingsPerSecond <= 0)
+				mps = GameConstants.DefaultMPS;
+				
+			currentMps = mps * zone.mpsMultiplier;
+		}
 		
 	}
 

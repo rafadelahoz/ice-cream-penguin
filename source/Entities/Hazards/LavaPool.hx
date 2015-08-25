@@ -38,8 +38,6 @@ class LavaPool extends Hazard
 		gradient.x = X;
 		gradient.y = y - height;
 		
-		FlxG.debugger.track(gradient);
-		
 		tideTween = FlxTween.tween(this, {y: y + 3}, 1+Math.random(), { ease: FlxEase.quadInOut, type: FlxTween.PINGPONG });
 		
 		setupEffects();
@@ -74,8 +72,10 @@ class LavaPool extends Hazard
 		surface.y = y;
 		surface.update();
 		
-		gradient.x = x;
-		gradient.y = y - height;
+		// Do not move the gradient with the lava!
+		// (else it looks like a hard-coded block)
+		/*gradient.x = x;
+		gradient.y = y - height;*/
 		gradient.update();
 	}
 	

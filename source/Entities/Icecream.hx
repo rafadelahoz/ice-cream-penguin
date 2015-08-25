@@ -86,6 +86,10 @@ class Icecream extends FlxSprite {
 			ice = 0;
 			PlayFlowManager.get().onDeath("hot");
 		}
+		else if (ice > MaxIce)
+		{
+			ice = MaxIce;
+		}
 	}
 
 	public function water(ammount : Float)

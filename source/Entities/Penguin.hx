@@ -117,7 +117,11 @@ class Penguin extends Entity
 			{
 				// If it was a controlled stun, end it
 				if (allowControl)
-					stunned = false;
+				{
+					stunned = true;
+					allowControl = false;
+					hit(0.6, facing, true);
+				}
 			}
 		}
 

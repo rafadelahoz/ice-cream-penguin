@@ -149,6 +149,17 @@ class TiledLevel extends TiledMap
 			case "lava":
 				var lava : LavaPool = new LavaPool(x, y, o.width, o.height, state);
 				state.hazards.add(lava);
+				
+				// Lava pools have a hot zone over them by default
+				// unless their manualTemperature flag is set
+				if (!o.custom.contains("manualTemperature"))
+				{
+					var hotZoneHeight : Int = Std.int(Math.max(o.height, 64));
+					var hotZone : TemperatureZone = new TemperatureZone(x, y - hotZoneHeight, o.width, hotZoneHeight);
+					hotZone.setMultiplierMPS(GameConstants.LavaMpsMultiplier);
+					state.temperatureZones.add(hotZone);
+				}
+				
 			case "fire": 
 				var fire : FireHazard = new FireHazard(x, y, state);
 				state.hazards.add(fire);
@@ -225,6 +236,17 @@ class TiledLevel extends TiledMap
 				var floater : EnemySlowFloater = new EnemySlowFloater(x, y, state);
 				initEnemy(floater, o);
 				state.addEnemy(floater);
+			case "vjumper":
+				var vjumper : EnemyVerticalJumper = new EnemyVerticalJumper(x, y, state);
+				
+				if (o.custom.contains("idle"))
+					vjumper.idleTime = Std.parseFloat(o.custom.get("idle"));
+				if (o.custom.contains("speed"))
+					vjumper.jumpSpeed = Std.parseFloat(o.custom.get("speed"));
+					
+				initEnemy(vjumper, o);
+				state.addEnemy(vjumper);
+				
 			case "spawner":
 				loadSpawner(o, state);
 		}

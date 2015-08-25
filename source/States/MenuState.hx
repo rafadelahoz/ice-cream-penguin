@@ -30,7 +30,7 @@ class MenuState extends GameState
 		add(titleText);
 		
 		menuText = new FlxText(FlxG.width / 2 - 48, 2 * FlxG.height / 3, 96);
-		menuText.text = "[New Game]\n Continue \n";
+		menuText.text = "- Continue\n New game \n";
 		add(menuText);
 
 		var fixedSM : flixel.system.scaleModes.PixelPerfectScaleMode = new PixelPerfectScaleMode();
@@ -74,24 +74,12 @@ class MenuState extends GameState
 		}
 		
 		if (currentOption == 0)
-			menuText.text = "- New game\n Continue \n";
+			menuText.text = "- Continue\n New game \n";
 		else if (currentOption == 1)
-			menuText.text = " New game \n- Continue\n";
+			menuText.text = " Continue \n- New game\n";
 		
 		if (GamePad.justPressed(GamePad.A))
 			handleSelectedOption();
-		
-		// Debug things
-		if (FlxG.keys.anyJustPressed(["N"]))
-		{
-			currentOption = 0;
-			handleSelectedOption();
-		} 
-		else if (FlxG.keys.anyJustReleased(["ENTER"]))
-		{
-			currentOption = 1;
-			handleSelectedOption();
-		}
 	}
 	
 	function handleSelectedOption()
@@ -99,14 +87,16 @@ class MenuState extends GameState
 		switch (currentOption)
 		{
 			case 0:
+				trace("=== Restore game ===");
+				// Continue
+				GameController.load();
+				FlxG.switchState(new WorldMapState());
+			case 1:
+				trace("=== New game ===");
 				// New game
 				GameController.clearSave();
 				GameController.init();
 				GameController.save();
-				FlxG.switchState(new WorldMapState());
-			case 1:
-				// Continue
-				GameController.load();
 				FlxG.switchState(new WorldMapState());
 		}
 	}
