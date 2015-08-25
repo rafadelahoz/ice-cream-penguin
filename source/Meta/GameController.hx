@@ -45,7 +45,7 @@ class GameController
 	{
 		trace((open ? "Opening" : "Closing") + " lock \"" + lock + "\"");
 	
-		if (lock != null && open != null)
+		if (lock != null)
 			GameStatus.locks.set(lock, open);
 		else
 			trace("Error: trying to set lock " + lock + " to value " + open);

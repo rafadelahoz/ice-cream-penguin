@@ -107,7 +107,7 @@ class PlayState extends GameState
 		// MPS (Meltings per second)
 		meltingsPerSecond = level.meltingsPerSecond;
 		// Default 1.6 if not specified (icecream melt in 1 minute)
-		if (meltingsPerSecond == null)
+		if (meltingsPerSecond == -1)
 			meltingsPerSecond = GameConstants.DefaultMPS;
 		
 		currentMps = meltingsPerSecond;

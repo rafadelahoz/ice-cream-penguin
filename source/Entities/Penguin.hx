@@ -256,6 +256,9 @@ class Penguin extends Entity
 			if (Math.abs(velocity.y) > waterMaxVSpeed)
 				velocity.y *= waterFallSpeedReduction;
 				
+			// Hold the icecream on top as you are going to die anyway
+			carryPos = CarryTop;
+				
 			animation.play("hurt");
 			acceleration.y = GameConstants.Gravity * 0.1;
 			velocity.x /= 3;

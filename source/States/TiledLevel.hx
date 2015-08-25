@@ -41,7 +41,7 @@ class TiledLevel extends TiledMap
 		if (strMps != null)
 			meltingsPerSecond = Std.parseFloat(strMps);
 		else
-			meltingsPerSecond = null;
+			meltingsPerSecond = -1;
 		
 		/* Read tile info */
 		for (tileLayer in layers)
@@ -147,12 +147,15 @@ class TiledLevel extends TiledMap
 				state.oneways.add(oneway);
 				
 		/** Hazards **/
+			case "lava":
+				var lava : LavaPool = new LavaPool(x, y, o.width, o.height, state);
+				state.hazards.add(lava);
 			case "fire": 
 				var fire : FireHazard = new FireHazard(x, y, state);
 				state.hazards.add(fire);
 			case "drop":
 				var hazardType : Hazard.HazardType = getHType(o);
-				var waitTime   : Float = null;
+				var waitTime   : Float = -1;
 				if (o.custom.contains("wait"))
 					waitTime = Std.parseFloat(o.custom.get("wait"));
 				var dropper : DropSpawner = new DropSpawner(x, y, state, waitTime, hazardType);

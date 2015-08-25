@@ -12,6 +12,9 @@ class DropSpawner extends Hazard
 	
 	public function new(X : Int, Y : Int, World : PlayState, ?WaitTime : Float = 2, ?Type : Hazard.HazardType)
 	{
+		if (WaitTime == -1)
+			WaitTime = 2;
+	
 		if (Type == null)
 			Type = Hazard.HazardType.None;
 		
