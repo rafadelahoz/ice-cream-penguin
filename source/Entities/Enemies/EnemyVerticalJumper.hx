@@ -34,8 +34,6 @@ class EnemyVerticalJumper extends Enemy
 		
 		brain = new StateMachine(null, onStateChange);
 		brain.transition(idle, "idle");
-		
-		FlxG.debugger.track(this);
 	}
 	
 	override public function update()

@@ -51,8 +51,13 @@ class Collectible extends Entity
 			}
 			return;
 		}
+		else
+		{
+			floaty = floaty;
+		}
 		
 		if (scale.x <= 0) super.kill();
+		
 		super.update();
 	}
 	

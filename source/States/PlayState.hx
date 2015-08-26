@@ -439,6 +439,13 @@ class PlayState extends GameState
 				PlayFlowManager.get().doUnpause();
 				spotlightFx.cancel();
 			});*/
+			
+			/*var flame : FallingFlameHazard = new FallingFlameHazard(mousePos.x, mousePos.y, this);
+			flame.init(mousePos.x, mousePos.y, Hazard.HazardType.Fire);
+			mobileHazards.add(flame);*/
+			
+			var iceShard : IceShard = new IceShard(mousePos.x, mousePos.y, this);
+			collectibles.add(iceShard);
 		}
 		
 		if (FlxG.keys.anyJustPressed(["T"]))

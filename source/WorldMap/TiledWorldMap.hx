@@ -38,7 +38,6 @@ class TiledWorldMap extends TiledMap
 		for (tileLayer in layers)
 		{
 			var tilesetName : String = tileLayer.properties.get("tileset");
-			trace(tilesetName);
 			if (tilesetName == null)
 				throw "'tileset' property not defined for the " + tileLayer.name + " layer. Please, add the property to the layer.";
 
@@ -52,8 +51,6 @@ class TiledWorldMap extends TiledMap
 				}
 			}
 
-			// trace(tilesetName);
-			
 			if (tileset == null)
 				throw "Tileset " + tilesetName + " could not be found. Check the name in the layer 'tileset' property or something.";
 
