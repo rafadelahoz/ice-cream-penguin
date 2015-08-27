@@ -446,7 +446,7 @@ class PlayState extends GameState
 			
 			/* var iceShard : IceShard = new IceShard(mousePos.x, mousePos.y, this);
 			collectibles.add(iceShard);*/
-			var hopper : EnemyHopper = new EnemyHopper(mousePos.x, mousePos.y, this);
+			var hopper : EnemyJumpShooter = new EnemyJumpShooter(mousePos.x, mousePos.y, this);
 			hopper.init();
 			addEnemy(hopper);
 		}

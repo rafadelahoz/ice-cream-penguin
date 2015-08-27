@@ -12,7 +12,7 @@ class EnemyBurstFly extends Enemy
 {
 	var idleBaseTime : Float = 2.5;
 	var idleVarTimeFactor : Float = 0.15;
-	var chaseDistance : Int = 160;
+	var chaseDistance : Int = 100;
 	var chargeTime : Float = 0.6;
 	var chargeSpeed : Float = 50; // In pixels-per-second
 	var randomTargetRadius : Int = 24;
@@ -34,6 +34,7 @@ class EnemyBurstFly extends Enemy
 		super.init(Category, Variation);
 
 		collideWithLevel = false;
+		collideWithEnemies = false;
 		
 		if (Category == GameConstants.W_MONSTER)
 		{

@@ -30,9 +30,16 @@ class BulletHazard extends Hazard
 		centerOrigin();
 		
 		velocity.set(HSpeed, VSpeed);
-		acceleration.y = GameConstants.Gravity;
 		
-		maxVelocity.set(GameConstants.Gravity, GameConstants.Gravity);
+		switch (behaviour)
+		{
+			case Parabolic:
+				acceleration.y = GameConstants.Gravity;
+				maxVelocity.set(GameConstants.Gravity, GameConstants.Gravity);
+			case Straight:
+			case None:
+		}
+		
 	}
 	
 	override public function update()
@@ -60,7 +67,7 @@ class BulletHazard extends Hazard
 
 	override public function onCollisionWithIcecream(icecream : Icecream)
 	{
-		if (velocity.y != 0)
+		// if (velocity.y != 0)
 		{
 			switch (type)
 			{
@@ -73,7 +80,7 @@ class BulletHazard extends Hazard
 				default:
 			}
 			
-			kill();
+			// kill();
 		}
 	}
 }

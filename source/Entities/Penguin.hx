@@ -24,8 +24,8 @@ class Penguin extends Entity
 	var bounceJumpFactor : Float = 0.95;
 	var bounceFactor : Float = 0.4;
 	
-	var stunJumpFactor : Float = 0.4;
-	var stunHSpeedFactor : Float = 0.25;
+	var stunJumpFactor : Float = 0.45;
+	var stunHSpeedFactor : Float = 0.45;
 	
 	var waterSpeedFactor : Float = 0.9;
 	var waterMaxVSpeed : Float = 20;
@@ -441,7 +441,7 @@ class Penguin extends Entity
 		if (dangerousHazard(enemy.hazardType) || enemy.type == "Runner" || enemy.type == "Walker")
 		{
 			// Bounce on the top of the enemy if you are on top
-			if (getMidpoint().y < enemy.y)
+			if (bottom - 2 <= enemy.y)
 			{
 				bounce();
 			}
@@ -497,6 +497,12 @@ class Penguin extends Entity
 	public function getPosition(?point : FlxPoint) : FlxPoint
 	{
 		return getMidpoint(point);
+	}
+	
+	public var bottom(get, null) : Float;
+	inline function get_bottom() : Float
+	{
+		return y + height;
 	}
 
 	private function setupIcecream() : Void

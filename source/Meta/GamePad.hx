@@ -20,7 +20,11 @@ class GamePad
 	public static function setupVirtualPad() : Void
 	{	
 		virtualPad = new PenguinVirtualPad();
-		virtualPad.alpha = 0.65;
+		#if desktop
+			virtualPad.alpha = 0.0;
+		#else
+			virtualPad.alpha = 0.65;
+		#end
 
 		setupVPButton(virtualPad.buttonRight);
 		setupVPButton(virtualPad.buttonLeft);
@@ -66,6 +70,11 @@ class GamePad
 
 	private static function setupVPButton(button : FlxSprite, small : Bool = false) : Void
 	{
+		#if desktop
+			button.x = -100;
+			button.y = -100;
+			button.scale.set(0, 0);
+		#else
 		if (!small)
 		{
 			button.scale.x = 0.5;
@@ -83,6 +92,7 @@ class GamePad
 			button.height *= 0.3;
 			button.updateHitbox();
 		}
+		#end
 	}
 	
 	private static function initPadState() : Void

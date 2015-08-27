@@ -52,8 +52,6 @@ class EnemyWalkShooter extends Enemy
 	
 		brain = new StateMachine(null, onStateChange);
 		brain.transition(walk, "walk");
-		
-		FlxG.watch.add(this, "state");
 	}
 	
 	override public function destroy() : Void
