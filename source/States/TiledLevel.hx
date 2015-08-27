@@ -227,6 +227,11 @@ class TiledLevel extends TiledMap
 				initEnemy(walkShooter, o);
 				walkShooter.hazardType = hazardType;
 				state.addEnemy(walkShooter);
+			case "hopper":
+				var hazardType : Hazard.HazardType = getHType(o);
+				var hopper : EnemyHopper = new EnemyHopper(x, y, state);
+				initEnemy(hopper, o);
+				state.addEnemy(hopper);
 			case "fly":
 				var world : Int = getWorld(o);
 				var fly : EnemyBurstFly = new EnemyBurstFly(x, y, state);

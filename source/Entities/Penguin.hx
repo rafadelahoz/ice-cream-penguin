@@ -421,6 +421,9 @@ class Penguin extends Entity
 
 	function dangerousHazard(hazardType : Hazard.HazardType) : Bool
 	{
+		if (hazardType == null)
+			return false;
+		
 		switch (hazardType)
 		{
 			case Hazard.HazardType.Fire, 

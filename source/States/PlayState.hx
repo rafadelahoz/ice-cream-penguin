@@ -444,8 +444,11 @@ class PlayState extends GameState
 			flame.init(mousePos.x, mousePos.y, Hazard.HazardType.Fire);
 			mobileHazards.add(flame);*/
 			
-			var iceShard : IceShard = new IceShard(mousePos.x, mousePos.y, this);
-			collectibles.add(iceShard);
+			/* var iceShard : IceShard = new IceShard(mousePos.x, mousePos.y, this);
+			collectibles.add(iceShard);*/
+			var hopper : EnemyHopper = new EnemyHopper(mousePos.x, mousePos.y, this);
+			hopper.init();
+			addEnemy(hopper);
 		}
 		
 		if (FlxG.keys.anyJustPressed(["T"]))
