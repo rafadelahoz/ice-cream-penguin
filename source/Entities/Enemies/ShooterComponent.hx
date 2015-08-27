@@ -5,20 +5,29 @@ import flixel.group.FlxTypedGroup;
 
 class ShooterComponent
 {
+	var behaviour : BulletHazard.Behaviour;
+
 	var world	: PlayState;
 	var bullets : FlxTypedGroup<BulletHazard>;
+
+	public var bulletSpeed : Float = 100;
 	
 	public function new()
 	{
 		// ohai
 	}
 	
-	public function init(World : PlayState, ?BulletHazardType : Hazard.HazardType = null, MaxBullets : Int = 5)
+	public function init(World : PlayState, ?BulletHazardType : Hazard.HazardType = null, MaxBullets : Int = 5, BulletBehaviour : BulletHazard.Behaviour = null)
 	{
 		world = World;
 	
 		if (BulletHazardType == null)
 			BulletHazardType = Hazard.HazardType.None;
+	
+		if (BulletBehaviour == null)
+			BulletBehaviour = BulletHazard.Behaviour.Parabolic;
+		
+		behaviour = BulletBehaviour;
 	
 		bullets = new FlxTypedGroup<BulletHazard>(MaxBullets);
 
@@ -35,8 +44,8 @@ class ShooterComponent
 	public function shoot(from : FlxPoint, target : FlxPoint)
 	{
 		var bullet : BulletHazard = bullets.recycle(BulletHazard);
-		var shotSpeed : FlxPoint = CalculateShootVelocity(from, target);
-		bullet.init(Std.int(from.x), Std.int(from.y), shotSpeed.x, shotSpeed.y);
+		var shotSpeed : FlxPoint = CalculateShootVelocity(from, target, bulletSpeed, behaviour);
+		bullet.init(Std.int(from.x), Std.int(from.y), shotSpeed.x, shotSpeed.y, behaviour);
 	}
 	
 	public function destroy()
@@ -46,7 +55,28 @@ class ShooterComponent
 		bullets = null;
 	}
 	
-	public static function CalculateShootVelocity(from : FlxPoint, target : FlxPoint) : FlxPoint
+	public static function CalculateShootVelocity(from : FlxPoint, target : FlxPoint, speed : Float, behaviour : BulletHazard.Behaviour) : FlxPoint
+	{
+		switch (behaviour)
+		{
+			case Parabolic:
+				return calculateParabolicShootVelocity(from, target);
+			case Straight:
+				return calculateStraightShootVelocity(from, target, speed);
+			default:
+				return new FlxPoint(0, 0);
+		}
+	}
+	
+	static function calculateStraightShootVelocity(from : FlxPoint, target : FlxPoint, speed : Float) : FlxPoint
+	{
+		if (target.x < from.x)
+			return new FlxPoint(-speed, 0);
+		else /*if (target.x > from.x)*/
+			return new FlxPoint(speed, 0);
+	}
+	
+	static function calculateParabolicShootVelocity(from : FlxPoint, target : FlxPoint) : FlxPoint
 	{	
 		var g : Float = GameConstants.Gravity; // gravity
 		

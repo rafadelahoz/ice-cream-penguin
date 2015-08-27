@@ -103,7 +103,7 @@
     <property name="mps" value="0"/>
    </properties>
   </object>
-  <object id="137" type="hopper" x="168" y="88">
+  <object id="137" type="hopper" x="160" y="96" width="16" height="16">
    <properties>
     <property name="hType" value="Fire"/>
    </properties>
