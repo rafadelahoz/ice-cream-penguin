@@ -4,7 +4,8 @@ import flixel.FlxObject;
 
 class HorizontalFlameHazard extends Hazard
 {
-	public var speed = 60;
+	public var aliveDistance : Int = 320;
+	public var speed : Float = 60;
 
 	public function new(X : Float, Y : Float, World : PlayState)
 	{
@@ -12,7 +13,7 @@ class HorizontalFlameHazard extends Hazard
 		
 		collideWithLevel = false;
 	
-		makeGraphic(32, 16, 0xFFFF294F);
+		makeGraphic(24, 12, 0xFFFF294F);
 	}
 	
 	public function init(X : Int, Y : Int, Direction : Int)
@@ -38,11 +39,23 @@ class HorizontalFlameHazard extends Hazard
 			return;
 		}
 		
-		if (!inWorldBounds())
+		if (!inWorldBounds() || getMidpoint().distanceTo(world.penguin.getMidpoint()) > aliveDistance)
 		{
 			kill();
 		}
 		
 		super.update();
+	}
+	
+	override public function onCollisionWithIcecream(icecream : Icecream)
+	{
+		icecream.makeHotter(100);
+	}
+	
+	override public function onCollisionWithPlayer(penguin : Penguin) : Bool
+	{
+		kill();
+		
+		return false;
 	}
 }

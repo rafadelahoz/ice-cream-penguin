@@ -133,9 +133,9 @@
     <property name="speed" value="285"/>
    </properties>
   </object>
-  <object id="136" name="FlameZone" type="spawner" x="1288" y="0" width="392" height="160">
+  <object id="136" name="FlameZone" type="spawner" x="1288" y="40" width="392" height="64">
    <properties>
-    <property name="delay" value="1"/>
+    <property name="delay" value="2.5"/>
     <property name="spawnee" value="hflame"/>
    </properties>
   </object>

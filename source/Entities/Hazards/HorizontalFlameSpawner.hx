@@ -64,7 +64,9 @@ class HorizontalFlameSpawner extends EnemySpawner
 			spawnX = Std.int(cam.scroll.x + cam.width + 8);
 			
 			// Choose y position
-			spawnY = FlxRandom.intRanged(Std.int(cam.scroll.y), Std.int(cam.scroll.y + cam.height - spawnee.height));
+			var minY : Float = Math.max(zoneRect.top, cam.scroll.y);
+			var maxY : Float = Math.min(zoneRect.bottom, cam.scroll.y + cam.height) - spawnee.height;
+			spawnY = FlxRandom.intRanged(Std.int(minY), Std.int(maxY));
 			
 			spawnee.init(spawnX, spawnY, FlxObject.LEFT);
 		}
