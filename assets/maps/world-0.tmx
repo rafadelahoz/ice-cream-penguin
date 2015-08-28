@@ -15,7 +15,7 @@
   <object id="1" name="w0p1" type="Path" x="96" y="152" width="2" height="2">
    <properties>
     <property name="from" value="N@level-1"/>
-    <property name="lock" value="w0l1"/>
+    <!--<property name="lock" value="w0l1"/>-->
     <property name="to" value="W@level-2"/>
    </properties>
    <polyline points="24,0 24,-24 88,-24 88,24 128,24"/>
@@ -44,7 +44,7 @@
   <object id="7" name="w0p2" type="Path" x="224" y="176">
    <properties>
     <property name="from" value="N@level-2"/>
-    <property name="lock" value="w0l2"/>
+    <!--<property name="lock" value="w0l2"/>-->
     <property name="to" value="S@ice-1"/>
    </properties>
    <polyline points="0,0 0,-28 0,-64"/>
@@ -60,7 +60,7 @@
   <object id="12" name="w0l3" type="Path" x="80" y="120">
    <properties>
     <property name="from" value="W@level-1"/>
-    <property name="lock" value="w0l1"/>
+    <!--<property name="lock" value="w0l1"/>-->
     <property name="to" value="S@forest"/>
    </properties>
    <polyline points="40,32 32,32 32,16 16,16 16,0 0,0 0,-8"/>

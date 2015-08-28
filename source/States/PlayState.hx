@@ -13,6 +13,7 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRect;
 import flixel.util.FlxRandom;
+import flixel.addons.display.FlxStarField.FlxStarField2D;
 using flixel.util.FlxSpriteUtil;
 
 /**
@@ -75,8 +76,8 @@ class PlayState extends GameState
 		// FlxG.log.redirectTraces = true;
 
 		// Random Background color
-		var bgColors = [0xFFBE3241, 0xFFDF7A92, 0xFF3EA5F2, 0xFF545454, 0xFF24323F, 0xFF6888FC, 0xFF3C565C, 0xFF529023, 0xFFA6CD33, 0xFFFFFFFF, 0xFFF7E176, 0xFF574A38, 0xFF463C2D, 0xFF352D22, 0xFF231E17, 0xFF120F0C];
-		FlxG.camera.bgColor = bgColors[FlxRandom.intRanged(0, bgColors.length-1)];
+		/*var bgColors = [0xFFBE3241, 0xFFDF7A92, 0xFF3EA5F2, 0xFF545454, 0xFF24323F, 0xFF6888FC, 0xFF3C565C, 0xFF529023, 0xFFA6CD33, 0xFFFFFFFF, 0xFFF7E176, 0xFF574A38, 0xFF463C2D, 0xFF352D22, 0xFF231E17, 0xFF120F0C];
+		FlxG.camera.bgColor = bgColors[FlxRandom.intRanged(0, bgColors.length-1)];*/
 
 		// Prepare state holders
 		entities = new FlxTypedGroup<Entity>();
@@ -106,6 +107,12 @@ class PlayState extends GameState
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + mapName + ".tmx");
+		
+		// HURRR STARFIELDDD
+		var starfield : FlxStarField2D = new FlxStarField2D(0, 0, level.fullWidth, level.fullHeight);
+		starfield.setStarSpeed(0, 50);
+		// starfield.scrollFactor.set(0, 0);
+		add(starfield);
 		
 		/* Read level parameters */
 		// MPS (Meltings per second)
