@@ -61,7 +61,8 @@ class PlayFlowManager extends FlxObject
 		
 		pauseGUI = new FlxGroup();
 		pauseGUI.add(new FlxSprite(FlxG.width / 2 - 40, FlxG.height / 4 - 2).makeGraphic(80, 32, 0x99000000));
-		pauseGUI.add(new FlxText(FlxG.width / 2 - 32, FlxG.height / 4, 64, " ~ PAUSED! ~ ", 8));
+		pauseGUI.add(new FlxText(FlxG.width / 2 - 32, FlxG.height / 4, 64, 		" ~ PAUSED! ~ ", 8));
+		pauseGUI.add(new FlxText(FlxG.width / 2 - 32, FlxG.height / 4 + 16, 64, "A: Exit level", 8));
 		pauseGUI.setAll("scrollFactor", new FlxPoint(0, 0));
 		group.add(pauseGUI);
 	}

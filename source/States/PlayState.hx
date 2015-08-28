@@ -273,8 +273,14 @@ class PlayState extends GameState
 		}
 		else
 		{
-			if (GamePad.justPressed(GamePad.Pause))
-				playflowManager.doUnpause();
+			// Player pause
+			if (playflowManager.canResume)
+			{
+				if (GamePad.justPressed(GamePad.Pause))
+					playflowManager.doUnpause();
+				else if (GamePad.justPressed(GamePad.A))
+					playflowManager.onDeath("Suicide");
+			}
 		}
 		
 		/* Do the debug things */

@@ -1,5 +1,7 @@
 package;
 
+import flash.system.System;
+
 import flixel.FlxG;
 import flixel.group.FlxGroup;
 import flixel.FlxSprite;
@@ -30,7 +32,7 @@ class MenuState extends GameState
 		add(titleText);
 		
 		menuText = new FlxText(FlxG.width / 2 - 48, 2 * FlxG.height / 3, 96);
-		menuText.text = "- Continue\n New game \n";
+		menuText.text = "- Press A -";
 		add(menuText);
 
 		var fixedSM : flixel.system.scaleModes.PixelPerfectScaleMode = new PixelPerfectScaleMode();
@@ -60,7 +62,7 @@ class MenuState extends GameState
 	{
 		super.update();
 
-		if (GamePad.justPressed(GamePad.Left))
+		/*if (GamePad.justPressed(GamePad.Left))
 		{
 			currentOption -= 1;
 			if (currentOption < 0)
@@ -71,33 +73,16 @@ class MenuState extends GameState
 			currentOption += 1;
 			if (currentOption >= options)
 				currentOption = 0;
-		}
-		
-		if (currentOption == 0)
-			menuText.text = "- Continue\n New game \n";
-		else if (currentOption == 1)
-			menuText.text = " Continue \n- New game\n";
+		}*/
 		
 		if (GamePad.justPressed(GamePad.A))
 			handleSelectedOption();
+		else if (GamePad.justReleased(GamePad.Pause))
+			System.exit(0);
 	}
 	
 	function handleSelectedOption()
 	{
-		switch (currentOption)
-		{
-			case 0:
-				trace("=== Restore game ===");
-				// Continue
-				GameController.load();
-				FlxG.switchState(new WorldMapState());
-			case 1:
-				trace("=== New game ===");
-				// New game
-				GameController.clearSave();
-				GameController.init();
-				GameController.save();
-				FlxG.switchState(new WorldMapState());
-		}
+		GameController.ToGameSelectScreen();
 	}
 }

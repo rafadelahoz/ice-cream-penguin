@@ -86,8 +86,10 @@ class WorldMapState extends GameState
 	
 	override public function update()
 	{
-		/*if (FlxG.keys.anyJustReleased(["ENTER"]))
-			FlxG.switchState(new PrelevelState());*/
+		if (GamePad.justReleased(GamePad.Pause))
+		{
+			GameController.ToGameSelectScreen();
+		}
 	
 		// Only allow movement if we are not moving
 		if (waitingForPlayer)
@@ -103,8 +105,9 @@ class WorldMapState extends GameState
 					
 					// Store the current level
 					GameController.GameStatus.currentLevel = cNode.levelFile;
+					
 					// Save
-					GameController.save();
+					GameController.SaveGame();
 					
 					// Spotlight effect
 					var spotlightFx : SpotlightEffect = new SpotlightEffect();
@@ -250,14 +253,6 @@ class WorldMapState extends GameState
 			{
 				cursor.x = cNode.x;
 				cursor.y = cNode.y;
-				
-				// Debug directions
-				/*trace("Directions from " + cNode.name + ":");
-				for (dir in [FlxObject.UP, FlxObject.RIGHT, FlxObject.DOWN, FlxObject.LEFT])
-				{
-					if (cNode.paths.get(dir) != null)
-						trace("  - " + dirName(dir) + ": " + cNode.paths.get(dir).pointB.name);
-				}*/
 			}
 		}		
 		

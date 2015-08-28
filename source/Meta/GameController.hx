@@ -1,27 +1,55 @@
 package;
 
+import flixel.FlxG;
 import flixel.util.FlxSave;
 
 class GameController 
 {
-	private static var SAVESLOT = "SAVE";
+	public static var SAVESLOTS (get, null) : Array<String>;
+	static inline function get_SAVESLOTS() : Array<String> { return ["SAVE0", "SAVE1", "SAVE2"]; }
+	public static var SAVESLOT = "SAVE0";
 
 	private static var gameSave : FlxSave;
 
 	public static var GameStatus : GameStatusData;
 	
-	public static function init() 
+	/** Game Management API **/
+	public static function ToTitleScreen()
 	{
-		gameSave = new FlxSave();
-		
-		GameStatus = {		
-			currentLevel: "0",
-			currentWorld: "0",
-			locks: new Map<String, Bool>()
-		};
+		FlxG.switchState(new MenuState());
 	}
 	
+	public static function ToGameSelectScreen()
+	{
+		FlxG.switchState(new GamefileState());
+	}
+	
+	public static function ToWorldMap()
+	{
+		FlxG.switchState(new WorldMapState());
+	}
+	
+	
 	/** Status handling functions **/
+	
+	public static function NewGame()
+	{
+		GameController.clearSave();
+		GameController.init();
+		GameController.save();
+	}
+	
+	public static function SaveGame()
+	{
+		GameStatus.newGame = false;
+		
+		save();
+	}
+	
+	public static function ContinueGame()
+	{
+		load();
+	}
 	
 	public static function getLock(lock : String) : Bool
 	{
@@ -51,23 +79,57 @@ class GameController
 			trace("Error: trying to set lock " + lock + " to value " + open);
 	}
 	
-	/** Save/Load API **/
+	/** Low Level Save/Load API **/
+	
+	public static function init() 
+	{
+		gameSave = new FlxSave();
+		
+		GameStatus = {
+			newGame: true,
+			currentLevel: "0",
+			currentWorld: "0",
+			locks: new Map<String, Bool>()
+		};
+	}
+	
+	public static function checkSavefiles() : Map<String, GameStatusData>
+	{
+		var savefilesMap : Map<String, GameStatusData> = new Map<String, GameStatusData>();
+		
+		for (saveslot in SAVESLOTS)
+		{
+			savefilesMap.set(saveslot, checkSaveslot(saveslot));
+		}
+		
+		return savefilesMap;
+	}
+	
+	public static function checkSaveslot(slot : String) : GameStatusData
+	{
+		gameSave.bind(slot);
+		var data : GameStatusData = gameSave.data.gameStatus;
+		// Do this explode?
+		gameSave.destroy();
+		return data;
+	}
 	
 	public static function clearSave()
 	{
 		gameSave.bind(SAVESLOT);
-		gameSave.data = null;
-		gameSave.flush();
+		gameSave.data.gameStatus = null;
+		gameSave.data.locks = null;
+		gameSave.close();
 	}
 	
 	public static function save() 
 	{
-		// trace("Saving: " + GameStatus);
+		
 		gameSave.bind(SAVESLOT);
 		gameSave.data.gameStatus = GameStatus;
 		gameSave.data.locks = generateLockStructure(GameStatus.locks);
 		trace("Saving " + gameSave.data);
-		gameSave.flush();
+		gameSave.close();
 	}
 	
 	public static function load() 
@@ -124,6 +186,7 @@ class GameController
 
 
 typedef GameStatusData = { 
+	newGame : Bool,
 	currentWorld: String,
 	currentLevel: String,
 	locks : Map<String, Bool>
